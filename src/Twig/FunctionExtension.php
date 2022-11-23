@@ -12,25 +12,13 @@ class FunctionExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-//            new TwigFunction('remplacerAccents', [$this, 'remplacerAccents']),
-//            new TwigFunction('nomPrenomVille', [$this, 'nomPrenomVille']),
             new TwigFunction('adresseComplete', [$this, 'adresseComplete']),
-//            new TwigFunction('adresseCompleteFacture', [$this, 'adresseCompleteFacture']),
             new TwigFunction('nomPrenom', [$this, 'nomPrenom']),
             new TwigFunction('numTelEmail', [$this, 'numTelEmail']),
             new TwigFunction('affichagePlusieursValeurs', [$this, 'affichagePlusieursValeurs']),
             new TwigFunction('marqueModele', [$this, 'marqueModele']),
-/*            new TwigFunction('marqueModeleFacture', [$this, 'marqueModeleFacture']),
-            new TwigFunction('detailInterventionLong', [$this, 'detailInterventionLong']),*/
             new TwigFunction('formatMontantEuros', [$this, 'formatMontantEuros']),
-/*            new TwigFunction('formatTotalTVA', [$this, 'formatTotalTVA']),
-            new TwigFunction('formatTotalTTC', [$this, 'formatTotalTTC']),
-            new TwigFunction('dureeIntervention', [$this, 'dureeIntervention']),
-            new TwigFunction('voitureImmatriculation', [$this, 'voitureImmatriculation']),
-            new TwigFunction('dateJourAnnee', [$this, 'dateJourAnnee']),
-            new TwigFunction('moisToFrench', [$this, 'moisToFrench']),*/
             new TwigFunction('dateEnFrancais', [$this, 'dateEnFrancais'])
-//            new TwigFunction('dernierJourMoisDate', [$this, 'dernierJourMoisDate'])
         ];
     }
 
