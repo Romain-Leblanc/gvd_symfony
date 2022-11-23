@@ -1,0 +1,62 @@
+/* Définition de html, body et flex-1 permettent de placer le footer en bas de page */
+html {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    background-color: #c5c5c5;
+    font-family: 'Courier New';
+}
+.fa-solid, .fa-regular {
+    color: black !important;
+}
+nav, footer {
+    background-color: rgb(252, 252, 252);
+}
+nav {
+    box-shadow: 0px 2px 5px #BE1E2D;
+}
+footer {
+    height: 79px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid #BE1E2D;
+}
+.navbar-toggler {
+    background-color: #959595;
+    color: white;
+}
+.navbar-nav > a.active {
+    color: blue !important;
+}
+.pr-2 {
+    padding-right: 5px;
+}
+.navbar-nav > a.nav-link {
+    color: blue;
+}
+.nav-link-active:hover, a.text-light:hover {
+    color: blue !important;
+}
+#logo {
+    width: 65px;
+    height: 65px;
+}
+.flex-1 {
+    flex: 1;
+}
+.margintop-5 {
+    margin-top: 2em;
+}
+.div-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0 10% 0 10%;
+}
+.p-content {
+    padding: 0.5em 10% 0.5em 10%;
+}
