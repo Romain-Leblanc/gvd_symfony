@@ -51,6 +51,11 @@ class Vehicule
      */
     private $kilometrage;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $annee;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -124,6 +129,18 @@ class Vehicule
     public function setKilometrage(string $kilometrage): self
     {
         $this->kilometrage = $kilometrage;
+
+        return $this;
+    }
+
+    public function getAnnee(): ?int
+    {
+        return $this->annee;
+    }
+
+    public function setAnnee(int $annee): self
+    {
+        $this->annee = $annee;
 
         return $this;
     }

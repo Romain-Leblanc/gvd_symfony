@@ -1,20 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello VehiculeController!{% endblock %}
+{% block title %}Véhicules{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/wamp64/www/gvd_symfony/src/Controller/VehiculeController.php'|file_link(0) }}">src/Controller/VehiculeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/wamp64/www/gvd_symfony/templates/vehicule/index.html.twig'|file_link(0) }}">templates/vehicule/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <div class="div-liste">
+        <div class="div-table">
+            <table class="table table-hover table-bordered align-middle text-center">
+                <thead class="thead-light align-middle">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">N° Véhicule</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">Voiture</th>
+                    <th scope="col">Immatriculation</th>
+                    <th scope="col">Année</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for unVehicule in lesVehicules %}
+                    <tr>
+                        <td id="radio-button-table">
+                            <input type="radio" class="form-check-input" id="radio-input" name="radio-input" />
+                        </td>
+                        <td data-label="N° Voiture">{{ unVehicule.id }}</td>
+                        <td data-label="Client">{{ nomPrenom(unVehicule.getFKClient.getNom,unVehicule.getFKClient.getPrenom) }}</td>
+                        <td data-label="Voiture">{{ unVehicule.getFKMarque.getMarque ~ " " ~ unVehicule.getFKModele.getModele }}</td>
+                        <td data-label="Immatriculation">{{ unVehicule.Immatriculation }}</td>
+                        <td data-label="Année">{{ unVehicule.Annee }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="text-end fw-bold mt-2">
+            <p class="mb-0">{{ lesVehicules|length}} véhicule{{ affichagePlusieursValeurs(lesVehicules|length) }}</p>
+        </div>
+    </div>
 {% endblock %}

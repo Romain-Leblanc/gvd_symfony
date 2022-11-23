@@ -45,18 +45,62 @@ footer {
     width: 65px;
     height: 65px;
 }
+@media screen and (min-width: 1450px) {
+    .div-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 0 10% 0 10%;
+    }
+    .p-content {
+        padding: 0.5em 10% 0.5em 10%;
+    }
+    .div-liste > .div-table {
+        height: 600px;
+        overflow-y: auto;
+    }
+}
 .flex-1 {
     flex: 1;
 }
 .margintop-5 {
     margin-top: 2em;
 }
-.div-container {
+.div-liste > .div-boutons {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin: 0 10% 0 10%;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
-.p-content {
-    padding: 0.5em 10% 0.5em 10%;
+.div-liste > .div-boutons > a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.div-liste > .div-boutons > a:first-child > i {
+    border: 1px solid white;
+    border-radius: 15px;
+    padding: 3px;
+}
+.div-liste > .div-boutons > a > i {
+    margin-right: 5px;
+    color: white !important;
+}
+.div-liste > .div-table > table {
+    background-color: #b9b9b9 !important;
+}
+.table {
+    border-color: rgb(123, 0, 11);
+}
+.table-bordered {
+    border-color: #be1e2d;
+}
+.thead-light {
+    background-color: rgb(123, 0, 11);
+    color: white;
+    border-bottom-color: rgb(123, 0, 11);
+}
+#titre-page {
+    color: black;
+    font-weight: bold;
 }

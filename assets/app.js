@@ -15,6 +15,7 @@ import './bootstrap';
 
 import './scripts/jquery.js';
 import './scripts/functions.js';
+import './bootstrap-5.2.2/js/bootstrap.min.js';
 
 // import jquery from 'jquery';
 const $ = require('jquery');
