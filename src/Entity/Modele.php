@@ -23,6 +23,11 @@ class Modele
      */
     private $fk_marque;
 
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $modele;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -36,6 +41,18 @@ class Modele
     public function setFkMarque(?Marque $fk_marque): self
     {
         $this->fk_marque = $fk_marque;
+
+        return $this;
+    }
+
+    public function getModele(): ?string
+    {
+        return $this->modele;
+    }
+
+    public function setModele(string $modele): self
+    {
+        $this->modele = $modele;
 
         return $this;
     }

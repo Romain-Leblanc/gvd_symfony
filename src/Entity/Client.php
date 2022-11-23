@@ -58,7 +58,7 @@ class Client
     private $ville;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $num_tva;
 
@@ -168,7 +168,7 @@ class Client
         return $this->num_tva;
     }
 
-    public function setNumTva(string $num_tva): self
+    public function setNumTva(?string $num_tva): self
     {
         $this->num_tva = $num_tva;
 
