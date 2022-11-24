@@ -10,6 +10,15 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
+     * Route par défaut du domaine 'localhost'
+     * @Route("/", name="index")
+     */
+    public function index()
+    {
+        return $this->redirectToRoute('app_connexion');
+    }
+
+    /**
      * @Route("/connexion", name="app_connexion")
      */
     public function login(AuthenticationUtils $authenticationUtils): Response

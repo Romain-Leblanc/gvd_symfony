@@ -9,6 +9,11 @@ use Twig\TwigFunction;
 
 class FunctionExtension extends AbstractExtension
 {
+    public function __construct()
+    {
+        $this->listeMenus = ["intervention", "vehicule", "client", "facture"];
+    }
+
     public function getFunctions(): array
     {
         return [
@@ -18,7 +23,9 @@ class FunctionExtension extends AbstractExtension
             new TwigFunction('affichagePlusieursValeurs', [$this, 'affichagePlusieursValeurs']),
             new TwigFunction('marqueModele', [$this, 'marqueModele']),
             new TwigFunction('formatMontantEuros', [$this, 'formatMontantEuros']),
-            new TwigFunction('dateEnFrancais', [$this, 'dateEnFrancais'])
+            new TwigFunction('dateEnFrancais', [$this, 'dateEnFrancais']),
+            new TwigFunction('titrePage', [$this, 'titrePage']),
+            new TwigFunction('menuActif', [$this, 'menuActif']),
         ];
     }
 
@@ -70,5 +77,30 @@ class FunctionExtension extends AbstractExtension
     // Retourne la date fourni en format français
     function dateEnFrancais(DateTime $date){
         return $date->format('d/m/Y');
+    }
+
+    // Affiche le nom de la page dans le titre principal
+    function titrePage(string $page) {
+        // Scinde la chaine en tableau avec un "_" pour récupérer
+        // "facture" de "facture_index" par exemple
+        $explode = explode("_", $page)[0];
+        // Si la valeur à l'index zéro fait partie du tableau, on la renvoie
+        if(in_array($explode, $this->listeMenus)) {
+            return mb_strtoupper($explode."s");
+        }
+    }
+
+    // Met en surbrillance le lien du menu qui correspond au slug de la route actuelle
+    function menuActif(string $page, string $menu) {
+        // Scinde la chaine en tableau avec un "_" pour récupérer
+        // "facture" de "facture_index" par exemple
+        $explode = explode("_", $page)[0];
+        // Si la valeur à l'index zéro fait partie du tableau, on met en surbrillance
+        if($explode === $menu) {
+            return "active";
+        }
+        else {
+            return "text-dark";
+        }
     }
 }

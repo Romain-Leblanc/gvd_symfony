@@ -1,43 +1,47 @@
-{% extends 'base_connexion.html.twig' %}
+{% extends 'base_connexion_inscription.html.twig' %}
 
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+    <form method="post">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
 
-    {% if app.user %}
-        <div class="mb-3">
-            Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_deconnexion') }}">Déconnexion</a>
+        {% if app.user %}
+            <div class="alert alert-danger">
+                Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_deconnexion') }}">Déconnexion</a>
+            </div>
+        {% endif %}
+        <div class="d-flex flex-column align-items-center gap-4">
+            <img src="{{ asset('images/logo_cercle.png') }}" alt="logo" class="logo-form">
+            <h3>G.V.D</h3>
         </div>
-    {% endif %}
-    <div class="d-flex flex-column align-items-center gap-3">
-        <img src="{{ asset('images/logo_cercle.png') }}" class="logo-form">
-        <h3>Connexion</h3>
+        <div class="row mt-4 justify-content-center">
+            <div class="col-lg-4 text-center">
+                <label for="email" class="col-form-label">Email :</label>
+            </div>
+            <div class="col-lg-6 text-center">
+                <input type="email" class="form-control" name="email" id="email" required>
+            </div>
+        </div>
+        <div class="row mt-4 justify-content-center">
+            <div class="col-lg-4 text-center">
+                <label for="motdepasse" class="col-form-label">Mot de passe :</label>
+            </div>
+            <div class="col-lg-6 text-center">
+                <input type="password" class="form-control" name="password" id="motdepasse" required />
+            </div>
+        </div>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <div class="row margintop-5 justify-content-center">
+            <div class="col-lg-4 text-center">
+                <button type="submit" class="btn btn-primary" title="Se connecter">Se connecter</button>
+            </div>
+        </div>
+    </form>
+    <div class="mt-5 d-flex justify-content-end align-items-center">
+        <span>Pas encore inscrit ?</span>
+        <a href="{{ path('app_inscription') }}" class="btn btn-link">S'inscrire</a>
     </div>
-    <div class="row mt-4 justify-content-center">
-        <div class="col-lg-3 text-center">
-            <label for="email" class="col-form-label">Email :</label>
-        </div>
-        <div class="col-lg-6 text-center">
-            <input type="email" class="form-control" name="email" id="email" required>
-        </div>
-    </div>
-    <div class="row mt-3 justify-content-center">
-        <div class="col-lg-3 text-center">
-            <label for="motdepasse" class="col-form-label">Mot de passe :</label>
-        </div>
-        <div class="col-lg-6 text-center">
-            <input type="password" class="form-control" name="password" id="motdepasse" required />
-        </div>
-    </div>
-    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-    <div class="row margintop-5 justify-content-center">
-        <div class="col-lg-3 text-center">
-            <button type="submit" class="btn btn-primary" title="Se connecter">Se connecter</button>
-        </div>
-    </div>
-</form>
 {% endblock %}
