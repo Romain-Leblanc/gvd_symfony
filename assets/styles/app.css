@@ -88,6 +88,43 @@ footer {
         overflow-y: auto;
     }
 }
+@media screen and (min-width: 1300px) and (max-width: 1449px) {
+    .div-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 0 7% 0 7%;
+    }
+    .p-content {
+        padding: 0.5em 7% 0.5em 7%;
+    }
+}
+@media screen and (min-width: 991px) and (max-width: 1299px) {
+    .div-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 0 4% 0 4%;
+    }
+    .p-content {
+        padding: 0.5em 4% 0.5em 4%;
+    }
+}
+@media screen and (max-width: 990px) {
+    .div-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 0 2% 0 2%;
+    }
+    .p-content {
+        padding: 0.5em 2% 0.5em 2%;
+    }
+    .div-liste > .div-table {
+        height: 600px;
+        overflow-y: auto;
+    }
+}
 .flex-1 {
     flex: 1;
 }
