@@ -111,6 +111,10 @@ footer {
     }
 }
 @media screen and (max-width: 990px) {
+    .div-detail {
+        flex-direction: row;
+        justify-content: center;
+    }
     .div-container {
         display: flex;
         flex-direction: column;
@@ -123,6 +127,21 @@ footer {
     .div-liste > .div-table {
         height: 600px;
         overflow-y: auto;
+    }
+    .div-detail > div > input {
+        text-align: center;
+    }
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    .div-detail {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+}
+@media screen and (max-width: 767px) {
+    .div-detail {
+        flex-direction: column;
     }
 }
 .flex-1 {
@@ -171,6 +190,13 @@ footer {
     align-items: center;
     word-break: break-word;
 }
+.div-detail, .div-ajouter-modifier {
+    overflow-y: auto;
+}
+.div-detail {
+    display: flex;
+}
+/* bouton actions */
 .div-liste > .div-boutons {
     display: flex;
     justify-content: center;
@@ -194,6 +220,9 @@ footer {
 .div-liste > .div-table > table {
     background-color: #b9b9b9 !important;
 }
+textarea {
+    resize: none;
+}
 .table {
     border-color: rgb(123, 0, 11);
 }
@@ -204,6 +233,18 @@ footer {
     background-color: rgb(123, 0, 11);
     color: white;
     border-bottom-color: rgb(123, 0, 11);
+}
+#div-tab {
+    width: auto;
+    height: calc(100vh - 250px);
+    overflow: auto;
+    gap: 15px;
+}
+.div-envoi-form {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    margin-top: 15px;
 }
 #titre-page {
     color: black;
