@@ -39,28 +39,33 @@ class ClientRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Client[] Returns an array of Client objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Client
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /* Met à jour les informations d'un client */
+    public function updateClient(Client $client) {
+        dd($client);
+        return $this->createQueryBuilder('u')
+            ->update(Client::class, 'i')
+            ->set('i.Nom', ":nom")
+            ->set('i.Prenom', ":prenom")
+            ->set('i.Tel', ":tel")
+            ->set('i.Email', ":email")
+            ->set('i.Adresse', ":adresse")
+            ->set('i.Suite_Adresse', ":suite_adresse")
+            ->set('i.Code_Postal', ":code_postal")
+            ->set('i.Ville', ":ville")
+            ->set('i.Num_TVA', ":num_tva")
+            ->where('i.id = :id_client')
+            ->setParameter("id_client", $client->getId())
+            ->setParameter("nom", $client->getNom())
+            ->setParameter("prenom", $client->getPrenom())
+            ->setParameter("tel", $client->getTel())
+            ->setParameter("email", $client->getEmail())
+            ->setParameter("adresse", $client->getAdresse())
+            ->setParameter("suite_adresse", $client->getSuiteAdresse())
+            ->setParameter("code_postal", $client->getCodePostal())
+            ->setParameter("ville", $client->getVille())
+            ->setParameter("num_tva", $client->getNumTVA())
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

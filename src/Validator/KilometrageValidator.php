@@ -5,18 +5,18 @@ namespace App\Validator;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class CodePostalValidator extends ConstraintValidator
+class KilometrageValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        /* @var CodePostal $constraint */
+        /* @var Kilometrage $constraint */
 
         if (null === $value || '' === $value) {
             return;
         }
 
-        // Longueur maximale et composé uniquement de 5 chiffres.
-        if (!preg_match('/^[0-9]{5}$/', $value)) {
+        // Valeur comprise entre 0 et 2 millions de kms
+        if($value < 1 || $value > 2000000){
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

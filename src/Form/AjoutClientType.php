@@ -75,7 +75,8 @@ class AjoutClientType extends AbstractType
             ])
             ->add('suite_adresse', TextType::class, [
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'placeholder' => 'facultatif'
                 ],
                 'label' => 'Suite adresse :',
                 'label_attr' => [

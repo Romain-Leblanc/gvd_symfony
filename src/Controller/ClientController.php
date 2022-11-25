@@ -58,7 +58,7 @@ class ClientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            // TODO: requête update
+            $clientRepository->updateClient($unClient);
 
             return $this->redirectToRoute('client_index');
         }

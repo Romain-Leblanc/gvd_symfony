@@ -87,6 +87,19 @@ footer {
         height: 600px;
         overflow-y: auto;
     }
+    .div-row {
+        display: flex;
+        flex-direction: row;
+    }
+    .div-select-line {
+        display: flex;
+        flex-direction: row;
+        width: 50%;
+        align-items: center;
+    }
+    .input-50 {
+        width: 50%;
+    }
 }
 @media screen and (min-width: 1300px) and (max-width: 1449px) {
     .div-container {
@@ -98,8 +111,21 @@ footer {
     .p-content {
         padding: 0.5em 7% 0.5em 7%;
     }
+    .div-row {
+        display: flex;
+        flex-direction: row;
+    }
+    .div-select-line {
+        display: flex;
+        flex-direction: row;
+        width: 50%;
+        align-items: center;
+    }
+    .input-50 {
+        width: 50%;
+    }
 }
-@media screen and (min-width: 991px) and (max-width: 1299px) {
+@media screen and (min-width: 992px) and (max-width: 1299px) {
     .div-container {
         display: flex;
         flex-direction: column;
@@ -109,8 +135,24 @@ footer {
     .p-content {
         padding: 0.5em 4% 0.5em 4%;
     }
+    .offcanvas {
+        width: 35% !important;
+    }
+    .div-row {
+        display: flex;
+        flex-direction: row;
+    }
+    .div-select-line {
+        display: flex;
+        flex-direction: row;
+        width: 50%;
+        align-items: center;
+    }
+    .input-50 {
+        width: 50%;
+    }
 }
-@media screen and (max-width: 990px) {
+@media screen and (max-width: 991px) {
     .div-detail {
         flex-direction: row;
         justify-content: center;
@@ -128,7 +170,7 @@ footer {
         height: 600px;
         overflow-y: auto;
     }
-    .div-detail > div > input {
+    .div-detail > div > input, .select-client {
         text-align: center;
     }
 }
@@ -138,10 +180,43 @@ footer {
         align-items: center;
         justify-content: center;
     }
+    .offcanvas {
+        width: 45% !important;
+    }
+    .div-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    .div-select-line {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        align-items: center;
+    }
+    .label-select-line {
+        width: 100%;
+    }
 }
 @media screen and (max-width: 767px) {
     .div-detail {
         flex-direction: column;
+    }
+    .offcanvas {
+        width: 50% !important;
+    }
+    .div-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    .label-select-line, .div-select-line {
+        width: 100%;
+    }
+    select {
+        text-align: center;
     }
 }
 .flex-1 {
@@ -149,6 +224,9 @@ footer {
 }
 .margintop-5 {
     margin-top: 2em;
+}
+.label-select-line, .div-select-line > select {
+    text-align: center;
 }
 .offcanvas {
     background-color: #efefef;
@@ -166,7 +244,6 @@ footer {
 .offcanvas-body > #menu-liens {
     flex-direction: column;
     align-items: center;
-    /*justify-content: space-evenly;*/
 }
 .offcanvas-body > #menu-admin {
     padding-top: 13px;

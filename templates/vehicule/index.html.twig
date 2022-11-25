@@ -4,6 +4,9 @@
 
 {% block body %}
     <div class="div-liste">
+        <div class="div-boutons mb-3">
+            <a href="{{ path('vehicule_ajouter') }}" class="btn btn-success" id="bouton-ajouter"><i class="fa-solid fa-plus"></i> Ajouter</a>
+        </div>
         <div class="div-table">
             <table class="table table-hover table-bordered align-middle text-center">
                 <thead class="thead-light align-middle">
@@ -13,7 +16,6 @@
                     <th scope="col">Client</th>
                     <th scope="col">Voiture</th>
                     <th scope="col">Immatriculation</th>
-                    <th scope="col">Année</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -26,7 +28,6 @@
                         <td data-label="Client">{{ nomPrenom(unVehicule.getFKClient.getNom,unVehicule.getFKClient.getPrenom) }}</td>
                         <td data-label="Voiture">{{ unVehicule.getFKMarque.getMarque ~ " " ~ unVehicule.getFKModele.getModele }}</td>
                         <td data-label="Immatriculation">{{ unVehicule.Immatriculation }}</td>
-                        <td data-label="Année">{{ unVehicule.Annee }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
