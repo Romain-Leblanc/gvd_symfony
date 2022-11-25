@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Client;
 use App\Form\AjoutClientType;
+use App\Form\ModificationClientType;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,6 +45,27 @@ class ClientController extends AbstractController
         return $this->render('client/ajout.html.twig', [
             'errors' => $form->getErrors(true),
             'formAjoutClient' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/client/modifier/{id}", name="client_modifier")
+     */
+    public function modifier(int $id, ClientRepository $clientRepository, Request $request): Response
+    {
+        $unClient = $clientRepository->find($id);
+        $form = $this->createForm(ModificationClientType::class, $unClient);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            // TODO: requête update
+
+            return $this->redirectToRoute('client_index');
+        }
+
+        return $this->render('client/modification.html.twig', [
+            'errors' => $form->getErrors(true),
+            'formModificationClient' => $form->createView()
         ]);
     }
 }

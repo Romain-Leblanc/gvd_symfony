@@ -6,6 +6,8 @@
     <div class="div-liste">
         <div class="div-boutons mb-3">
             <a href="{{ path('client_ajouter') }}" class="btn btn-success" id="bouton-ajouter"><i class="fa-solid fa-plus"></i> Ajouter</a>
+            {# Valeur par défaut pour la route sinon une erreur est générée. Cette valeur change au clic sur un bouton radio du tableau #}
+            <a href="{{ path('client_modifier', { id: '1'}) }}" class="btn btn-primary cacher" id="bouton-modifier"><i class="fa-solid fa-pen-to-square"></i> Modifier</a>
         </div>
         <div class="div-table">
             <table class="table table-hover table-bordered align-middle text-center">
@@ -22,7 +24,7 @@
                 {% for unClient in lesClients %}
                     <tr>
                         <td id="radio-button-table">
-                            <input type="radio" class="form-check-input" id="radio-input" name="radio-input" />
+                            <input type="radio" class="form-check-input" id="radio-input" name="radio-input" onclick="boutonModifier({{ unClient.id }});"/>
                         </td>
                         <td data-label="N° Client">{{ unClient.id }}</td>
                         <td data-label="Client">{{ nomPrenom(unClient.Nom,unClient.Prenom) }}</td>

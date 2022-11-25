@@ -250,3 +250,9 @@ textarea {
     color: black;
     font-weight: bold;
 }
+.afficher {
+    display: inherit !important;
+}
+.cacher {
+    display: none !important;
+}
