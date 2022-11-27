@@ -9,5 +9,5 @@ use Symfony\Component\Validator\Constraint;
  */
 class Kilometrage extends Constraint
 {
-    public $message = "Le champ 'Kilométrage' doit avoir une longueur entre 1 et 2 millions de kms.";
+    public $message = "Le champ 'Kilométrage' doit être comprise entre 1 et 2 millions de kms.";
 }

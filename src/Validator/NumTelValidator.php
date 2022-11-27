@@ -16,7 +16,7 @@ class NumTelValidator extends ConstraintValidator
             return;
         }
 
-        // Regex pour n° téléphone commençant par un zéro, sans caractères blanc et une longueur maximale de 10 caractères.
+        // N° téléphone commençant par un zéro, sans caractères blanc et une longueur maximale de 10 caractères.
         if (!preg_match('/^0\d{9}$/', $value)) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)

@@ -56,4 +56,10 @@ class Modele
 
         return $this;
     }
+
+    // Utilisé par ModeleSubscriber
+    public function __toString()
+    {
+        return $this->getModele();
+    }
 }

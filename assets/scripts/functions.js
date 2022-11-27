@@ -9,64 +9,58 @@ global.boutonModifier = function boutonModifier(num) {
 }
 
 global.getModeleFromMarque = function getModeleFromMarque(value) {
+    // Récupération du bouton "submit"
+    let btnSubmit = $('#btn-submit');
+    // Vérifie si le DOM actuel contient l'élement 'ajout'
     if($("#ajout_vehicule_fk_modele").length > 0) {
-        inputModele = $("#ajout_vehicule_fk_modele");
-        // Désactive la sélection de la requête
-        inputModele.attr("disabled", true);
+        let inputModele = $("#ajout_vehicule_fk_modele");
+        // Désactive les élements le temps de la requête Ajax
+        inputModele.prop("disabled", true);
+        btnSubmit.prop("disabled", true);
 
+        // Si la "marque" est vide
         if(value !== "") {
-            // Sinon on vérifie si la valeur est un nombre entier
+            // Converti et vérifie si c'est un entier
             value = parseInt(value);
             if (Number.isInteger(value)) {
-                // Retire l'attribut HTML qui désactive la liste déroulante précédente
-                inputModele.removeAttr("disabled");
                 // Requête Ajax pour les modèles de voitures
-                $.post('/vehicule/infos', {"marqueID": value})
-                    .done(function(data) {
-                        // Concatène les valeurs des modèles dans la liste déroulante précédent puis redéfinit son contenu avec celles-ci
-                        let liste = "<option value='' selected='selected'>-- Modèle --</option>";
-                        data.donnees.forEach(element => liste += "<option value="+element.id+">"+element.modele+"</option>");
-                        inputModele.html(liste);
-                    });
+                ajaxQueryModele(inputModele, btnSubmit, value);
             }
         }
     }
+    // Sinon si le DOM actuel contient l'élement 'modification'
     else if($("#modification_vehicule_fk_modele").length > 0) {
-        inputModele = $("#modification_vehicule_fk_modele");
-        // Désactive la sélection de la requête
-        inputModele.attr("disabled", true);
+        let inputModele = $("#modification_vehicule_fk_modele");
+        // Désactive les élements le temps de la requête Ajax
+        inputModele.prop("disabled", true);
+        btnSubmit.prop("disabled", true);
 
-        // Si la valeur est vide, on désactive la liste déroulantes des modèles de voitures
+        // Si la "marque" est vide
         if(value !== "") {
-            // Sinon on vérifie si la valeur est un nombre entier
+            // Converti et vérifie si c'est un entier
             value = parseInt(value);
             if (Number.isInteger(value)) {
-                // Retire l'attribut HTML qui désactive la liste déroulante précédente
-                inputModele.removeAttr("disabled");
-                // inputModele.prop('disabled',false);
-                // Requête Ajax pour les modèles de voitures
-                $.ajax({
-                    url : '/vehicule/infos',
-                    type: 'POST',
-                    data : {"marqueID": value},
-                    success: function(html) {
-                        // console.log(html);
-                        let liste = "";
-                        html.donnees.forEach(element => liste += "<option value="+element.id+">"+element.modele+"</option>");
-                        inputModele.empty().append(liste);
-                    }
-                });
-/*                $.post('/vehicule/infos', {"marqueID": value})
-                    .done(function(data) {
-                        // Concatène les valeurs des modèles dans la liste déroulante précédent puis redéfinit son contenu avec celles-ci
-                        let liste = "";
-                        // let liste = "<option value='' selected='selected'>-- Modèle --</option>";
-                        data.donnees.forEach(element => liste += "<option value="+element.id+">"+element.modele+"</option>");
-                        // console.log(liste);
-                        inputModele.empty().append(liste);
-                        // inputModele.html(liste);
-                    });*/
+                ajaxQueryModele(inputModele, btnSubmit, value);
             }
         }
     }
+}
+
+function ajaxQueryModele(inputModele, btnSubmit, value, option) {
+    // Requête Ajax pour les modèles de voitures
+    $.ajax({
+        url : '/vehicule/infos',
+        type: 'POST',
+        data : {"marqueID": value},
+        success: function(html) {
+            let liste = "<option value='' selected='selected'>-- Modèle --</option>";
+            // Concaténation des "options" du select
+            html.donnees.forEach(element => liste += "<option value="+element.id+">"+element.modele+"</option>");
+            // Vide les options actuelles du select puis les remplace
+            inputModele.empty().append(liste);
+            // Réactive les élements
+            inputModele.prop("disabled", false);
+            btnSubmit.prop("disabled", false);
+        }
+    });
 }

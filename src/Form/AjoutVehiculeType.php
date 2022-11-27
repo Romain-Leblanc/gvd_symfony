@@ -32,7 +32,8 @@ class AjoutVehiculeType extends AbstractType
                 'label' => "Client :",
                 'label_attr' => [
                     'class' => 'text-center col-md-5 col-form-label'
-                ]
+                ],
+                'required' => true,
             ])
             ->add('fk_marque', EntityType::class, [
                 'class' => Marque::class,
@@ -47,7 +48,8 @@ class AjoutVehiculeType extends AbstractType
                 'label' => "Marque :",
                 'label_attr' => [
                     'class' => 'label-select-line col-md-6 col-form-label'
-                ]
+                ],
+                'required' => true,
             ])
             ->add('fk_modele', EntityType::class, [
                 'class' => Modele::class,
@@ -63,7 +65,8 @@ class AjoutVehiculeType extends AbstractType
                 'label' => "Modèle :",
                 'label_attr' => [
                     'class' => 'label-select-line col-md-6 col-form-label'
-                ]
+                ],
+                'required' => true,
             ])
             ->add('fk_carburant', EntityType::class, [
                 'class' => Carburant::class,
@@ -84,17 +87,18 @@ class AjoutVehiculeType extends AbstractType
                     'class' => 'form-control  input-50',
                     'min' => (int) date('Y') - 75,
                     'max' => (int) date('Y'),
+                    'placeholder' => ((int) date('Y') - 75)." à ".((int) date('Y')),
                 ],
                 'label' => "Année :",
                 'label_attr' => [
                     'class' => 'text-center col-md-5 col-form-label'
                 ],
-                'data' => (int) date('Y')-10,
                 'required' => true
             ])
             ->add('kilometrage', TextType::class, [
                 'attr' => [
                     'class' => 'form-control text-center input-50',
+                    'placeholder' => 'km'
                 ],
                 'label' => "Kilométrage :",
                 'label_attr' => [

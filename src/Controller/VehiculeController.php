@@ -10,6 +10,7 @@ use App\Repository\ModeleRepository;
 use App\Repository\VehiculeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,17 +32,39 @@ class VehiculeController extends AbstractController
     /**
      * @Route("/vehicule/ajouter", name="vehicule_ajouter")
      */
-    public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
+    public function ajouter(Request $request, VehiculeRepository $vehiculeRepository, EntityManagerInterface $entityManager): Response
     {
         $unVehicule = new Vehicule();
         $form = $this->createForm(AjoutVehiculeType::class, $unVehicule);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            $entityManager->persist($unVehicule);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('vehicule_index');
+            // Si l'immatriculation saisie existe déjà et que l'identifiant du véhiculé modifié est différent
+            // de celui du véhicule qui possède l'immatriculation existante, on génère une erreur
+            $id = $vehiculeRepository->findOneBy(['immatriculation' => $unVehicule->getImmatriculation()]);
+            if(isset($id) && $unVehicule->getId() != $id->getId()) {
+                $message = "Cette immatriculation existe déjà pour un autre véhicule.";
+                return $this->render('vehicule/ajout.html.twig', [
+                    'errors' => $form->addError(new FormError($message))->getErrors(true),
+                    'formAjoutVehicule' => $form->createView()
+                ]);
+            }
+            else {
+                // Si aucun identifiant de modèle, on génère une erreur
+                if(is_null($unVehicule->getFkModele()) || $unVehicule->getFkModele() == "") {
+                    $message = "Veuillez sélectionner un modèle de véhicule.";
+                    return $this->render('vehicule/ajout.html.twig', [
+                        'errors' => $form->addError(new FormError($message))->getErrors(true),
+                        'formAjoutVehicule' => $form->createView()
+                    ]);
+                }
+                // Sinon on insère
+                else {
+                    $entityManager->persist($unVehicule);
+                    $entityManager->flush();
+                    return $this->redirectToRoute('vehicule_index');
+                }
+            }
         }
 
         return $this->render('vehicule/ajout.html.twig', [
@@ -60,14 +83,23 @@ class VehiculeController extends AbstractController
         $options = $interventionRepository->findBy(['fk_vehicule' => $unVehicule->getId()]);
         $form = $this->createForm(ModificationVehiculeType::class, $unVehicule, ["intervention" => $options]);
         $form->handleRequest($request);
-        dd($request->request->all(), $form->getErrors(), $form->isValid());
-//        dd($form->getData(), $request->request->get('modification_vehicule'), $form->getErrors(true));
-//        dd($request, $form->getErrors(true), array_merge($request->request->all()));
 
         if ($form->isSubmitted() && $form->isValid()) {
-            dd($request->request, $form->isSubmitted(), $form->isValid());
-
-            return $this->redirectToRoute('vehicule_index');
+            // Si l'immatriculation saisie existe déjà et que l'identifiant du véhiculé modifié est différent
+            // de celui du véhicule qui possède l'immatriculation existante, on génère une erreur
+            $id = $vehiculeRepository->findOneBy(['immatriculation' => $unVehicule->getImmatriculation()]);
+            if(isset($id) && $unVehicule->getId() != $id->getId()) {
+                $message = "Cette immatriculation existe déjà pour un autre véhicule.";
+                return $this->render('vehicule/modification.html.twig', [
+                    'errors' => $form->addError(new FormError($message))->getErrors(true),
+                    'formModificationVehicule' => $form->createView()
+                ]);
+            }
+            // Sinon on insère les données
+            else {
+                $vehiculeRepository->updateVehicule($unVehicule);
+                return $this->redirectToRoute('vehicule_index');
+            }
         }
 
         return $this->render('vehicule/modification.html.twig', [
