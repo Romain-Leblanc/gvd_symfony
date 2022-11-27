@@ -41,7 +41,6 @@ class ClientRepository extends ServiceEntityRepository
 
     /* Met à jour les informations d'un client */
     public function updateClient(Client $client) {
-        dd($client);
         return $this->createQueryBuilder('u')
             ->update(Client::class, 'i')
             ->set('i.Nom', ":nom")

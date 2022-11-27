@@ -39,28 +39,22 @@ class VehiculeRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Vehicule[] Returns an array of Vehicule objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('v')
-//            ->andWhere('v.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('v.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Vehicule
-//    {
-//        return $this->createQueryBuilder('v')
-//            ->andWhere('v.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /* Met à jour les informations d'un véhicule */
+    public function updateVehicule(Vehicule $vehicule) {
+        return $this->createQueryBuilder('u')
+            ->update(Vehicule::class, 'v')
+            ->set('v.FK_Carburant', ":carburant")
+            ->set('v.Immatriculation', ":immatriculation")
+            ->set('v.Annee', ":annee")
+            ->set('v.Kilometrage', ":kilometrage")
+            ->where('v.id = :idvehicule')
+            ->setParameter("idvehicule", $vehicule->getId())
+            ->setParameter("carburant", $vehicule->getFKCarburant()->getId())
+            ->setParameter("immatriculation", $vehicule->getImmatriculation())
+            ->setParameter("annee", $vehicule->getAnnee())
+            ->setParameter("kilometrage", $vehicule->getKilometrage())
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

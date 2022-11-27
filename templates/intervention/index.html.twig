@@ -22,11 +22,11 @@
                         <td id="radio-button-table">
                             <input type="radio" class="form-check-input" id="radio-input" name="radio-input" />
                         </td>
-                        <td data-label="N° inter.">{{ uneIntervention.id }}</td>
-                        <td data-label="Date intervention">{{ dateEnFrancais(uneIntervention.getDateIntervention) }}</td>
-                        <td data-label="Voiture">{{ marqueModele(uneIntervention.getFKVehicule.getFKMarque.getMarque,uneIntervention.getFKVehicule.getFKModele.getModele) }}</td>
-                        <td data-label="Client">{{ nomPrenom(uneIntervention.getFKClient.getNom,uneIntervention.getFKClient.getPrenom) }}</td>
-                        <td data-label="Montant HT">{{ formatMontantEuros(uneIntervention.getMontantHT) }}</td>
+                        <td data-label="id_intervention">{{ uneIntervention.id }}</td>
+                        <td data-label="date_intervention">{{ dateEnFrancais(uneIntervention.getDateIntervention) }}</td>
+                        <td data-label="vehicule">{{ marqueModele(uneIntervention.getFKVehicule.getFKMarque.getMarque,uneIntervention.getFKVehicule.getFKModele.getModele) }}</td>
+                        <td data-label="client">{{ nomPrenom(uneIntervention.getFKClient.getNom,uneIntervention.getFKClient.getPrenom) }}</td>
+                        <td data-label="montant_ht">{{ formatMontantEuros(uneIntervention.getMontantHT) }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

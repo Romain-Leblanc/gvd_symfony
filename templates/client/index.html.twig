@@ -26,10 +26,10 @@
                         <td id="radio-button-table">
                             <input type="radio" class="form-check-input" id="radio-input" name="radio-input" onclick="boutonModifier({{ unClient.id }});"/>
                         </td>
-                        <td data-label="N° Client">{{ unClient.id }}</td>
-                        <td data-label="Client">{{ nomPrenom(unClient.Nom,unClient.Prenom) }}</td>
-                        <td data-label="Coordonnées">{{ numTelEmail(unClient.Tel,unClient.Email)|raw }}</td>
-                        <td data-label="Adresse complète">{{ adresseComplete(unClient.Adresse,unClient.getSuiteAdresse,unClient.getCodePostal,unClient.Ville) }}</td>
+                        <td data-label="id_client">{{ unClient.id }}</td>
+                        <td data-label="client">{{ nomPrenom(unClient.Nom,unClient.Prenom) }}</td>
+                        <td data-label="coordonnees">{{ numTelEmail(unClient.Tel,unClient.Email)|raw }}</td>
+                        <td data-label="adresse_complète">{{ adresseComplete(unClient.Adresse,unClient.getSuiteAdresse,unClient.getCodePostal,unClient.Ville) }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
