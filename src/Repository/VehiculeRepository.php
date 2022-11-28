@@ -41,7 +41,6 @@ class VehiculeRepository extends ServiceEntityRepository
 
     /* Met à jour les informations d'un véhicule */
     public function updateVehicule(Vehicule $vehicule) {
-//        dd($vehicule);
         return $this->createQueryBuilder('u')
             ->update(Vehicule::class, 'v')
             ->set('v.fk_client', ":id_client")

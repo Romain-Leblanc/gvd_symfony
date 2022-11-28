@@ -27,7 +27,7 @@ class AjoutVehiculeType extends AbstractType
                     return mb_strtoupper($client->getNom())." ".ucfirst($client->getPrenom())." - ".mb_strtoupper($client->getVille());
                 },
                 'attr' => [
-                    'class' => 'form-control select-client',
+                    'class' => 'form-select select-client',
                 ],
                 'label' => "Client :",
                 'label_attr' => [
@@ -42,7 +42,7 @@ class AjoutVehiculeType extends AbstractType
                     return mb_strtoupper($marque->getMarque());
                 },
                 'attr' => [
-                    'class' => 'form-control text-center',
+                    'class' => 'form-select text-center',
                     'onchange' => 'getModeleFromMarque(this.value);'
                 ],
                 'label' => "Marque :",
@@ -58,7 +58,7 @@ class AjoutVehiculeType extends AbstractType
                     return mb_strtoupper($modele->getModele());
                 },
                 'attr' => [
-                    'class' => 'form-control text-center',
+                    'class' => 'form-select text-center',
                     // Actualisé par Ajax
                     'disabled' => true
                 ],
@@ -75,7 +75,7 @@ class AjoutVehiculeType extends AbstractType
                     return mb_strtoupper($carburant->getCarburant());
                 },
                 'attr' => [
-                    'class' => 'form-control text-center input-50',
+                    'class' => 'form-select text-center input-50',
                 ],
                 'label' => "Carburant :",
                 'label_attr' => [

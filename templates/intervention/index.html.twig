@@ -4,6 +4,11 @@
 
 {% block body %}
     <div class="div-liste">
+        <div class="div-boutons mb-3">
+            <a href="{{ path('intervention_ajouter') }}" class="btn btn-success" id="bouton-ajouter"><i class="fa-solid fa-plus"></i> Ajouter</a>
+            {# Valeur par défaut pour la route sinon une erreur est générée. Cette valeur change au clic sur un bouton radio du tableau #}
+{#            <a href="{{ path('intervention_modifier') }}" class="btn btn-primary cacher" id="bouton-modifier"><i class="fa-solid fa-pen-to-square"></i> Modifier</a>#}
+        </div>
         <div class="div-table">
             <table class="table table-hover table-bordered align-middle text-center">
                 <thead class="thead-light align-middle">

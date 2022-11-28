@@ -46,7 +46,7 @@ global.getModeleFromMarque = function getModeleFromMarque(value) {
     }
 }
 
-function ajaxQueryModele(inputModele, btnSubmit, value, option) {
+function ajaxQueryModele(inputModele, btnSubmit, value) {
     // Requête Ajax pour les modèles de voitures
     $.ajax({
         url : '/vehicule/infos',
@@ -63,4 +63,50 @@ function ajaxQueryModele(inputModele, btnSubmit, value, option) {
             btnSubmit.prop("disabled", false);
         }
     });
+}
+
+global.getInfosFromClientIntervention = function getInfosFromClientIntervention() {
+    let inputClient = $('#ajout_intervention_fk_client');
+    let inputVehicule = $('#ajout_intervention_fk_vehicule');
+    let inputEtat = $('#ajout_intervention_fk_etat');
+    let inputDetailIntervention = $('#ajout_intervention_detail_intervention');
+    let inputDureeIntervention = $('#ajout_intervention_duree_intervention');
+    let inputMontantHT = $('#ajout_intervention_montant_ht');
+    let btnSubmit = $('#btn-submit');
+    inputVehicule.prop("disabled", true);
+    inputEtat.prop("disabled", true);
+    inputDetailIntervention.prop("disabled", true);
+    inputDureeIntervention.prop("disabled", true);
+    inputMontantHT.prop("disabled", true);
+    btnSubmit.prop("disabled", true);
+
+    $.post('/intervention/infos', {"clientID": inputClient.val()})
+        .done(function(data) {
+            if(data.donnees !== "" && data.donnees !== "undefined" && data.donnees.length > 0) {
+                let listeVehicule = "";
+                // Concaténation des "options" du select
+                data.donnees.forEach(element => listeVehicule += "<option value=" + element.id + ">" + element.fkMarque.marque + " " + element.fkModele.modele + " (" + element.immatriculation + ")" + "</option>");
+                // Vide les options actuelles du select puis les remplace
+                inputVehicule.empty().append(listeVehicule);
+                // Supprime l'attribut 'disabled' des input concernés
+                inputVehicule.prop('disabled', false);
+                inputEtat.prop('disabled', false);
+                inputDetailIntervention.prop('disabled', false);
+                inputDureeIntervention.prop('disabled', false);
+                inputMontantHT.prop('disabled', false);
+                btnSubmit.prop('disabled', false);
+            }
+            else {
+                // Vide les options actuelles du select puis ajoute la valeur par défaut
+                inputVehicule.empty().append("<option value='' selected='selected'>-- VEHICULE --</option>");
+
+                // Désactive les élements si il n'y aucune réponse
+                inputVehicule.prop('disabled', true);
+                inputEtat.prop('disabled', true);
+                inputDetailIntervention.prop('disabled', true);
+                inputDureeIntervention.prop('disabled', true);
+                inputMontantHT.prop('disabled', true);
+            }
+        })
+    ;
 }
