@@ -74,11 +74,15 @@ class VehiculeController extends AbstractController
     }
 
     /**
-     * @Route("/vehicule/modifier/{id}", name="vehicule_modifier")
+     * @Route("/vehicule/modifier/{id}", name="vehicule_modifier", defaults={"id" = 0})
      */
     public function modifier(int $id, VehiculeRepository $vehiculeRepository, InterventionRepository $interventionRepository, Request $request): Response
     {
         $unVehicule = $vehiculeRepository->find($id);
+        // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
+        if($id == 0 || $unVehicule == null) {
+            return $this->redirectToRoute('vehicule_index');
+        }
         // Si le véhicule est déjà dans une intervention, on ne peut pas modifier à quel client appartient ce véhicule, ni la marque et le modèle.
         $options = $interventionRepository->findBy(['fk_vehicule' => $unVehicule->getId()]);
         $form = $this->createForm(ModificationVehiculeType::class, $unVehicule, ["intervention" => $options]);

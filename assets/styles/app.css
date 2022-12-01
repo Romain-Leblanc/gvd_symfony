@@ -100,12 +100,8 @@ footer {
     .input-50 {
         width: 50%;
     }
-    .input-50-date-heure {
+    .input-50-date {
         width: 45%;
-    }
-    .date-heure {
-        margin-left: 0 !important;
-        gap: 10%;
     }
 }
 @media screen and (min-width: 1300px) and (max-width: 1449px) {
@@ -131,12 +127,8 @@ footer {
     .input-50 {
         width: 50%;
     }
-    .input-50-date-heure {
+    .input-50-date {
         width: 45%;
-    }
-    .date-heure {
-        margin-left: 0 !important;
-        gap: 10%;
     }
 }
 @media screen and (min-width: 992px) and (max-width: 1299px) {
@@ -165,12 +157,8 @@ footer {
     .input-50 {
         width: 50%;
     }
-    .input-50-date-heure {
+    .input-50-date {
         width: 45%;
-    }
-    .date-heure {
-        margin-left: 0 !important;
-        gap: 10%;
     }
 }
 @media screen and (max-width: 991px) {
@@ -194,12 +182,8 @@ footer {
     .div-detail > div > input, .select-client {
         text-align: center;
     }
-    .input-50-date-heure {
+    .input-50-date {
         width: 45%;
-    }
-    .date-heure {
-        margin: 0 !important;
-        gap: 10%;
     }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {

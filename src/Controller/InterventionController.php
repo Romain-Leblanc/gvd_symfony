@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Intervention;
 use App\Form\AjoutInterventionType;
+use App\Form\ModificationInterventionType;
 use App\Repository\InterventionRepository;
 use App\Repository\VehiculeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,14 +30,17 @@ class InterventionController extends AbstractController
     /**
      * @Route("/intervention/ajouter", name="intervention_ajouter")
      */
-    public function ajouter(InterventionRepository $interventionRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
     {
         $uneIntervention = new Intervention();
         $form = $this->createForm(AjoutInterventionType::class, $uneIntervention);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            dd("ajouter", $form->getData());
+            // Redéfinit les valeurs par défaut
+            $uneIntervention->setFkFacture(null);
+            $uneIntervention->setDateCreation(new \DateTime());
+
             $entityManager->persist($uneIntervention);
             $entityManager->flush();
 
@@ -46,6 +50,32 @@ class InterventionController extends AbstractController
         return $this->render('intervention/ajout.html.twig', [
             'errors' => $form->getErrors(true),
             'formAjoutIntervention' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/intervention/modifier/{id}", name="intervention_modifier", defaults={"id" = 0})
+     */
+    public function modifier(int $id, InterventionRepository $interventionRepository, Request $request): Response
+    {
+        $uneIntervention = $interventionRepository->find($id);
+        // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
+        if($id == 0 || $uneIntervention == null) {
+            return $this->redirectToRoute('intervention_index');
+        }
+        $form = $this->createForm(ModificationInterventionType::class, $uneIntervention);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            dd($uneIntervention);
+            $interventionRepository->updateIntervention($uneIntervention);
+
+            return $this->redirectToRoute('intervention_index');
+        }
+
+        return $this->render('intervention/modification.html.twig', [
+            'errors' => $form->getErrors(true),
+            'formModificationIntervention' => $form->createView()
         ]);
     }
 

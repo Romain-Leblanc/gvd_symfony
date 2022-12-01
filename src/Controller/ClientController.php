@@ -17,9 +17,8 @@ class ClientController extends AbstractController
     /**
      * @Route("/client", name="client_index")
      */
-    public function index(ClientRepository $clientRepository, string $error): Response
+    public function index(ClientRepository $clientRepository, Request $request): Response
     {
-        dd($error);
         $lesClients = $clientRepository->findAll();
 
         return $this->render('client/index.html.twig', [
@@ -54,10 +53,11 @@ class ClientController extends AbstractController
      */
     public function modifier(int $id, ClientRepository $clientRepository, Request $request): Response
     {
-        if($id == 0) {
-            return $this->redirectToRoute('client_index', ["Veuillez sélectionner un client."]);
-        }
         $unClient = $clientRepository->find($id);
+        // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
+        if($id == 0 || $unClient == null) {
+            return $this->redirectToRoute('client_index');
+        }
         $form = $this->createForm(ModificationClientType::class, $unClient);
         $form->handleRequest($request);
 

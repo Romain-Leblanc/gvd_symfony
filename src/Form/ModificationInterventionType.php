@@ -6,51 +6,61 @@ use App\Entity\Client;
 use App\Entity\Etat;
 use App\Entity\Intervention;
 use App\Entity\Vehicule;
+use App\Repository\EtatRepository;
+use App\Repository\InterventionRepository;
+use App\Repository\ModeleRepository;
+use Doctrine\DBAL\Types\TextType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
-use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AjoutInterventionType extends AbstractType
+class ModificationInterventionType extends AbstractType
 {
+    private $etatRepository;
+
+    public function __construct(EtatRepository $etatRepository)
+    {
+        $this->etatRepository = $etatRepository;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // Initialisation des dates
+        // Initialisation de la date
         $dateCreation = new \DateTime();
-        $dateIntervention = new \DateTime();
+        // Récupère le libellé de l'état de l'intervention
+        $etat = $this->etatRepository->find($builder->getData()->getFkEtat()->getId())->getEtat();
 
-        // On suppose qu'il n'est pas possible d'ajouter une intervention pour le dimanche, donc on la reporte au lendemain
-        // Sinon on ajoute un jour à la date de l'intervention
-        if(date_modify(date_modify(new \DateTime(), ' - 2 days'), ' + 1 day')->format("l") == "Sunday") {
-            $date = date("Y-m-d", strtotime($dateIntervention->format("Y-m-d"). ' + 2 days'));
+        // Une fois l'intervention créée, il n'est pas possible de modifier le client ni le véhicule
+        $etatClient = true;
+        $etatVehicule = true;
+        // Si l'état de la facture est à "Facturé", on désactive la modification du formulaire
+        if($etat == "Facturé") {
+            $etatElements = true;
+            $etatDateIntervention = true;
         }
-        else {
-            $date = date("Y-m-d", strtotime($dateIntervention->format("Y-m-d"). ' + 1 day'));
+        elseif($etat == "Terminé") { // Sinon si l'état est à "Terminé", on désactive en plus la date d'intervention
+            $etatElements = false;
+            $etatDateIntervention = true;
         }
-        // On transforme la chaine de date en objet DateTime
-        $dateIntervention = new \DateTime($date);
+        else { // Sinon on ne désactive rien sauf le client et le véhicule
+            $etatElements = false;
+            $etatDateIntervention = false;
+        }
 
-        // Les champs "date_creation" et "fk_facture" ne sont pas présent
-        // puisqu'ils utilisent respectivement la date du jour et une valeur toujours NULL à l'ajout
-
-        $builder->add('date_intervention', DateType::class, [
+        $builder
+            ->add('date_intervention', DateType::class, [
                 'widget' => 'single_text',
-                'data' => $dateIntervention,
                 'attr' => [
                     'class' => 'form-control input-50',
-                    'min' => $dateCreation->format('Y-m-d')
+                    'min' => $dateCreation->format('Y-m-d'),
+                    'disabled' => $etatDateIntervention,
                 ],
                 'label' => "Date intervention :",
                 'label_attr' => [
@@ -75,7 +85,7 @@ class AjoutInterventionType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'form-select',
-                    'onchange' => 'getInfosFromClientIntervention();'
+                    'disabled' => $etatClient,
                 ],
                 'label' => "Client :",
                 'label_attr' => [
@@ -91,8 +101,7 @@ class AjoutInterventionType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'form-select text-center',
-                    // Actualisé par Ajax
-                    'disabled' => true
+                    'disabled' => $etatVehicule,
                 ],
                 'label' => "Véhicule :",
                 'label_attr' => [
@@ -102,12 +111,12 @@ class AjoutInterventionType extends AbstractType
             ])
             ->add('fk_etat', EntityType::class, [
                 'class' => Etat::class,
-                // Sélection de l'état par défaut "en attente" puisqu'on ajoute simplement une intervention
+                // Sélection des états possibles hormis "Facturé"
                 'query_builder' => function(EntityRepository $entityRepository) {
                     return $entityRepository->createQueryBuilder("e")
                         ->select("e")
-                        ->where("e.etat LIKE :etat")
-                        ->setParameter(':etat', '%attente%')
+                        ->where("e.etat NOT LIKE :etat")
+                        ->setParameter(':etat', '%Facturé%')
                         ;
                 },
                 'choice_label' => function(Etat $etat){
@@ -115,8 +124,7 @@ class AjoutInterventionType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'form-select input-50',
-                    // Actualisé par Ajax
-                    'disabled' => true
+                    'disabled' => $etatElements,
                 ],
                 'label' => "État :",
                 'label_attr' => [
@@ -129,8 +137,7 @@ class AjoutInterventionType extends AbstractType
                     'class' => 'form-control',
                     'rows' => 10,
                     'cols' => 50,
-                    // Actualisé par Ajax
-                    'disabled' => true
+                    'disabled' => $etatElements,
                 ],
                 'label' => "Détail intervention :",
                 'label_attr' => [
@@ -145,8 +152,7 @@ class AjoutInterventionType extends AbstractType
                     'min' => 1,
                     'max' => 50,
                     'value' => 1,
-                    // Actualisé par Ajax
-                    'disabled' => true
+                    'disabled' => $etatElements,
                 ],
                 'label' => "Durée (en heures) :",
                 'label_attr' => [
@@ -163,22 +169,33 @@ class AjoutInterventionType extends AbstractType
                     'scale' => 1,
                     'class' => 'form-control input-50',
                     'value' => 0,
-                    // Actualisé par Ajax
-                    'disabled' => true
+                    'disabled' => $etatElements,
                 ],
                 'label' => "Montant HT (en €) :",
                 'label_attr' => [
                     'class' => 'text-center col-md-5 col-form-label'
                 ],
                 'required' => true
-            ])
-        ;
+            ]);
+        if(!is_null($builder->getData()->getFkFacture())) {
+            $builder->add('fk_facture', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'disabled' => false,
+                ],
+                'label' => "N° facture :",
+                'label_attr' => [
+                    'class' => 'text-center col-md-5 col-form-label'
+                ],
+                'required' => true
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Intervention::class,
+            'data_class' => Intervention::class
         ]);
     }
 }
