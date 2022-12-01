@@ -10,6 +10,9 @@
                     <div class="alert alert-danger" role="alert">{{ error.message|nl2br }}</div>
                 {% endfor %}
             {% endif %}
+            {% if formModificationIntervention.vars.value.getFkFacture is not null %}
+                <div class="alert alert-danger" role="alert">Cette intervention est déjà facturée, aucune modification possible.</div>
+            {% endif %}
             {{ form_start(formModificationIntervention) }}
             <div class="div-detail mb-3">
                 {{ form_label(formModificationIntervention.date_intervention) }}
@@ -53,6 +56,14 @@
                     {{ form_widget(formModificationIntervention.montant_ht) }}
                 </div>
             </div>
+            {% if formModificationIntervention.fk_facture is defined %}
+                <div class="div-detail mb-3">
+                    {{ form_label(formModificationIntervention.fk_facture) }}
+                    <div class="col-lg-5 col-md-6">
+                        {{ form_widget(formModificationIntervention.fk_facture) }}
+                    </div>
+                </div>
+            {% endif %}
         </div>
         <div class="div-envoi-form">
             {% if formModificationIntervention.fk_etat.vars.attr.disabled == true %}
@@ -61,6 +72,6 @@
                 <button id="btn-submit" type="submit" class="btn btn-success">Valider</button>
             {% endif %}
         </div>
-        {{ form_end(formModificationIntervention) }}
+        {{ form_end(formModificationIntervention, {'render_rest': false}) }}
     </div>
 {% endblock %}

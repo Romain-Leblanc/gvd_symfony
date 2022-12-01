@@ -24,7 +24,7 @@
                 {% for unClient in lesClients %}
                     <tr>
                         <td id="radio-button-table">
-                            <input type="radio" class="form-check-input" id="radio-input" name="radio-input" onclick="boutonModifier({{ unClient.id }});"/>
+                            <input type="radio" class="form-check-input" id="radio-input" name="radio-input" onclick="boutonModifier({{ unClient.id }});" />
                         </td>
                         <td data-label="id_client">{{ unClient.id }}</td>
                         <td data-label="client">{{ nomPrenom(unClient.Nom,unClient.Prenom) }}</td>

@@ -7,15 +7,11 @@ use App\Entity\Etat;
 use App\Entity\Intervention;
 use App\Entity\Vehicule;
 use App\Repository\EtatRepository;
-use App\Repository\InterventionRepository;
-use App\Repository\ModeleRepository;
-use Doctrine\DBAL\Types\TextType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -53,6 +49,8 @@ class ModificationInterventionType extends AbstractType
             $etatElements = false;
             $etatDateIntervention = false;
         }
+
+        // Les champs "date_creation" et "fk_facture" ne sont pas présent puisqu'ils ne seront pas affichés
 
         $builder
             ->add('date_intervention', DateType::class, [
@@ -177,19 +175,6 @@ class ModificationInterventionType extends AbstractType
                 ],
                 'required' => true
             ]);
-        if(!is_null($builder->getData()->getFkFacture())) {
-            $builder->add('fk_facture', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'disabled' => false,
-                ],
-                'label' => "N° facture :",
-                'label_attr' => [
-                    'class' => 'text-center col-md-5 col-form-label'
-                ],
-                'required' => true
-            ]);
-        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

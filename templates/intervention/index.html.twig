@@ -25,7 +25,7 @@
                 {% for uneIntervention in lesInterventions %}
                     <tr>
                         <td id="radio-button-table">
-                            <input type="radio" class="form-check-input" id="radio-input" name="radio-input" />
+                            <input type="radio" class="form-check-input" id="radio-input" name="radio-input" onclick="boutonModifier({{ uneIntervention.id }});"/>
                         </td>
                         <td data-label="id_intervention">{{ uneIntervention.id }}</td>
                         <td data-label="date_intervention">{{ dateEnFrancais(uneIntervention.getDateIntervention) }}</td>
