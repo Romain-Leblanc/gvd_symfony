@@ -99,7 +99,7 @@ class VehiculeController extends AbstractController
                     'formModificationVehicule' => $form->createView()
                 ]);
             }
-            // Sinon on insère les données
+            // Sinon on met à jour les données
             else {
                 $vehiculeRepository->updateVehicule($unVehicule);
                 return $this->redirectToRoute('vehicule_index');
@@ -118,10 +118,16 @@ class VehiculeController extends AbstractController
     public function infos(ModeleRepository $modeleRepository, Request $request)
     {
         $id = (int) $request->request->get('marqueID');
-        if (!empty($id) && $id !== 0) {
-            // Renvoi la liste des modèles de la marque de voiture pour Ajax
-            $liste = $modeleRepository->findBy(['fk_marque' => $id]);
-            return $this->json(['donnees' => $liste]);
+        // Si la requête est bien en POST
+        if($request->isMethod(Request::METHOD_POST)) {
+            if (!empty($id) && $id !== 0) {
+                // Renvoi la liste des modèles de la marque de voiture pour Ajax
+                $liste = $modeleRepository->findBy(['fk_marque' => $id]);
+                return $this->json(['donnees' => $liste]);
+            }
+            else {
+                return $this->json(['donnees' => ""]);
+            }
         }
         else {
             return $this->json(['donnees' => ""]);

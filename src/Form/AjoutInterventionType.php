@@ -162,6 +162,7 @@ class AjoutInterventionType extends AbstractType
                     'precision' => 3,
                     'scale' => 1,
                     'class' => 'form-control input-50',
+                    'min' => 0,
                     'value' => 0,
                     // Actualisé par Ajax
                     'disabled' => true

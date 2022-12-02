@@ -39,4 +39,24 @@ class InterventionRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function updateIntervention(Intervention $intervention) {
+        return $this->createQueryBuilder('u')
+            ->update(Intervention::class, 'i')
+            ->set('i.date_intervention', ":dateintervention")
+            ->set('i.duree_intervention', ":dureeintervention")
+            ->set('i.detail_intervention', ":detailintervention")
+            ->set('i.montant_ht', ":montant")
+            ->set('i.fk_etat', ":etat")
+            ->where('i.id = :id_intervention')
+            ->setParameter("id_intervention", $intervention->getId())
+            ->setParameter("dateintervention",$intervention->getDateIntervention())
+            ->setParameter("dureeintervention",$intervention->getDureeIntervention())
+            ->setParameter("detailintervention", $intervention->getDetailIntervention())
+            ->setParameter("montant", $intervention->getMontantHT())
+            ->setParameter("etat", $intervention->getFKEtat()->getId())
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

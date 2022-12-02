@@ -11,7 +11,9 @@
                 {% endfor %}
             {% endif %}
             {% if formModificationIntervention.vars.value.getFkFacture is not null %}
-                <div class="alert alert-danger" role="alert">Cette intervention est déjà facturée, aucune modification possible.</div>
+                <div class="alert alert-danger" role="alert">Cette intervention est facturée, aucune modification possible.</div>
+            {% elseif formModificationIntervention.vars.value.getFkEtat.getEtat == "Terminé" and formModificationIntervention.vars.value.montantHt != 0 %}
+                <div class="alert alert-danger" role="alert">Cette intervention est terminée, aucune modification possible.</div>
             {% endif %}
             {{ form_start(formModificationIntervention) }}
             <div class="div-detail mb-3">
@@ -66,12 +68,15 @@
             {% endif %}
         </div>
         <div class="div-envoi-form">
-            {% if formModificationIntervention.fk_etat.vars.attr.disabled == true %}
+            {% if formModificationIntervention.vars.value.getFkEtat.getEtat == "Facturé"
+                or (formModificationIntervention.vars.value.getFkEtat.getEtat == "Terminé"
+                    and formModificationIntervention.vars.value.montantHt != 0)
+            %}
                 <button id="btn-submit" type="submit" disabled class="btn btn-success">Valider</button>
             {% else %}
                 <button id="btn-submit" type="submit" class="btn btn-success">Valider</button>
             {% endif %}
         </div>
-        {{ form_end(formModificationIntervention, {'render_rest': false}) }}
+        {{ form_end(formModificationIntervention) }}
     </div>
 {% endblock %}
