@@ -103,6 +103,21 @@ footer {
     .input-50-date {
         width: 45%;
     }
+    .div-column {
+        width: 50%;
+        flex-direction: column;
+    }
+    .div-titre-montant {
+        width: 75%;
+        text-align: end;
+    }
+    .div-p-montant {
+        width: 25%;
+    }
+    .p-montant {
+        text-align: end;
+        margin: 0;
+    }
 }
 @media screen and (min-width: 1300px) and (max-width: 1449px) {
     .div-container {
@@ -129,6 +144,21 @@ footer {
     }
     .input-50-date {
         width: 45%;
+    }
+    .div-column {
+        width: 50%;
+        flex-direction: column;
+    }
+    .div-titre-montant {
+        width: 75%;
+        text-align: end;
+    }
+    .div-p-montant {
+        width: 25%;
+    }
+    .p-montant {
+        text-align: end;
+        margin: 0;
     }
 }
 @media screen and (min-width: 992px) and (max-width: 1299px) {
@@ -159,6 +189,21 @@ footer {
     }
     .input-50-date {
         width: 45%;
+    }
+    .div-column {
+        width: 50%;
+        flex-direction: column;
+    }
+    .div-titre-montant {
+        width: 75%;
+        text-align: end;
+    }
+    .div-p-montant {
+        width: 25%;
+    }
+    .p-montant {
+        text-align: end;
+        margin: 0;
     }
 }
 @media screen and (max-width: 991px) {
@@ -210,6 +255,17 @@ footer {
     .label-select-line {
         width: 100%;
     }
+    .div-column {
+        width: 50%;
+        flex-direction: row;
+    }
+    .div-column-responsive {
+        flex-direction: column !important;
+        align-items: center;
+    }
+    .div-titre-montant {
+        text-align: end;
+    }
 }
 @media screen and (max-width: 767px) {
     .div-detail {
@@ -229,6 +285,21 @@ footer {
     }
     select {
         text-align: center;
+    }
+    .div-column {
+        width: 100%;
+        flex-direction: column;
+    }
+    .div-column-responsive {
+        flex-direction: column !important;
+        align-items: center;
+    }
+    .div-titre-montant {
+        text-align: end;
+    }
+    .p-montant {
+        text-align: end;
+        margin: 0;
     }
 }
 .flex-1 {
@@ -322,6 +393,24 @@ textarea {
     background-color: rgb(123, 0, 11);
     color: white;
     border-bottom-color: rgb(123, 0, 11);
+}
+#tab-fact-ajout {
+    height: 250px;
+    overflow-x: auto;
+    border: 1px solid rgb(123, 0, 11);
+    margin: inherit;
+}
+.tr-table-fact:hover {
+    background-color: #a91b28;
+    color: white;
+}
+.tr-table-fact > * {
+    word-break: break-word;
+}
+.div-paiement, .div-total {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 #div-tab {
     width: auto;
