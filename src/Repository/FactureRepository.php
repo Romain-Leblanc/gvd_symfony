@@ -39,28 +39,18 @@ class FactureRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Facture[] Returns an array of Facture objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('f')
-//            ->andWhere('f.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('f.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Facture
-//    {
-//        return $this->createQueryBuilder('f')
-//            ->andWhere('f.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function updateFacture(Facture $facture) {
+        return $this->createQueryBuilder('u')
+            ->update(Facture::class, 'f')
+            ->set('f.date_facture', ":date_facture")
+            ->set('f.date_paiement', ":date_paiement")
+            ->set('f.fk_moyen_paiement', ":moyen_paiement")
+            ->where('f.id = :id_facture')
+            ->setParameter("id_facture", $facture->getId())
+            ->setParameter("date_facture", $facture->getDateFacture()->format('Y-m-d'))
+            ->setParameter("date_paiement", $facture->getDatePaiement()->format('Y-m-d'))
+            ->setParameter("moyen_paiement", $facture->getFKMoyenPaiement()->getId())
+            ->getQuery()
+            ->getResult();
+    }
 }

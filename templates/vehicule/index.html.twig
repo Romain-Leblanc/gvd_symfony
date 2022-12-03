@@ -4,10 +4,15 @@
 
 {% block body %}
     <div class="div-liste">
+        {% for notice in app.flashes('vehicule') %}
+            <div class="alert alert-danger" role="alert">{{ notice|nl2br }}</div>
+        {% endfor %}
         <div class="div-boutons mb-3">
             <a href="{{ path('vehicule_ajouter') }}" class="btn btn-success" id="bouton-ajouter"><i class="fa-solid fa-plus"></i> Ajouter</a>
             {# Valeur par défaut pour la route sinon une erreur est générée. Cette valeur change au clic sur un bouton radio du tableau #}
-            <a href="{{ path('vehicule_modifier', { id: '1'}) }}" class="btn btn-primary cacher" id="bouton-modifier"><i class="fa-solid fa-pen-to-square"></i> Modifier</a>
+            <a href="{{ path('vehicule_modifier', { id: '1'}) }}" class="btn btn-primary" id="bouton-modifier"><i class="fa-solid fa-pen-to-square"></i> Modifier</a>
+            <a href="{{ path('vehicule_modifier', { id: '1'}) }}" class="btn btn-primary" id="bouton-modifier"><i class="fa-solid fa-pen-to-square"></i> Modifier</a>
+            <a href="{{ path('vehicule_modifier', { id: '1'}) }}" class="btn btn-primary" id="bouton-modifier"><i class="fa-solid fa-pen-to-square"></i> Modifier</a>
         </div>
         <div class="div-table">
             <table class="table table-hover table-bordered align-middle text-center">

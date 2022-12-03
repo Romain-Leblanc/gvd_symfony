@@ -59,4 +59,19 @@ class InterventionRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
+
+    public function updateInterventionByEtatAndNumFacture(array $idIntervention, int $idEtat, int $idFacture)
+    {
+        $query = $this->createQueryBuilder('f');
+        return $query
+            ->update(Intervention::class, 'i')
+            ->set('i.fk_etat', ":id_etat")
+            ->set('i.fk_facture', ":id_facture")
+            ->where($query->expr()->in("i.id", ":id_intervention"))
+            ->setParameter("id_etat", $idEtat)
+            ->setParameter("id_facture", $idFacture)
+            ->setParameter("id_intervention", $idIntervention)
+            ->getQuery()
+            ->getResult();
+    }
 }

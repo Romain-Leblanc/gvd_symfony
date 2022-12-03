@@ -7,7 +7,7 @@
         <div class="div-boutons mb-3">
             <a href="{{ path('facture_ajouter') }}" class="btn btn-success" id="bouton-ajouter"><i class="fa-solid fa-plus"></i> Ajouter</a>
             {# La valeur pour la route suivant change au clic sur un bouton radio du tableau #}
-            <a href="#" class="btn btn-primary cacher" id="bouton-modifier"><i class="fa-solid fa-pen-to-square"></i> Modifier</a>
+            <a href="{{ path('facture_modifier') }}" class="btn btn-primary cacher" id="bouton-modifier"><i class="fa-solid fa-pen-to-square"></i> Modifier</a>
         </div>
         <div class="div-table">
             <table class="table table-hover table-bordered align-middle text-center">
@@ -24,7 +24,7 @@
                 {% for uneFacture in lesFactures %}
                     <tr>
                         <td id="radio-button-table">
-                            <input type="radio" class="form-check-input" id="radio-input" name="radio-input" />
+                            <input type="radio" class="form-check-input" id="radio-input" name="radio-input" onclick="boutonsFacture({{ uneFacture.id }});" />
                         </td>
                         <td data-label="id_facture">{{ uneFacture.id }}</td>
                         <td data-label="date_facture">{{ dateEnFrancais(uneFacture.getDateFacture) }}</td>

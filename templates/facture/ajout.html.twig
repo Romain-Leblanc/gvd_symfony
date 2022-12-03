@@ -42,11 +42,7 @@
                     </thead>
                     <tbody>
                     <tr class="tr-table-fact" id="tr-tab">
-{#                        <td scope="row" class="align-middle" id="td-date-intervention"></td>
-                        <td scope="row" class="align-middle" id="td-infos-vehicule"></td>
-                        <td scope="row" class="align-middle" id="td-detail-intervention"></td>
-                        <td scope="row" class="align-middle" id="td-duree-intervention"></td>
-                        <td scope="row" class="align-middle" id="td-montant-ht"></td>#}
+                        <td colspan="5" scope="row" class="align-middle">Veuillez sélectionner un client.</td>
                     </tr>
                     </tbody>
                 </table>
@@ -68,7 +64,7 @@
                             <p class="p-montant">Montant HT :</p>
                         </div>
                         <div class="div-p-montant">
-                            <p class="p-montant">0,00 €</p>
+                            <p id="total-ht" class="p-montant">0,00 €</p>
                         </div>
                         {{ form_widget(formAjoutFacture.montant_ht) }}
                     </div>
@@ -77,7 +73,7 @@
                             <p class="p-montant">Montant TVA :</p>
                         </div>
                         <div class="div-p-montant">
-                            <p class="p-montant">0,00 €</p>
+                            <p id="total-tva" class="p-montant">0,00 €</p>
                         </div>
                         {{ form_widget(formAjoutFacture.montant_tva) }}
                     </div>
@@ -86,7 +82,7 @@
                             <p class="p-montant">Montant TTC :</p>
                         </div>
                         <div class="div-p-montant">
-                            <p class="p-montant">0,00 €</p>
+                            <p id="total-ttc" class="p-montant">0,00 €</p>
                         </div>
                         {{ form_widget(formAjoutFacture.montant_ttc) }}
                     </div>

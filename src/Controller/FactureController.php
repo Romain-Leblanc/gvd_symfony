@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Facture;
 use App\Form\AjoutFactureType;
+use App\Form\ModificationFactureType;
 use App\Repository\EtatRepository;
 use App\Repository\FactureRepository;
 use App\Repository\InterventionRepository;
@@ -31,31 +32,24 @@ class FactureController extends AbstractController
     /**
      * @Route("/facture/ajouter", name="facture_ajouter")
      */
-    public function ajouter(FactureRepository $factureRepository, InterventionRepository $interventionRepository, TVARepository $TVARepository, EtatRepository $etatRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function ajouter(InterventionRepository $interventionRepository, TVARepository $TVARepository, EtatRepository $etatRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         // Retourne la liste des interventions qui sont terminées
         $listeInterventions = $interventionRepository->findBy(['fk_etat' => $etatRepository->findOneBy(['etat' => 'Terminé'])->getId()]);
 
         // Si aucune intervention est terminée (et donc n'a pas besoin d'être facturé), alors on renvoie un message puis une redirection
         if(empty($listeInterventions)){
-            echo '<script type="application/javascript">alert("Aucun intervention à facturée");</script>';
-            $this->redirectToRoute("facture_index");
+            $request->getSession()->getFlashBag()->add('facture', 'Aucun intervention à facturée.');
+            return $this->redirectToRoute("intervention_index");
         }
 
         // Retourne le taux de TVA égal à 20
         $tauxTVA = $TVARepository->findOneBy(["taux" => 20])->getTaux();
 
-        // Si aucune intervention est terminée (et donc n'a pas besoin d'être facturé), alors on renvoie un message puis une redirection
-/*        if(empty($tauxTVA)){
-            echo '<script type="application/javascript">alert("Aucun taux de TVA égal à 20% est présent dans la base de données.");</script>';
-            $this->redirectToRoute("facture_index");
-        }*/
-
         // Création de l'objet Facture(), génération du formulaire d'ajout d'une Facture avec l'objet Facture et manipulation des données de l'objet Request
         $uneFacture = new Facture();
         $form = $this->createForm(AjoutFactureType::class, $uneFacture);
         $form->handleRequest($request);
-//        dd($uneFacture);
 
         // Si le formulaire a bien été soumis et est validé
         if ($form->isSubmitted() && $form->isValid()){
@@ -67,17 +61,18 @@ class FactureController extends AbstractController
             $idFacture = $uneFacture->getId();
 
             // Récupère la liste des interventions terminées du client qui ne sont pas facturées
-            $liste = $interventionRepository->findBy(['FK_Client' => $uneFacture->getFKClient()->getId(), 'FK_Facture' => null, 'FK_Etat' => $etatRepository->findOneBy(['Etat' => 'Terminé'])->getId()]);
+            $liste = $interventionRepository->findBy(['fk_client' => $uneFacture->getFKClient()->getId(), 'fk_facture' => null, 'fk_etat' => $etatRepository->findOneBy(['etat' => 'Terminé'])->getId()]);
 
             // Boucle sur chaque intervention pour récupérer l'identifiant de l'intervention du client à facturé puis concatène ces identifiants dans un tableau
             $tabIdInterventions = [];
-            foreach ($liste as $key => $value){
+            foreach ($liste as $value){
                 array_push($tabIdInterventions, $value->getId());
             }
-            // Met à jour l'etat des interventions à 'Facturé' et associe le dernier n° facture aux identifiants du tableau ci-dessus
-            $interventionRepository->updateInterventionByEtatAndNumFacture($tabIdInterventions, $etatRepository->findOneBy(['Etat' => 'Facturé'])->getId(), $idFacture);
 
-            // Redirection de la page vers la route "facture_index"
+            // Met à jour l'etat des interventions à 'Facturé' et associe le dernier n° facture aux identifiants du tableau ci-dessus
+            $interventionRepository->updateInterventionByEtatAndNumFacture($tabIdInterventions, $etatRepository->findOneBy(['etat' => 'Facturé'])->getId(), $idFacture);
+
+            // Redirection de la page vers le tableau principal
             return $this->redirectToRoute('facture_index');
         }
 
@@ -86,6 +81,36 @@ class FactureController extends AbstractController
             'formAjoutFacture' => $form->createView(),
             'listeInterventions' => $listeInterventions,
             'tauxTVA' => $tauxTVA,
+        ]);
+    }
+
+    /**
+     * @Route("/facture/modifier/{id}", name="facture_modifier", defaults={"id" = 0})
+     */
+    public function modifier(FactureRepository $factureRepository, InterventionRepository $interventionRepository, $id, Request $request): Response
+    {
+        $uneFacture = $factureRepository->find($id);
+        $listeInterventions = $interventionRepository->findBy(['fk_client' => $uneFacture->getFKClient()->getId(), 'fk_facture' => $uneFacture->getId()]);
+
+        // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
+        if($id == 0 || $uneFacture == null) {
+            $request->getSession()->getFlashBag()->add('facture', 'Cette facture n\'existe pas.');
+            return $this->redirectToRoute('facture_index');
+        }
+
+        $form = $this->createForm(ModificationFactureType::class, $uneFacture);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $factureRepository->updateFacture($uneFacture);
+
+            return $this->redirectToRoute('facture_index');
+        }
+
+        return $this->render('facture/modification.html.twig', [
+            'errors' => $form->getErrors(true),
+            'formModificationFacture' => $form->createView(),
+            'listeInterventions' => $listeInterventions
         ]);
     }
 
@@ -100,7 +125,6 @@ class FactureController extends AbstractController
             if (!empty($id) && $id !== 0) {
                 // Renvoi la liste des interventions non facturés des véhicules du client
                 $liste = $interventionRepository->findBy(['fk_client' => $id, 'fk_facture' => null, 'fk_etat' => $etatRepository->findOneBy(['etat' => 'Terminé'])->getId()]);
-                die(var_dump($liste));
                 return $this->json(['donnees' => $liste]);
             }
             else {

@@ -23,6 +23,7 @@ class FunctionExtension extends AbstractExtension
             new TwigFunction('affichagePlusieursValeurs', [$this, 'affichagePlusieursValeurs']),
             new TwigFunction('marqueModele', [$this, 'marqueModele']),
             new TwigFunction('formatMontantEuros', [$this, 'formatMontantEuros']),
+            new TwigFunction('dureeIntervention', [$this, 'dureeIntervention']),
             new TwigFunction('dateEnFrancais', [$this, 'dateEnFrancais']),
             new TwigFunction('titrePage', [$this, 'titrePage']),
             new TwigFunction('menuActif', [$this, 'menuActif']),
@@ -69,12 +70,23 @@ class FunctionExtension extends AbstractExtension
         return mb_strtoupper($marque." ".$modele);
     }
 
-    // Retourne la montant en euros
+    // Retourne le montant en euros
     function formatMontantEuros(float $montant){
         return number_format($montant, 2, ',', ' ')." €";
     }
 
-    // Retourne la date fourni en format français
+    // Retourne la durée avec l'heure
+    function dureeIntervention($duree){
+        if($duree < 10 && $duree > 0){
+            $dureeHeure = "0".$duree."h";
+        }
+        elseif($duree >= 10) {
+            $dureeHeure = $duree."h";
+        }
+        return $dureeHeure;
+    }
+
+    // Retourne la date fournie en format français
     function dateEnFrancais(DateTime $date){
         return $date->format('d/m/Y');
     }

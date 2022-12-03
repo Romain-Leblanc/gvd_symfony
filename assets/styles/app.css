@@ -129,6 +129,10 @@ footer {
     .p-content {
         padding: 0.5em 7% 0.5em 7%;
     }
+    .div-liste > .div-table {
+        height: 600px;
+        overflow-y: auto;
+    }
     .div-row {
         display: flex;
         flex-direction: row;
@@ -170,6 +174,10 @@ footer {
     }
     .p-content {
         padding: 0.5em 4% 0.5em 4%;
+    }
+    .div-liste > .div-table {
+        height: 600px;
+        overflow-y: auto;
     }
     .offcanvas {
         width: 35% !important;
@@ -268,6 +276,12 @@ footer {
     }
 }
 @media screen and (max-width: 767px) {
+    .div-liste > .div-boutons > a {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px !important;
+    }
     .div-detail {
         flex-direction: column;
     }
@@ -362,6 +376,7 @@ footer {
     justify-content: center;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 .div-liste > .div-boutons > a {
     display: flex;
