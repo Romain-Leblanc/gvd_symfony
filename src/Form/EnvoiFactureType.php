@@ -2,13 +2,10 @@
 
 namespace App\Form;
 
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,7 +19,6 @@ class EnvoiFactureType extends AbstractType
                     'class' => 'form-control'
                 ],
                 'label' => 'Expéditeur :',
-                'data' => 'test@test.com',
                 'label_attr' => [
                     'class' => 'text-center col-md-5 col-form-label'
                 ],
@@ -33,7 +29,7 @@ class EnvoiFactureType extends AbstractType
                     'class' => 'form-control'
                 ],
                 'label' => 'Destinataire :',
-                'data' => 'test@test.com',
+                'data' => $options['data']['email'],
                 'label_attr' => [
                     'class' => 'text-center col-md-5 col-form-label'
                 ],
@@ -44,7 +40,7 @@ class EnvoiFactureType extends AbstractType
                     'class' => 'form-control'
                 ],
                 'label' => 'Objet :',
-                'data' => 'Essai objet mail',
+                'data' => 'Facture n°'.$options['data']['id'],
                 'label_attr' => [
                     'class' => 'text-center col-md-5 col-form-label'
                 ],
@@ -54,10 +50,10 @@ class EnvoiFactureType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'cols' => 50,
-                    'rows' => 2,
+                    'rows' => 4,
                 ],
                 'label' => 'Message :',
-                'data' => 'Essai envoi mail',
+                'data' => 'Voici la facture n°'.$options['data']['id'].".",
                 'label_attr' => [
                     'class' => 'text-center col-md-5 col-form-label'
                 ],

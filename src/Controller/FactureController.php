@@ -13,6 +13,7 @@ use App\Repository\TVARepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -27,6 +28,7 @@ class FactureController extends AbstractController
 {
     /**
      * @Route("/facture", name="facture_index")
+     * @IsGranted("ROLE_USER")
      */
     public function index(FactureRepository  $factureRepository): Response
     {
@@ -39,6 +41,7 @@ class FactureController extends AbstractController
 
     /**
      * @Route("/facture/ajouter", name="facture_ajouter")
+     * @IsGranted("ROLE_USER")
      */
     public function ajouter(InterventionRepository $interventionRepository, TVARepository $TVARepository, EtatRepository $etatRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -94,6 +97,7 @@ class FactureController extends AbstractController
 
     /**
      * @Route("/facture/modifier/{id}", name="facture_modifier", defaults={"id" = 0})
+     * @IsGranted("ROLE_USER")
      */
     public function modifier(FactureRepository $factureRepository, InterventionRepository $interventionRepository, $id, Request $request): Response
     {
@@ -124,8 +128,9 @@ class FactureController extends AbstractController
 
     /**
      * @Route("/facture/envoyer/{id}", name="facture_envoyer", defaults={"id" = 0})
+     * @IsGranted("ROLE_USER")
      */
-    public function envoyer(int $id, FactureRepository $factureRepository, Request $request, MailerInterface $mailer, ParameterBagInterface $parameterBag)
+    public function envoyer(int $id, FactureRepository $factureRepository, Request $request, MailerInterface $mailer)
     {
         $uneFacture = $factureRepository->find($id);
 
@@ -136,7 +141,7 @@ class FactureController extends AbstractController
         }
 
         // Ce formulaire n'est pas relié à l'entité Facture puisqu'il est différent de cette entité (expediteur, destinataire...)
-        $form = $this->createForm(EnvoiFactureType::class);
+        $form = $this->createForm(EnvoiFactureType::class, ["id" => $uneFacture->getId(), "email" => $uneFacture->getFkClient()->getEmail()]);
         $form->handleRequest($request);
 
         // Envoi du mail
@@ -149,7 +154,7 @@ class FactureController extends AbstractController
 
             try {
                 $mailer->send($email);
-                $request->getSession()->getFlashBag()->add('facture', 'Le mail a été envoyé.');
+                $request->getSession()->getFlashBag()->add('facture_mail_success', 'Le mail a été envoyé.');
                 return $this->redirectToRoute('facture_index');
             } catch (TransportExceptionInterface $t) {
                 return $t->getDebug();
@@ -165,6 +170,7 @@ class FactureController extends AbstractController
 
     /**
      * @Route("/facture/telecharger/{id}", name="facture_telecharger", defaults={"id" = 0})
+     * @IsGranted("ROLE_USER")
      * @throws \Spipu\Html2Pdf\Exception\Html2PdfException
      */
     public function telecharger(FactureRepository $factureRepository, EtatRepository $etatRepository, InterventionRepository $interventionRepository, $id, ParameterBagInterface $parameterBag, Request $request): Response
@@ -180,21 +186,6 @@ class FactureController extends AbstractController
 
         // Récupère toutes les infos des interventions facturées de ce client avec ce n° facture
         $listeInterventions = $interventionRepository->findBy(['fk_client' => $uneFacture->getFKClient()->getId(), 'fk_facture' => $id]);
-
-        $pdfOptions = new Options();
-        $pdfOptions->setDefaultFont('Times new Roman'); /*Courier New*/
-        $pdfOptions->setIsRemoteEnabled(true); // Résout pb SSL
-        $pdfOptions->setIsHtml5ParserEnabled(true);
-
-        $dompdf = new Dompdf($pdfOptions);
-        $context = stream_context_create([ // Permet de passer un contexte dans lequel DomPDF s'instancie et ne verifie pas le certificat SSL auto-signé
-            'ssl' => [
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                'allow_self_signed' => true,
-            ]
-        ]);
-        $dompdf->setHttpContext($context);
 
         // Génération HTML
         $html = $this->renderView('facture/donnees_pdf.html.twig', [
@@ -215,6 +206,7 @@ class FactureController extends AbstractController
 
     /**
      * @Route("/facture/infos", name="facture_infos")
+     * @IsGranted("ROLE_USER")
      */
     public function infos(InterventionRepository $interventionRepository, EtatRepository $etatRepository, Request $request)
     {

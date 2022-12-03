@@ -9,6 +9,7 @@ use App\Repository\InterventionRepository;
 use App\Repository\ModeleRepository;
 use App\Repository\VehiculeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ class VehiculeController extends AbstractController
 {
     /**
      * @Route("/vehicule", name="vehicule_index")
+     * @IsGranted("ROLE_USER")
      */
     public function index(VehiculeRepository $vehiculeRepository): Response
     {
@@ -31,6 +33,7 @@ class VehiculeController extends AbstractController
 
     /**
      * @Route("/vehicule/ajouter", name="vehicule_ajouter")
+     * @IsGranted("ROLE_USER")
      */
     public function ajouter(Request $request, VehiculeRepository $vehiculeRepository, EntityManagerInterface $entityManager): Response
     {
@@ -75,6 +78,7 @@ class VehiculeController extends AbstractController
 
     /**
      * @Route("/vehicule/modifier/{id}", name="vehicule_modifier", defaults={"id" = 0})
+     * @IsGranted("ROLE_USER")
      */
     public function modifier(int $id, VehiculeRepository $vehiculeRepository, InterventionRepository $interventionRepository, Request $request): Response
     {
@@ -115,6 +119,7 @@ class VehiculeController extends AbstractController
 
     /**
      * @Route("/vehicule/infos", name="vehicule_infos")
+     * @IsGranted("ROLE_USER")
      */
     public function infos(ModeleRepository $modeleRepository, Request $request)
     {

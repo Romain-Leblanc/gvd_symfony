@@ -14,7 +14,7 @@
             <div class="div-detail mb-3">
                 {{ form_label(formEnvoiFacture.expediteur) }}
                 <div class="col-lg-5 col-md-6">
-                    {{ form_widget(formEnvoiFacture.expediteur) }}
+                    {{ form_widget(formEnvoiFacture.expediteur, { 'value': app.user.email }) }}
                 </div>
             </div>
             <div class="div-detail mb-3">

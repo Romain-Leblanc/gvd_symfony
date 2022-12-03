@@ -7,6 +7,7 @@ use App\Form\AjoutClientType;
 use App\Form\ModificationClientType;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,7 @@ class ClientController extends AbstractController
 {
     /**
      * @Route("/client", name="client_index")
+     * @IsGranted("ROLE_USER")
      */
     public function index(ClientRepository $clientRepository, Request $request): Response
     {
@@ -28,6 +30,7 @@ class ClientController extends AbstractController
 
     /**
      * @Route("/client/ajouter", name="client_ajouter")
+     * @IsGranted("ROLE_USER")
      */
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -50,6 +53,7 @@ class ClientController extends AbstractController
 
     /**
      * @Route("/client/modifier/{id}", name="client_modifier", defaults={"id" = 0})
+     * @IsGranted("ROLE_USER")
      */
     public function modifier(int $id, ClientRepository $clientRepository, Request $request): Response
     {
