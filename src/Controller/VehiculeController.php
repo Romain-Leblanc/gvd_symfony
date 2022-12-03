@@ -127,11 +127,13 @@ class VehiculeController extends AbstractController
                 return $this->json(['donnees' => $liste]);
             }
             else {
-                return $this->json(['donnees' => ""]);
+                $request->getSession()->getFlashBag()->add('vehicule', 'Cet accès est restreint.');
+                return $this->redirectToRoute('vehicule_index');
             }
         }
         else {
-            return $this->json(['donnees' => ""]);
+            $request->getSession()->getFlashBag()->add('vehicule', 'Cet accès est restreint.');
+            return $this->redirectToRoute('vehicule_index');
         }
     }
 }

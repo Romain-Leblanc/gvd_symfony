@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="div-liste">
-        {% for notice in app.flashes('facture') %}
+        {% for notice in app.flashes('intervention') %}
             <div class="alert alert-danger" role="alert">{{ notice|nl2br }}</div>
         {% endfor %}
         <div class="div-boutons mb-3">

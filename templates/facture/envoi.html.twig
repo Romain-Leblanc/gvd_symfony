@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Clients{% endblock %}
+
+{% block body %}
+    <div class="div-liste">
+        <div id="div-tab">
+            {% if errors is defined %}
+                {% for error in errors %}
+                    <div class="alert alert-danger" role="alert">{{ error.message|nl2br }}</div>
+                {% endfor %}
+            {% endif %}
+            {{ form_start(formEnvoiFacture) }}
+            <div class="div-detail mb-3">
+                {{ form_label(formEnvoiFacture.expediteur) }}
+                <div class="col-lg-5 col-md-6">
+                    {{ form_widget(formEnvoiFacture.expediteur) }}
+                </div>
+            </div>
+            <div class="div-detail mb-3">
+                {{ form_label(formEnvoiFacture.destinataire) }}
+                <div class="col-lg-5 col-md-6">
+                    {{ form_widget(formEnvoiFacture.destinataire) }}
+                </div>
+            </div>
+            <div class="div-detail mb-3">
+                {{ form_label(formEnvoiFacture.objet) }}
+                <div class="col-lg-5 col-md-6">
+                    {{ form_widget(formEnvoiFacture.objet) }}
+                </div>
+            </div>
+            <div class="div-detail mb-3">
+                {{ form_label(formEnvoiFacture.message) }}
+                <div class="col-lg-5 col-md-6">
+                    {{ form_widget(formEnvoiFacture.message) }}
+                </div>
+            </div>
+        </div>
+        <div class="div-envoi-form">
+            <button id="btn-submit" type="submit" class="btn btn-success">Valider</button>
+        </div>
+        {{ form_end(formEnvoiFacture) }}
+    </div>
+{% endblock %}

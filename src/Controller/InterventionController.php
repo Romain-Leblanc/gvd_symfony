@@ -106,11 +106,13 @@ class InterventionController extends AbstractController
                 return $this->json(['donnees' => $liste]);
             }
             else {
-                return $this->json(['donnees' => ""]);
+                $request->getSession()->getFlashBag()->add('intervention', 'Cet accès est restreint.');
+                return $this->redirectToRoute('intervention_index');
             }
         }
         else {
-            return $this->json(['donnees' => ""]);
+            $request->getSession()->getFlashBag()->add('intervention', 'Cet accès est restreint.');
+            return $this->redirectToRoute('intervention_index');
         }
     }
 }

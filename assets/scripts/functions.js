@@ -18,6 +18,14 @@ global.boutonsFacture = function boutonModifier(num) {
         btnModifier.href = btnModifier.baseURI+"/modifier/"+num;
         btnModifier.classList.remove('cacher');
         btnModifier.classList.add('afficher');
+
+        btnTelecharger.href = btnTelecharger.baseURI+"/telecharger/"+num;
+        btnTelecharger.classList.remove('cacher');
+        btnTelecharger.classList.add('afficher');
+
+        btnEnvoyer.href = btnEnvoyer.baseURI+"/envoyer/"+num;
+        btnEnvoyer.classList.remove('cacher');
+        btnEnvoyer.classList.add('afficher');
     }
 }
 
