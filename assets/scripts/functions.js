@@ -103,7 +103,7 @@ global.getInfosFromClientIntervention = function getInfosFromClientIntervention(
 
     $.post('/intervention/infos', {"clientID": inputClient.val()})
         .done(function(data) {
-            if(data.donnees !== "" && data.donnees !== "undefined" && data.donnees.length > 0) {
+            if(data.donnees !== "" && data.donnees !== undefined) {
                 let listeVehicule = "";
                 // Concaténation des "options" du select
                 data.donnees.forEach(element => listeVehicule += "<option value=" + element.id + ">" + element.fkMarque.marque + " " + element.fkModele.modele + " (" + element.immatriculation + ")" + "</option>");
@@ -155,7 +155,7 @@ global.getInfosFromClientFacture = function getInfosFromClientFacture() {
 
     $.post('/facture/infos', {"clientID": inputClient.val()})
         .done(function(data) {
-             if(data.donnees !== "" && data.donnees !== "undefined" && data.donnees.length > 0) {
+             if(data.donnees !== "" && data.donnees !== undefined) {
                  // Récupère le taux de TVA au format décimal
                 tauxTVA = calculTauxTVA(parseFloat(selectTVA.textContent.split(' %')));
 
@@ -192,7 +192,7 @@ global.getInfosFromClientFacture = function getInfosFromClientFacture() {
                 inputDatePaiement.prop('disabled', false);
                 btnSubmit.prop('disabled', false);
             }
-            else if(data.donnees === "") {
+            else {
                 // Définit la valeur par défaut du tableau si la valeur récupérée est vide
                 tbodyTab.innerHTML = '<td colspan="5" scope="row" class="align-middle">Veuillez sélectionner un client.</td>';
 

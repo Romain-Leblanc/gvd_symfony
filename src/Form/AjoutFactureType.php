@@ -66,16 +66,8 @@ class AjoutFactureType extends AbstractType
             ])
             ->add('fk_taux', EntityType::class, [
                 'class' => TVA::class,
-                // Retourne une liste avec comme valeur le taux de TVA a 20%
-                'query_builder' => function(EntityRepository $entityRepository) {
-                    return $entityRepository->createQueryBuilder("t")
-                        ->select("t")
-                        ->where("t.taux = :taux")
-                        ->setParameter('taux', '20')
-                        ;
-                },
                 'choice_label' => function(TVA $taux){
-                    return $taux->getTaux()." %";
+                    return str_replace(".", ",", $taux->getTaux())." %";
                 },
                 'attr' => [
                     'class' => 'form-select input-50',

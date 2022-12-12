@@ -51,11 +51,8 @@ class FactureController extends AbstractController
         // Si aucune intervention est terminée (et donc n'a pas besoin d'être facturé), alors on renvoie un message puis une redirection
         if(empty($listeInterventions)){
             $request->getSession()->getFlashBag()->add('facture', 'Aucun intervention à facturée.');
-            return $this->redirectToRoute("intervention_index");
+            return $this->redirectToRoute("facture_index");
         }
-
-        // Retourne le taux de TVA égal à 20
-        $tauxTVA = $TVARepository->findOneBy(["taux" => 20])->getTaux();
 
         // Création de l'objet Facture(), génération du formulaire d'ajout d'une Facture avec l'objet Facture et manipulation des données de l'objet Request
         $uneFacture = new Facture();
@@ -68,7 +65,7 @@ class FactureController extends AbstractController
             $entityManager->persist($uneFacture);
             $entityManager->flush();
 
-            // Equivalent de la fonction lastInsertId() qui permet de récupérer le dernier identifiant insérée dans la table facture
+            // Equivalent de la fonction lastInsertId() qui permet de récupérer le dernier identifiant inséré dans la table facture
             $idFacture = $uneFacture->getId();
 
             // Récupère la liste des interventions terminées du client qui ne sont pas facturées
@@ -90,8 +87,7 @@ class FactureController extends AbstractController
         return $this->render('facture/ajout.html.twig', [
             'errors' => $form->getErrors(true),
             'formAjoutFacture' => $form->createView(),
-            'listeInterventions' => $listeInterventions,
-            'tauxTVA' => $tauxTVA,
+            'listeInterventions' => $listeInterventions
         ]);
     }
 
@@ -193,12 +189,16 @@ class FactureController extends AbstractController
             'listeInterventions' => $listeInterventions
         ]);
 
-        //Génération nom fichier
+        // Génération nom fichier avec emplacement sauvegarde du PDF sur le disque
         $fichier = $id.'.pdf';
+        $chemin = $this->getParameter('kernel.project_dir')."/public/pdf_facture";
+        $cheminComplet = $chemin."/".$fichier;
 
         // Génère et affiche le PDF
         $pdf = new Html2Pdf('P', 'A4', 'fr');
         $pdf->writeHTML($html);
+        $data = $pdf->pdf->getPDFData();
+        file_put_contents($cheminComplet, $data);
         $pdf->output($fichier);
 
         return new Response;
