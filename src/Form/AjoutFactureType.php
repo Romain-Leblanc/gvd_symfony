@@ -8,6 +8,7 @@ use App\Entity\Facture;
 use App\Entity\Intervention;
 use App\Entity\MoyenPaiement;
 use App\Entity\TVA;
+use App\Repository\TVARepository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -71,6 +72,8 @@ class AjoutFactureType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'form-select input-50',
+                    'onchange' => 'changeTotalFromTaux();',
+                    'disabled' => true,
                 ],
                 'label' => "Taux :",
                 'label_attr' => [

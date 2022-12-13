@@ -132,9 +132,42 @@ global.getInfosFromClientIntervention = function getInfosFromClientIntervention(
     ;
 }
 
-global.getInfosFromClientFacture = function getInfosFromClientFacture() {
+global.changeTotalFromTaux = function changeTotalFromTaux() {
     // Récupère les élements du DOM utilisés pour les calculs
     let selectTVA = $('#ajout_facture_fk_taux')[0];
+    let divMontantHT = $('#total-ht')[0];
+    let divMontantTVA = $('#total-tva')[0];
+    let divMontantTTC = $('#total-ttc')[0];
+    let inputHiddenMontantHT = $('#ajout_facture_montant_ht');
+    let inputHiddenMontantTVA = $('#ajout_facture_montant_tva');
+    let inputHiddenMontantTTC = $('#ajout_facture_montant_ttc');
+    // Définit les valeurs par défaut
+    let totalHT;
+    let tauxTVA;
+    let totalTVA;
+    let totalTTC;
+
+    totalHT = parseFloat(divMontantHT.textContent.split(' €')[0]);
+    tauxTVA = calculTauxTVA(parseFloat(selectTVA.options[selectTVA.selectedIndex].innerText.split(" %")[0]));
+
+    // Récupère les totaux des montants de TVA et TTC
+    totalTVA = calculMontantTVA(totalHT, tauxTVA);
+    totalTTC = calculMontantTTC(totalHT, totalTVA);
+
+    // Affiche ces montants au format euros aux paragraphe concernés
+    divMontantHT.innerHTML = formatMontantEuros(totalHT);
+    divMontantTVA.innerHTML = formatMontantEuros(totalTVA);
+    divMontantTTC.innerHTML = formatMontantEuros(totalTTC);
+
+    // Définit la valeur des inputs cachés avec les montants précédents
+    inputHiddenMontantHT.val(totalHT);
+    inputHiddenMontantTVA.val(totalTVA);
+    inputHiddenMontantTTC.val(totalTTC);
+};
+
+global.getInfosFromClientFacture = function getInfosFromClientFacture() {
+    // Récupère les élements du DOM utilisés pour les calculs
+    let selectTVA = $('#ajout_facture_fk_taux');
     let inputClient = $('#ajout_facture_fk_client');
     let tbodyTab = $('#table-interventions > tbody')[0];
     let inputMoyenPaiement = $('#ajout_facture_fk_moyen_paiement');
@@ -156,8 +189,10 @@ global.getInfosFromClientFacture = function getInfosFromClientFacture() {
     $.post('/facture/infos', {"clientID": inputClient.val()})
         .done(function(data) {
              if(data.donnees !== "" && data.donnees !== undefined) {
-                 // Récupère le taux de TVA au format décimal
-                tauxTVA = calculTauxTVA(parseFloat(selectTVA.textContent.split(' %')));
+                selectTVA.prop('disabled', false);
+                // Récupère le taux de TVA au format décimal
+                let tauxValue = selectTVA[0].options[selectTVA[0].selectedIndex].innerText.split(" %")[0];
+                tauxTVA = calculTauxTVA(parseFloat(tauxValue));
 
                 // Concaténation du détail des interventions dans le tableau et du total HT des interventions
                 data.donnees.forEach(element => {
@@ -206,6 +241,7 @@ global.getInfosFromClientFacture = function getInfosFromClientFacture() {
                 inputHiddenMontantTTC.val("0");
 
                 // Désactive les élements
+                selectTVA.prop('disabled', true);
                 inputMoyenPaiement.prop('disabled', true);
                 inputDatePaiement.prop('disabled', true);
                 btnSubmit.prop('disabled', true);
