@@ -136,12 +136,19 @@ class FactureController extends AbstractController
             return $this->redirectToRoute('facture_index');
         }
 
+        // Vérifie et récupère le fichier PDF de la facture
+        $fichier = $id.'.pdf';
+        $chemin = $this->getParameter('kernel.project_dir')."/public/pdf_facture";
+        $cheminComplet = $chemin."/".$fichier;
+        if(file_exists($cheminComplet)) $fichier = true;
+
         // Ce formulaire n'est pas relié à l'entité Facture puisqu'il est différent de cette entité (expediteur, destinataire...)
-        $form = $this->createForm(EnvoiFactureType::class, ["id" => $uneFacture->getId(), "email" => $uneFacture->getFkClient()->getEmail()]);
+        $form = $this->createForm(EnvoiFactureType::class, ["uneFacture" => $uneFacture, "fichier" => $fichier]);
         $form->handleRequest($request);
 
         // Envoi du mail
         if ($form->isSubmitted() && $form->isValid()) {
+            dd($form->getData());
             $email = (new Email())
                 ->from($form->getData()['expediteur'])
                 ->to($form->getData()['destinataire'])
@@ -160,7 +167,8 @@ class FactureController extends AbstractController
         return $this->render('facture/envoi.html.twig', [
             'errors' => $form->getErrors(true),
             'formEnvoiFacture' => $form->createView(),
-            'uneFacture' => $uneFacture // Les informations de cette facture seront affichées avec le template twig
+//            'file_exist' => $fichier,
+            'uneFacture' => $uneFacture, // Les informations de cette facture seront affichées avec le template twig
         ]);
     }
 
@@ -196,10 +204,13 @@ class FactureController extends AbstractController
 
         // Génère et affiche le PDF
         $pdf = new Html2Pdf('P', 'A4', 'fr');
+        $pdf->pdf->setTitle("Facture n°".$id);
         $pdf->writeHTML($html);
+        // Enregiste les données du PDF dans un fichier dans le dossier des PDF de facture
         $data = $pdf->pdf->getPDFData();
         file_put_contents($cheminComplet, $data);
-        $pdf->output($fichier);
+        // Affiche le PDF
+        $pdf->output("Facture_".$fichier);
 
         return new Response;
     }

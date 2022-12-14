@@ -8,11 +8,33 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class EnvoiFactureType extends AbstractType
 {
+    private $token;
+
+    public function __construct(TokenStorageInterface $token)
+    {
+        $this->token = $token;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $uneFacture = $options['data']['uneFacture'];
+        // Définit la couleur du texte du champ "piece-jointe" suivant si le fichier PDF existe
+        if($options['data']['fichier'] === true) {
+            $color = "color: green;";
+        }
+        else {
+            $color = "color: #BE1E2D;";
+        }
+        $message = "Bonjour ".mb_strtoupper($uneFacture->getFkClient()->getNom())." ".ucfirst($uneFacture->getFkClient()->getPrenom()).",<br><br>";
+        $message .= "Vous trouverez en pièce jointe la facture n°".$uneFacture->getId().".<br><br>";
+        $message .= "<br><br>Cordialement,<br>";
+        $message .= mb_strtoupper($this->token->getToken()->getUser()->getNom())." ".ucfirst($this->token->getToken()->getUser()->getPrenom());
+        $message .= "<br><br>Garage Vendelais<br><img src='images/logo_64.png' alt='logo' />";
+//        $message .= "<br><br>Garage Vendelais<br>ssd";
+//        dd($message);
         $builder
             ->add('expediteur', EmailType::class, [
                 'attr' => [
@@ -29,7 +51,7 @@ class EnvoiFactureType extends AbstractType
                     'class' => 'form-control'
                 ],
                 'label' => 'Destinataire :',
-                'data' => $options['data']['email'],
+                'data' => $uneFacture->getFkClient()->getEmail(),
                 'label_attr' => [
                     'class' => 'text-center col-md-5 col-form-label'
                 ],
@@ -40,7 +62,19 @@ class EnvoiFactureType extends AbstractType
                     'class' => 'form-control'
                 ],
                 'label' => 'Objet :',
-                'data' => 'Facture n°'.$options['data']['id'],
+                'data' => 'Facture n°'.$uneFacture->getId(),
+                'label_attr' => [
+                    'class' => 'text-center col-md-5 col-form-label'
+                ],
+                'required' => true
+            ])
+            ->add('piece_jointe', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control-plaintext',
+                    'style' => $color
+                ],
+                'label' => 'P.J :',
+                'data' => $uneFacture->getId().".pdf",
                 'label_attr' => [
                     'class' => 'text-center col-md-5 col-form-label'
                 ],
@@ -53,7 +87,7 @@ class EnvoiFactureType extends AbstractType
                     'rows' => 4,
                 ],
                 'label' => 'Message :',
-                'data' => 'Voici la facture n°'.$options['data']['id'].".",
+                'data' => $message,
                 'label_attr' => [
                     'class' => 'text-center col-md-5 col-form-label'
                 ],
