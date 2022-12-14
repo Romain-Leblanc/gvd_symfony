@@ -28,13 +28,12 @@ class EnvoiFactureType extends AbstractType
         else {
             $color = "color: #BE1E2D;";
         }
-        $message = "Bonjour ".mb_strtoupper($uneFacture->getFkClient()->getNom())." ".ucfirst($uneFacture->getFkClient()->getPrenom()).",<br><br>";
-        $message .= "Vous trouverez en pièce jointe la facture n°".$uneFacture->getId().".<br><br>";
-        $message .= "<br><br>Cordialement,<br>";
+        $message = "Bonjour ".mb_strtoupper($uneFacture->getFkClient()->getNom())." ".ucfirst($uneFacture->getFkClient()->getPrenom()).",\n\n";
+        $message .= "Vous trouverez en pièce jointe la facture n°".$uneFacture->getId().".";
+        $message .= "\n\nCordialement,\n";
         $message .= mb_strtoupper($this->token->getToken()->getUser()->getNom())." ".ucfirst($this->token->getToken()->getUser()->getPrenom());
-        $message .= "<br><br>Garage Vendelais<br><img src='images/logo_64.png' alt='logo' />";
-//        $message .= "<br><br>Garage Vendelais<br>ssd";
-//        dd($message);
+        $message .= "\nGarage Vendelais (G.V.D)";
+
         $builder
             ->add('expediteur', EmailType::class, [
                 'attr' => [
@@ -84,7 +83,7 @@ class EnvoiFactureType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'cols' => 50,
-                    'rows' => 4,
+                    'rows' => 10,
                 ],
                 'label' => 'Message :',
                 'data' => $message,

@@ -17,6 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -140,20 +141,23 @@ class FactureController extends AbstractController
         $fichier = $id.'.pdf';
         $chemin = $this->getParameter('kernel.project_dir')."/public/pdf_facture";
         $cheminComplet = $chemin."/".$fichier;
-        if(file_exists($cheminComplet)) $fichier = true;
 
         // Ce formulaire n'est pas relié à l'entité Facture puisqu'il est différent de cette entité (expediteur, destinataire...)
-        $form = $this->createForm(EnvoiFactureType::class, ["uneFacture" => $uneFacture, "fichier" => $fichier]);
+        $form = $this->createForm(EnvoiFactureType::class, ["uneFacture" => $uneFacture, "fichier" => file_exists($cheminComplet)]);
         $form->handleRequest($request);
 
         // Envoi du mail
         if ($form->isSubmitted() && $form->isValid()) {
-            dd($form->getData());
             $email = (new Email())
                 ->from($form->getData()['expediteur'])
                 ->to($form->getData()['destinataire'])
                 ->subject($form->getData()['objet'])
-                ->html($form->getData()['message']);
+                ->embedFromPath($this->getParameter('kernel.project_dir')."/public/images/logo_64.png", "logo")
+                ->html($form->getData()['message']."\n"."<img src='cid:logo' width='50' height='50' alt='logo' />"
+                );
+            if(file_exists($cheminComplet)) {
+                $email->attachFromPath($cheminComplet, "Facture n°".$id, 'application/pdf');
+            }
 
             try {
                 $mailer->send($email);
@@ -167,7 +171,6 @@ class FactureController extends AbstractController
         return $this->render('facture/envoi.html.twig', [
             'errors' => $form->getErrors(true),
             'formEnvoiFacture' => $form->createView(),
-//            'file_exist' => $fichier,
             'uneFacture' => $uneFacture, // Les informations de cette facture seront affichées avec le template twig
         ]);
     }
