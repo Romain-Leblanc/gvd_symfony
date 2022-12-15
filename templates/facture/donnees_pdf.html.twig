@@ -4,18 +4,20 @@
 {% block body %}
     <table style="width:100%;">
         <tr>
-            <td style="width:65%;font-size:18px;font-weight:bold;color:#000;" align="right">Facture n° {{ uneFacture.id }}</td>
+            <td rowspan="4" style="width:50%;" align="left"><img src="{{ logo }}" alt="logo"></td>
+            <td style="width:50%;font-size:18px;font-weight:bold;color:#000;" align="right">Facture</td>
         </tr>
         <tr>
-            <td style="width:100%;font-weight:bold;" align="right">Référence : {{ uneFacture.id }}</td>
+            <td style="width:auto;font-weight:bold;" align="right">Réf. : {{ uneFacture.id }}</td>
         </tr>
         <tr>
-            <td style="width:100%;" align="right;">Date intervention : {{ uneFacture.getDateFacture|date('d/m/Y') }}</td>
+            <td style="width:auto;" align="right;">Date : {{ uneFacture.getDateFacture|date('d/m/Y') }}</td>
         </tr>
         <tr>
-            <td style="width:100%;" align="right;">Code client : {{ uneFacture.getFkClient.getId }}</td>
+            <td style="width:auto;" align="right;">Code client : {{ uneFacture.getFkClient.getId }}</td>
         </tr>
     </table>
+    <br>
     <table style="width:100%;">
         <tr>
             <td style="width:40%;">Émetteur :</td>
@@ -25,7 +27,7 @@
         <tr>
             <td style="background-color:#C0C0C0;width:40%;padding:10px;vertical-align:top;">
                 <div style="font-weight:bold;">Garage Vendelais</div>
-                7 bd des Entrepreneurs<br>ZI des Garages<br>49000 ANGERS<br><br>Tél. / Fax : (+33)1 23 45 67 89<br>Mail : contact@gvd.test<br>
+                12 rue du Gaulois<br>49350 Gennes-Val-de-Loire<br><br>Tél. / Fax : (+33)1 23 45 67 89<br>Mail : contact@gvd.test<br>
             </td>
             <td style="width:5%;">&nbsp;</td>
             <td style="border: 1px solid #C0C0C0;width:55%;padding-top: 5px;padding-left: 70px;padding-bottom: 5px;padding-right: 0px;vertical-align:middle;">
@@ -95,7 +97,7 @@
                 {% set nb_ligne = nb_ligne + 1 %}
             {% endif %}
         {% endfor %}
-        {% set reste = 625-18*nb_ligne %}
+        {% set reste = 635-18*nb_ligne %}
         {% if reste > 0 %}
             <tr>
                 <td style="height:{{ reste }}px; border: 1px solid #C0C0C0;border-top-style:none;width:15%;text-align:left;">&nbsp;</td>

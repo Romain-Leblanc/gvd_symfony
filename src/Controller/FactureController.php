@@ -15,14 +15,19 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Parsing\Html;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\MimeTypes;
+use Symfony\Component\Mime\MimeTypesInterface;
+use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Routing\Annotation\Route;
 
 class FactureController extends AbstractController
@@ -43,8 +48,9 @@ class FactureController extends AbstractController
     /**
      * @Route("/facture/ajouter", name="facture_ajouter")
      * @IsGranted("ROLE_USER")
+     * @throws \Spipu\Html2Pdf\Exception\Html2PdfException
      */
-    public function ajouter(InterventionRepository $interventionRepository, TVARepository $TVARepository, EtatRepository $etatRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function ajouter(InterventionRepository $interventionRepository, EtatRepository $etatRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         // Retourne la liste des interventions qui sont terminées
         $listeInterventions = $interventionRepository->findBy(['fk_etat' => $etatRepository->findOneBy(['etat' => 'Terminé'])->getId()]);
@@ -80,6 +86,29 @@ class FactureController extends AbstractController
 
             // Met à jour l'etat des interventions à 'Facturé' et associe le dernier n° facture aux identifiants du tableau ci-dessus
             $interventionRepository->updateInterventionByEtatAndNumFacture($tabIdInterventions, $etatRepository->findOneBy(['etat' => 'Facturé'])->getId(), $idFacture);
+
+            // Récupération du logo pour la facture
+            $logo = $this->getParameter('kernel.project_dir')."/public/images/logo_64.png";
+
+            // Génération HTML
+            $html = $this->renderView('facture/donnees_pdf.html.twig', [
+                'uneFacture' => $uneFacture,
+                'listeInterventions' => $listeInterventions,
+                'logo' => $logo
+            ]);
+
+            // Génération nom fichier avec emplacement sauvegarde du PDF sur le disque
+            $fichier = $idFacture.'.pdf';
+            $chemin = $this->getParameter('kernel.project_dir')."/public/pdf_facture";
+            $cheminComplet = $chemin."/".$fichier;
+
+            // Génère et affiche le PDF
+            $pdf = new Html2Pdf('P', 'A4', 'fr');
+            $pdf->pdf->setTitle("Facture n°".$idFacture);
+            $pdf->writeHTML($html);
+            // Enregiste le PDF dans un fichier dans le dossier des factures
+            $data = $pdf->pdf->getPDFData();
+            file_put_contents($cheminComplet, $data);
 
             // Redirection de la page vers le tableau principal
             return $this->redirectToRoute('facture_index');
@@ -127,7 +156,7 @@ class FactureController extends AbstractController
      * @Route("/facture/envoyer/{id}", name="facture_envoyer", defaults={"id" = 0})
      * @IsGranted("ROLE_USER")
      */
-    public function envoyer(int $id, FactureRepository $factureRepository, Request $request, MailerInterface $mailer)
+    public function envoyer(int $id, FactureRepository $factureRepository, Request $request, MailerInterface $mailer): Response
     {
         $uneFacture = $factureRepository->find($id);
 
@@ -139,11 +168,12 @@ class FactureController extends AbstractController
 
         // Vérifie et récupère le fichier PDF de la facture
         $fichier = $id.'.pdf';
-        $chemin = $this->getParameter('kernel.project_dir')."/public/pdf_facture";
-        $cheminComplet = $chemin."/".$fichier;
+        $chemin = $this->getParameter('kernel.project_dir')."/public";
+        $cheminCompletFacture = $chemin."/pdf_facture/".$fichier;
+        $cheminCompletLogo = $chemin."/images/logo_64.png";
 
         // Ce formulaire n'est pas relié à l'entité Facture puisqu'il est différent de cette entité (expediteur, destinataire...)
-        $form = $this->createForm(EnvoiFactureType::class, ["uneFacture" => $uneFacture, "fichier" => file_exists($cheminComplet)]);
+        $form = $this->createForm(EnvoiFactureType::class, ["uneFacture" => $uneFacture, "fichier" => file_exists($cheminCompletFacture)]);
         $form->handleRequest($request);
 
         // Envoi du mail
@@ -152,19 +182,18 @@ class FactureController extends AbstractController
                 ->from($form->getData()['expediteur'])
                 ->to($form->getData()['destinataire'])
                 ->subject($form->getData()['objet'])
-                ->embedFromPath($this->getParameter('kernel.project_dir')."/public/images/logo_64.png", "logo")
-                ->html($form->getData()['message']."\n"."<img src='cid:logo' width='50' height='50' alt='logo' />"
-                );
-            if(file_exists($cheminComplet)) {
-                $email->attachFromPath($cheminComplet, "Facture n°".$id, 'application/pdf');
+                ->embedFromPath($cheminCompletLogo, 'logo')
+                ->html(str_replace("\r\n", "<br>", $form->getData()['message'])."<br><img src='cid:logo' width='50' height='50' alt='logo'>");
+            if(file_exists($cheminCompletFacture)) {
+                $email->attachFromPath($cheminCompletFacture, "Facture n°".$id.".pdf");
             }
 
             try {
                 $mailer->send($email);
                 $request->getSession()->getFlashBag()->add('facture_mail_success', 'Le mail a été envoyé.');
                 return $this->redirectToRoute('facture_index');
-            } catch (TransportExceptionInterface $t) {
-                return $t->getDebug();
+            } catch (\Exception $t) {
+                return new Response($t->getMessage());
             }
         }
 
@@ -178,9 +207,8 @@ class FactureController extends AbstractController
     /**
      * @Route("/facture/telecharger/{id}", name="facture_telecharger", defaults={"id" = 0})
      * @IsGranted("ROLE_USER")
-     * @throws \Spipu\Html2Pdf\Exception\Html2PdfException
      */
-    public function telecharger(FactureRepository $factureRepository, EtatRepository $etatRepository, InterventionRepository $interventionRepository, $id, ParameterBagInterface $parameterBag, Request $request): Response
+    public function telecharger(int $id, FactureRepository $factureRepository, InterventionRepository $interventionRepository, Request $request): Response
     {
         // Récupère toutes les infos sur la facture
         $uneFacture = $factureRepository->findOneBy(['id' => $id]);
@@ -191,31 +219,9 @@ class FactureController extends AbstractController
             return $this->redirectToRoute('facture_index');
         }
 
-        // Récupère toutes les infos des interventions facturées de ce client avec ce n° facture
-        $listeInterventions = $interventionRepository->findBy(['fk_client' => $uneFacture->getFKClient()->getId(), 'fk_facture' => $id]);
-
-        // Génération HTML
-        $html = $this->renderView('facture/donnees_pdf.html.twig', [
-            'uneFacture' => $uneFacture,
-            'listeInterventions' => $listeInterventions
-        ]);
-
-        // Génération nom fichier avec emplacement sauvegarde du PDF sur le disque
-        $fichier = $id.'.pdf';
-        $chemin = $this->getParameter('kernel.project_dir')."/public/pdf_facture";
-        $cheminComplet = $chemin."/".$fichier;
-
-        // Génère et affiche le PDF
-        $pdf = new Html2Pdf('P', 'A4', 'fr');
-        $pdf->pdf->setTitle("Facture n°".$id);
-        $pdf->writeHTML($html);
-        // Enregiste les données du PDF dans un fichier dans le dossier des PDF de facture
-        $data = $pdf->pdf->getPDFData();
-        file_put_contents($cheminComplet, $data);
-        // Affiche le PDF
-        $pdf->output("Facture_".$fichier);
-
-        return new Response;
+        // Récupération puis affichage du PDF de la facture
+        $chemin = $this->getParameter('kernel.project_dir')."/public/pdf_facture/".$id.".pdf";
+        return $this->file($chemin, null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
     /**
