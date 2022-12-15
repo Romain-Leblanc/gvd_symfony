@@ -2,9 +2,9 @@
 
 namespace App\Form;
 
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -28,11 +28,12 @@ class EnvoiFactureType extends AbstractType
         else {
             $color = "color: #BE1E2D;";
         }
-        $message = "Bonjour ".mb_strtoupper($uneFacture->getFkClient()->getNom())." ".ucfirst($uneFacture->getFkClient()->getPrenom()).",\n\n";
+        $message = "Bonjour ".mb_strtoupper($uneFacture->getFkClient()->getNom())." ".ucfirst($uneFacture->getFkClient()->getPrenom()).",<br><br>";
         $message .= "Vous trouverez en pièce jointe la facture n°".$uneFacture->getId().".";
-        $message .= "\n\nCordialement,\n";
+        $message .= "<br><br>Cordialement,<br>";
         $message .= mb_strtoupper($this->token->getToken()->getUser()->getNom())." ".ucfirst($this->token->getToken()->getUser()->getPrenom());
-        $message .= "\nGarage Vendelais (G.V.D)";
+        $message .= "<br>Garage Vendelais";
+        $message .= "<br><br><img src='".$options['data']['cheminLogo']."/images/logo_64.png' alt='logo'>";
 
         $builder
             ->add('expediteur', EmailType::class, [
@@ -79,11 +80,13 @@ class EnvoiFactureType extends AbstractType
                 ],
                 'required' => true
             ])
-            ->add('message', TextareaType::class, [
+            ->add('message', CKEditorType::class, [
+                'config' => [
+                    'height' => 300,
+                    'resize_enabled' => false
+                ],
                 'attr' => [
-                    'class' => 'form-control',
-                    'cols' => 50,
-                    'rows' => 10,
+                    'class' => 'form-control'
                 ],
                 'label' => 'Message :',
                 'data' => $message,

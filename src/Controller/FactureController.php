@@ -87,22 +87,22 @@ class FactureController extends AbstractController
             // Met à jour l'etat des interventions à 'Facturé' et associe le dernier n° facture aux identifiants du tableau ci-dessus
             $interventionRepository->updateInterventionByEtatAndNumFacture($tabIdInterventions, $etatRepository->findOneBy(['etat' => 'Facturé'])->getId(), $idFacture);
 
-            // Récupération du logo pour la facture
+            // Récupération du logo pour le PDF
             $logo = $this->getParameter('kernel.project_dir')."/public/images/logo_64.png";
 
-            // Génération HTML
+            // Génération du contenu du PDF
             $html = $this->renderView('facture/donnees_pdf.html.twig', [
                 'uneFacture' => $uneFacture,
                 'listeInterventions' => $listeInterventions,
                 'logo' => $logo
             ]);
 
-            // Génération nom fichier avec emplacement sauvegarde du PDF sur le disque
+            // Génération nom du fichier avec l'emplacement de sauvegarde du PDF sur le disque
             $fichier = $idFacture.'.pdf';
             $chemin = $this->getParameter('kernel.project_dir')."/public/pdf_facture";
             $cheminComplet = $chemin."/".$fichier;
 
-            // Génère et affiche le PDF
+            // Génère le PDF final
             $pdf = new Html2Pdf('P', 'A4', 'fr');
             $pdf->pdf->setTitle("Facture n°".$idFacture);
             $pdf->writeHTML($html);
@@ -173,7 +173,7 @@ class FactureController extends AbstractController
         $cheminCompletLogo = $chemin."/images/logo_64.png";
 
         // Ce formulaire n'est pas relié à l'entité Facture puisqu'il est différent de cette entité (expediteur, destinataire...)
-        $form = $this->createForm(EnvoiFactureType::class, ["uneFacture" => $uneFacture, "fichier" => file_exists($cheminCompletFacture)]);
+        $form = $this->createForm(EnvoiFactureType::class, ["uneFacture" => $uneFacture, "fichier" => file_exists($cheminCompletFacture), "cheminLogo" => $request->getSchemeAndHttpHost()]);
         $form->handleRequest($request);
 
         // Envoi du mail
@@ -182,8 +182,7 @@ class FactureController extends AbstractController
                 ->from($form->getData()['expediteur'])
                 ->to($form->getData()['destinataire'])
                 ->subject($form->getData()['objet'])
-                ->embedFromPath($cheminCompletLogo, 'logo')
-                ->html(str_replace("\r\n", "<br>", $form->getData()['message'])."<br><img src='cid:logo' width='50' height='50' alt='logo'>");
+                ->html($form->getData()['message']);
             if(file_exists($cheminCompletFacture)) {
                 $email->attachFromPath($cheminCompletFacture, "Facture n°".$id.".pdf");
             }
