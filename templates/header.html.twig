@@ -12,8 +12,8 @@
         </div>
         <div class="offcanvas-body">
             <div id="menu-liens" class="navbar-nav flex-column">
-                <a class="nav-item nav-link {{ menuActif(app.request.attributes.get('_route'), "vehicule") }}" href="{{ path('vehicule_index') }}">Véhicules</a>
                 <a class="nav-item nav-link {{ menuActif(app.request.attributes.get('_route'), "client") }}" href="{{ path('client_index') }}">Clients</a>
+                <a class="nav-item nav-link {{ menuActif(app.request.attributes.get('_route'), "vehicule") }}" href="{{ path('vehicule_index') }}">Véhicules</a>
                 <a class="nav-item nav-link {{ menuActif(app.request.attributes.get('_route'), "intervention") }}" href="{{ path('intervention_index') }}">Interventions</a>
                 <a class="nav-item nav-link {{ menuActif(app.request.attributes.get('_route'), "facture") }}" href="{{ path('facture_index') }}">Factures</a>
             </div>

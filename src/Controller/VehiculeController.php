@@ -20,7 +20,6 @@ class VehiculeController extends AbstractController
 {
     /**
      * @Route("/vehicule", name="vehicule_index")
-     * @IsGranted("ROLE_USER")
      */
     public function index(VehiculeRepository $vehiculeRepository): Response
     {
@@ -33,7 +32,6 @@ class VehiculeController extends AbstractController
 
     /**
      * @Route("/vehicule/ajouter", name="vehicule_ajouter")
-     * @IsGranted("ROLE_USER")
      */
     public function ajouter(Request $request, VehiculeRepository $vehiculeRepository, EntityManagerInterface $entityManager): Response
     {
@@ -78,7 +76,6 @@ class VehiculeController extends AbstractController
 
     /**
      * @Route("/vehicule/modifier/{id}", name="vehicule_modifier", defaults={"id" = 0})
-     * @IsGranted("ROLE_USER")
      */
     public function modifier(int $id, VehiculeRepository $vehiculeRepository, InterventionRepository $interventionRepository, Request $request): Response
     {
@@ -119,7 +116,6 @@ class VehiculeController extends AbstractController
 
     /**
      * @Route("/vehicule/infos", name="vehicule_infos")
-     * @IsGranted("ROLE_USER")
      */
     public function infos(ModeleRepository $modeleRepository, Request $request)
     {

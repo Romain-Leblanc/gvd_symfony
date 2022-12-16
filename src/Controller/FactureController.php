@@ -34,7 +34,6 @@ class FactureController extends AbstractController
 {
     /**
      * @Route("/facture", name="facture_index")
-     * @IsGranted("ROLE_USER")
      */
     public function index(FactureRepository  $factureRepository): Response
     {
@@ -47,7 +46,6 @@ class FactureController extends AbstractController
 
     /**
      * @Route("/facture/ajouter", name="facture_ajouter")
-     * @IsGranted("ROLE_USER")
      * @throws \Spipu\Html2Pdf\Exception\Html2PdfException
      */
     public function ajouter(InterventionRepository $interventionRepository, EtatRepository $etatRepository, Request $request, EntityManagerInterface $entityManager): Response
@@ -123,7 +121,6 @@ class FactureController extends AbstractController
 
     /**
      * @Route("/facture/modifier/{id}", name="facture_modifier", defaults={"id" = 0})
-     * @IsGranted("ROLE_USER")
      */
     public function modifier(FactureRepository $factureRepository, InterventionRepository $interventionRepository, $id, Request $request): Response
     {
@@ -154,7 +151,6 @@ class FactureController extends AbstractController
 
     /**
      * @Route("/facture/envoyer/{id}", name="facture_envoyer", defaults={"id" = 0})
-     * @IsGranted("ROLE_USER")
      */
     public function envoyer(int $id, FactureRepository $factureRepository, Request $request, MailerInterface $mailer): Response
     {
@@ -205,7 +201,6 @@ class FactureController extends AbstractController
 
     /**
      * @Route("/facture/telecharger/{id}", name="facture_telecharger", defaults={"id" = 0})
-     * @IsGranted("ROLE_USER")
      */
     public function telecharger(int $id, FactureRepository $factureRepository, InterventionRepository $interventionRepository, Request $request): Response
     {
@@ -225,7 +220,6 @@ class FactureController extends AbstractController
 
     /**
      * @Route("/facture/infos", name="facture_infos")
-     * @IsGranted("ROLE_USER")
      */
     public function infos(InterventionRepository $interventionRepository, EtatRepository $etatRepository, Request $request)
     {

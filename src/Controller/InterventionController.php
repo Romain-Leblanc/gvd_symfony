@@ -19,7 +19,6 @@ class InterventionController extends AbstractController
 {
     /**
      * @Route("/intervention", name="intervention_index")
-     * @IsGranted("ROLE_USER")
      */
     public function index(InterventionRepository $interventionRepository): Response
     {
@@ -32,7 +31,6 @@ class InterventionController extends AbstractController
 
     /**
      * @Route("/intervention/ajouter", name="intervention_ajouter")
-     * @IsGranted("ROLE_USER")
      */
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -59,7 +57,6 @@ class InterventionController extends AbstractController
 
     /**
      * @Route("/intervention/modifier/{id}", name="intervention_modifier", defaults={"id" = 0})
-     * @IsGranted("ROLE_USER")
      */
     public function modifier(int $id, InterventionRepository $interventionRepository, Request $request): Response
     {
@@ -98,7 +95,6 @@ class InterventionController extends AbstractController
 
     /**
      * @Route("/intervention/infos", name="intervention_infos")
-     * @IsGranted("ROLE_USER")
      */
     public function infos(VehiculeRepository $vehiculeRepository, Request $request)
     {
