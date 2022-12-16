@@ -28,6 +28,11 @@
                     <p class="mb-0 text-dark">{{ nomPrenom(app.user.nom, app.user.prenom) }}</p>
                 </div>
             </div>
+            <div id="menu-admin-lien">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a class="nav-item nav-link text-dark" id="lien-admin" href="#">Accès administrateur</a>
+                {% endif %}
+            </div>
         </div>
     </div>
     <img src="{{ asset('images/logo_cercle.png') }}" alt="logo" id="logo" class="rounded float-left" title="Logo du Garage Vendelais" />

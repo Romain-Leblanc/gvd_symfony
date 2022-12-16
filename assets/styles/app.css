@@ -349,7 +349,7 @@ footer {
     justify-content: space-evenly;
     word-break: break-word;
 }
-.offcanvas-body > #menu-admin > * {
+.offcanvas-body > #menu-admin > *, .offcanvas-body > #menu-admin-lien > * {
     width: 50% !important;
     display: flex;
     flex-direction: row;
@@ -363,6 +363,20 @@ footer {
     justify-content: center;
     align-items: center;
     word-break: break-word;
+}
+.offcanvas-body > #menu-admin-lien {
+    padding-top: 25px;
+    align-items: center;
+    justify-content: center;
+    word-break: break-word;
+}
+.offcanvas-body > #menu-admin-lien a {
+    word-break: break-word;
+    text-align: center;
+    font-weight: bold;
+    width: 100% !important;
+    padding: 5px;
+    border: 1px solid #BE1E2D;
 }
 .div-detail, .div-ajouter-modifier {
     overflow-y: auto;
