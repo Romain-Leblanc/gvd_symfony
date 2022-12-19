@@ -4,6 +4,8 @@
         <meta charset="UTF-8">
         <title>{% block title %}{% endblock %} - G.V.D</title>
         {% block stylesheets %}
+            {{ encore_entry_link_tags('bootstrap') }}
+            {{ encore_entry_link_tags('fontawesome') }}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
 

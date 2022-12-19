@@ -53,4 +53,41 @@ class FactureRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByMoisAnnee(string $annee)
+    {
+        $annee = $annee."%";
+
+        return $this->createQueryBuilder('f')
+            ->select('YEAR(f.date_facture) as annee')
+            ->addSelect('MONTHNAME(f.date_facture) as mois')
+            ->addSelect('COUNT(f.id) as nombre')
+            ->addSelect('SUM(f.montant_ht) as montant')
+            ->where('f.date_facture LIKE :date_facture')
+            ->setParameter('date_facture', $annee)
+            ->groupBy('annee')
+            ->addGroupBy('mois')
+            ->orderBy('MONTH(f.date_facture)')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findByMois(string $annee, string $mois)
+    {
+        $annee = $annee."%";
+
+        return $this->createQueryBuilder('f')
+            ->select('YEAR(f.date_facture) as annee')
+            ->addSelect('MONTHNAME(f.date_facture) as mois')
+            ->addSelect('COUNT(f.id) as nombre')
+            ->addSelect('SUM(f.montant_ht) as montant')
+            ->where('f.date_facture LIKE :annee')
+            ->andWhere('MONTHNAME(f.date_facture) LIKE :mois')
+            ->setParameter('annee', $annee)
+            ->setParameter('mois', $mois)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }

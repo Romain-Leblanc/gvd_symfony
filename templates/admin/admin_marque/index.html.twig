@@ -1,0 +1,53 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Liste marques{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-column gap-2">
+        <div class="float-start">
+            <button class="btn btn-success fs-13">Ajouter</button>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">Marques :</h6>
+            <div id="filter-table" class="d-flex justify-content-center align-items-center gap-3">
+                <label for="filter-admin" class="mb-0 d-flex gap-1">Affichage <span id="min-number">1</span> - <span id="max-number">5</span> sur <span id="limit-number">50</span></label>
+                <select id="filter-admin" class="form-select form-select-sm" onchange="limiteAffichage(this.value);">
+                    <option value="10">10</option>
+                    <option value="10">25</option>
+                </select>
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                    <img id="fleche-gauche-page" src="{{ asset('images/fleche-gauche.png') }}" alt="fleche-gauche">
+                    <img id="fleche-droite-page" src="{{ asset('images/fleche-droite.png') }}" alt="fleche-droite">
+                </div>
+            </div>
+        </div>
+        <div id="div-table">
+            <table class="table table-admin table-admin-marque table-responsive table-hover table-bordered text-center align-middle">
+                <thead class="table-light align-middle">
+                <tr>
+                    <th class="w-15">Id</th>
+                    <th class="w-25">Marque</th>
+                    <th class="w-15">Nombre modèles</th>
+                    <th class="w-20">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for uneMarque in lesMarques %}
+                <tr>
+                    <td class="w-15">{{ uneMarque.id }}</td>
+                    <td class="w-50">{{ uneMarque.marque }}</td>
+                    <td class="w-15">{{ uneMarque.nombre }}</td>
+                    <td>
+                        <div class="div-boutons-admin">
+                            <button class="btn btn-primary fs-11 text-white">Détail</button>
+                            <button class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn btn-danger fs-11"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

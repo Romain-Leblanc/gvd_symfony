@@ -23,10 +23,12 @@ class UtilisateurAuthenticator extends AbstractLoginFormAuthenticator
     public const LOGIN_ROUTE = 'app_connexion';
 
     private UrlGeneratorInterface $urlGenerator;
+    private $security;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(UrlGeneratorInterface $urlGenerator, Security $security)
     {
         $this->urlGenerator = $urlGenerator;
+        $this->security = $security;
     }
 
     public function authenticate(Request $request): Passport
@@ -46,7 +48,13 @@ class UtilisateurAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-         return new RedirectResponse($this->urlGenerator->generate('intervention_index'));
+        if($this->security->isGranted('ROLE_ADMIN')) {
+            return new RedirectResponse($this->urlGenerator->generate('intervention_admin_index'));
+//            return new RedirectResponse($this->urlGenerator->generate('facture_admin_index'));
+        }
+        else {
+            return new RedirectResponse($this->urlGenerator->generate('intervention_index'));
+        }
     }
 
     protected function getLoginUrl(Request $request): string

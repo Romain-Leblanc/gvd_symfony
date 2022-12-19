@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Marque;
+use App\Entity\Modele;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -39,28 +41,16 @@ class MarqueRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Marque[] Returns an array of Marque objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Marque
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findAllWithNombreModele()
+    {
+        return $this->createQueryBuilder('ma')
+            ->select('ma.id')
+            ->addSelect('ma.marque')
+            ->addSelect('COUNT(mo.id) as nombre')
+            ->innerJoin(Modele::class, 'mo', Join::WITH, 'ma.id = mo.fk_marque')
+            ->groupBy('ma.id')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }
