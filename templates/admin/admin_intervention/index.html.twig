@@ -1,20 +1,54 @@
 {% extends 'base_admin.html.twig' %}
 
-{% block title %}Hello AdminInterventionController!{% endblock %}
+{% block title %}Liste interventions{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/wamp64/www/gvd_symfony/src/Controller/Admin/AdminInterventionController.php'|file_link(0) }}">src/Controller/Admin/AdminInterventionController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/wamp64/www/gvd_symfony/templates/admin/admin_intervention/index.html.twig'|file_link(0) }}">templates/admin/admin_intervention/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <div class="d-flex flex-column gap-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-success fs-13">Ajouter</button>
+            <form action="{{ path('intervention_admin_index') }}" method="GET" class="fs-13">
+                <label for="filter-admin" class="mb-0 p-0 d-flex justify-content-end">Nombre lignes :</label>
+                <select id="filter-admin" class="form-select form-select-sm fs-13" name="max" onchange="submit();">
+                    {% for unChoix in choixListe %}
+                        <option
+                                {% if app.request.query.get('max') is not null and unChoix == app.request.query.get('max') %}selected{% endif %}
+                                value="{{ unChoix }}">{{ unChoix }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+        <div class="d-flex justify-content-center align-items-center">
+            {{ knp_pagination_render(lesInterventions) }}
+        </div>
+        <table style="overflow-x: auto" class="table table-admin table-admin-marque table-responsive table-hover table-bordered text-center align-middle">
+            <thead class="table-light align-middle">
+            <tr>
+                <th class="{% if lesInterventions.isSorted('i.id') %}sorted{% endif %}">{{ knp_pagination_sortable(lesInterventions, 'Id', 'i.id') }}</th>
+                <th class="{% if lesInterventions.isSorted('i.date_intervention') %}sorted{% endif %}">{{ knp_pagination_sortable(lesInterventions, 'Date', 'i.date_intervention') }}</th>
+                <th class="{% if lesInterventions.isSorted('c.nom') %}sorted{% endif %}">{{ knp_pagination_sortable(lesInterventions, 'Client', 'c.nom') }}</th>
+                <th class="{% if lesInterventions.isSorted('ma.marque') %}sorted{% endif %}">{{ knp_pagination_sortable(lesInterventions, 'Véhicule', 'ma.marque') }}</th>
+                <th class="w-15">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for uneIntervention in lesInterventions %}
+                <tr>
+                    <td>{{ uneIntervention.id }}</td>
+                    <td>{{ dateEnFrancais(uneIntervention.getDateIntervention) }}</td>
+                    <td>{{ nomPrenom(uneIntervention.getFKClient.getNom,uneIntervention.getFKClient.getPrenom) }}</td>
+                    <td>{{ marqueModele(uneIntervention.getFKVehicule.getFKMarque.getMarque,uneIntervention.getFKVehicule.getFKModele.getModele) }}</td>
+                    <td>
+                        <div class="div-boutons-admin">
+                            <a href="{{ path('intervention_admin_detail', { 'id': uneIntervention.id }) }}" class="btn btn-primary fs-11 text-white">Détail</a>
+                            {% if uneIntervention.getFkEtat.getEtat != "Facturé" %}
+                                <a href="#" class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></a>
+                                <a href="#" class="btn btn-danger fs-11"><i class="fa-solid fa-trash"></i></a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Détail intervention{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-column gap-4">
+        <div class="d-flex justify-content-center align-items-center">
+            <h6 class="mb-0 text-primary text-decoration-underline">Intervention n°{{ formDetailIntervention.vars.value.getId }}</h6>
+        </div>
+        <div class="div-form">
+            {{ form_start(formDetailIntervention) }}
+            <div class="d-flex flex-column gap-3">
+                <div class="row">
+                    {{ form_label(formDetailIntervention.date_intervention) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formDetailIntervention.date_intervention) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formDetailIntervention.fk_client) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formDetailIntervention.fk_client) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formDetailIntervention.fk_vehicule) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formDetailIntervention.fk_vehicule) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formDetailIntervention.fk_etat) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formDetailIntervention.fk_etat) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formDetailIntervention.detail_intervention) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formDetailIntervention.detail_intervention) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formDetailIntervention.duree_intervention) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formDetailIntervention.duree_intervention) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formDetailIntervention.montant_ht) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formDetailIntervention.montant_ht) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formDetailIntervention.fk_facture) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formDetailIntervention.fk_facture) }}
+                    </div>
+                </div>
+            </div>
+            {{ form_end(formDetailIntervention) }}
+        </div>
+    </div>
+{% endblock %}

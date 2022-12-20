@@ -31,6 +31,12 @@ html {
 .table-admin {
     font-size: 14px !important;
 }
+.w-5 {
+    width: 5%;
+}
+.w-10 {
+    width: 10%;
+}
 .w-15 {
     width: 15%;
 }
@@ -64,6 +70,11 @@ html {
 }
 .table-admin-facture tfoot {
     background-color: lightgrey;
+}
+.div-form {
+    height: 550px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 @media screen and (min-width: 992px) {
     .div-boutons-admin {
