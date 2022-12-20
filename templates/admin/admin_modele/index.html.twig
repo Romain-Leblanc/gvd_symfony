@@ -1,20 +1,51 @@
 {% extends 'base_admin.html.twig' %}
 
-{% block title %}Hello AdminModeleController!{% endblock %}
+{% block title %}Liste modèles{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/wamp64/www/gvd_symfony/src/Controller/Admin/AdminModeleController.php'|file_link(0) }}">src/Controller/Admin/AdminModeleController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/wamp64/www/gvd_symfony/templates/admin/admin_modele/index.html.twig'|file_link(0) }}">templates/admin/admin_modele/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <div class="d-flex flex-column gap-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-success fs-13">Ajouter</button>
+            <form action="{{ path('modele_admin_index') }}" method="GET" class="fs-13">
+                <label for="filter-admin" class="mb-0 p-0 d-flex justify-content-end">Nombre lignes :</label>
+                <select id="filter-admin" class="form-select form-select-sm fs-13" name="max" onchange="submit();">
+                    {% for unChoix in choixListe %}
+                        <option
+                                {% if app.request.query.get('max') is not null and unChoix == app.request.query.get('max') %}selected{% endif %}
+                                value="{{ unChoix }}">{{ unChoix }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+        <div class="d-flex justify-content-center align-items-center">
+            {{ knp_pagination_render(lesModeles) }}
+        </div>
+        <div id="div-table">
+            <table class="table table-admin table-admin-marque table-responsive table-hover table-bordered text-center align-middle">
+                <thead class="table-light align-middle">
+                <tr>
+                    <th class="w-15 {% if lesModeles.isSorted('mo.id') %}sorted{% endif %}">{{ knp_pagination_sortable(lesModeles, 'Id', 'mo.id') }}</th>
+                    <th class="w-30 {% if lesModeles.isSorted('ma.marque') %}sorted{% endif %}">{{ knp_pagination_sortable(lesModeles, 'Marque', 'ma.marque') }}</th>
+                    <th class="w-30 {% if lesModeles.isSorted('mo.modele') %}sorted{% endif %}">{{ knp_pagination_sortable(lesModeles, 'Modèle', 'mo.modele') }}</th>
+                    <th class="w-15">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for unModele in lesModeles %}
+                    <tr>
+                        <td class="w-15">{{ unModele.id }}</td>
+                        <td class="w-30">{{ unModele.getFkMarque.getMarque }}</td>
+                        <td class="w-30">{{ unModele.modele }}</td>
+                        <td>
+                            <div class="div-boutons-admin">
+                                <button class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn btn-danger fs-11"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
