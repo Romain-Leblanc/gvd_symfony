@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Facture;
+use App\Entity\Intervention;
 use App\Form\AjoutFactureType;
 use App\Form\EnvoiFactureType;
 use App\Form\ModificationFactureType;
+use App\Repository\ClientRepository;
 use App\Repository\EtatRepository;
 use App\Repository\FactureRepository;
 use App\Repository\InterventionRepository;
@@ -85,28 +87,8 @@ class FactureController extends AbstractController
             // Met à jour l'etat des interventions à 'Facturé' et associe le dernier n° facture aux identifiants du tableau ci-dessus
             $interventionRepository->updateInterventionByEtatAndNumFacture($tabIdInterventions, $etatRepository->findOneBy(['etat' => 'Facturé'])->getId(), $idFacture);
 
-            // Récupération du logo pour le PDF
-            $logo = $this->getParameter('kernel.project_dir')."/public/images/logo_64.png";
-
-            // Génération du contenu du PDF
-            $html = $this->renderView('facture/donnees_pdf.html.twig', [
-                'uneFacture' => $uneFacture,
-                'listeInterventions' => $listeInterventions,
-                'logo' => $logo
-            ]);
-
-            // Génération nom du fichier avec l'emplacement de sauvegarde du PDF sur le disque
-            $fichier = $idFacture.'.pdf';
-            $chemin = $this->getParameter('kernel.project_dir')."/public/pdf_facture";
-            $cheminComplet = $chemin."/".$fichier;
-
-            // Génère le PDF final
-            $pdf = new Html2Pdf('P', 'A4', 'fr');
-            $pdf->pdf->setTitle("Facture n°".$idFacture);
-            $pdf->writeHTML($html);
-            // Enregiste le PDF dans un fichier dans le dossier des factures
-            $data = $pdf->pdf->getPDFData();
-            file_put_contents($cheminComplet, $data);
+            // Génère et enregistre le PDF
+            $this->genererPdf($uneFacture, $listeInterventions);
 
             // Redirection de la page vers le tableau principal
             return $this->redirectToRoute('facture_index');
@@ -122,7 +104,7 @@ class FactureController extends AbstractController
     /**
      * @Route("/facture/modifier/{id}", name="facture_modifier", defaults={"id" = 0})
      */
-    public function modifier(FactureRepository $factureRepository, InterventionRepository $interventionRepository, $id, Request $request): Response
+    public function modifier(int $id, FactureRepository $factureRepository, InterventionRepository $interventionRepository, TVARepository $TVARepository, ClientRepository $clientRepository, Request $request): Response
     {
         $uneFacture = $factureRepository->find($id);
         $listeInterventions = $interventionRepository->findBy(['fk_client' => $uneFacture->getFKClient()->getId(), 'fk_facture' => $uneFacture->getId()]);
@@ -133,11 +115,27 @@ class FactureController extends AbstractController
             return $this->redirectToRoute('facture_index');
         }
 
+        // Récupère les données du client et du taux TVA de la facture
+        // Utilisés après la soumission du formulaire puisque les champs "client" et "facture" sont désactivés
+        $client = $uneFacture->getFkClient();
+        $taux = $uneFacture->getFkTaux();
+
         $form = $this->createForm(ModificationFactureType::class, $uneFacture);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Met à jour la facture
             $factureRepository->updateFacture($uneFacture);
+
+            // Définit les valeurs de l'objet Facture avec les variables précédentes contenant ces informations
+            $uneFacture->setFkClient($client);
+            $uneFacture->setFkTaux($taux);
+
+            // Récupère les interventions de la facture
+            $listeInterventions = $interventionRepository->findBy(['fk_facture' => $uneFacture->getId()]);
+
+            // Génère le PDF de la facture avec les nouvelles informations
+            $this->genererPdf($uneFacture, $listeInterventions);
 
             return $this->redirectToRoute('facture_index');
         }
@@ -166,10 +164,9 @@ class FactureController extends AbstractController
         $fichier = $id.'.pdf';
         $chemin = $this->getParameter('kernel.project_dir')."/public";
         $cheminCompletFacture = $chemin."/pdf_facture/".$fichier;
-        $cheminCompletLogo = $chemin."/images/logo_64.png";
 
         // Ce formulaire n'est pas relié à l'entité Facture puisqu'il est différent de cette entité (expediteur, destinataire...)
-        $form = $this->createForm(EnvoiFactureType::class, ["uneFacture" => $uneFacture, "fichier" => file_exists($cheminCompletFacture), "cheminLogo" => $request->getSchemeAndHttpHost()]);
+        $form = $this->createForm(EnvoiFactureType::class, ["uneFacture" => $uneFacture, "cheminLogo" => $request->getSchemeAndHttpHost()]);
         $form->handleRequest($request);
 
         // Envoi du mail
@@ -179,6 +176,7 @@ class FactureController extends AbstractController
                 ->to($form->getData()['destinataire'])
                 ->subject($form->getData()['objet'])
                 ->html($form->getData()['message']);
+            // Si le fichier pour la pièce jointe existe, on l'ajoute au mail
             if(file_exists($cheminCompletFacture)) {
                 $email->attachFromPath($cheminCompletFacture, "Facture n°".$id.".pdf");
             }
@@ -195,6 +193,7 @@ class FactureController extends AbstractController
         return $this->render('facture/envoi.html.twig', [
             'errors' => $form->getErrors(true),
             'formEnvoiFacture' => $form->createView(),
+            "fichier" => false,
             'uneFacture' => $uneFacture, // Les informations de cette facture seront affichées avec le template twig
         ]);
     }
@@ -202,7 +201,7 @@ class FactureController extends AbstractController
     /**
      * @Route("/facture/telecharger/{id}", name="facture_telecharger", defaults={"id" = 0})
      */
-    public function telecharger(int $id, FactureRepository $factureRepository, InterventionRepository $interventionRepository, Request $request): Response
+    public function telecharger(int $id, FactureRepository $factureRepository, Request $request): Response
     {
         // Récupère toutes les infos sur la facture
         $uneFacture = $factureRepository->findOneBy(['id' => $id]);
@@ -216,6 +215,32 @@ class FactureController extends AbstractController
         // Récupération puis affichage du PDF de la facture
         $chemin = $this->getParameter('kernel.project_dir')."/public/pdf_facture/".$id.".pdf";
         return $this->file($chemin, null, ResponseHeaderBag::DISPOSITION_INLINE);
+    }
+
+    public function genererPdf(Facture $facture, array $intervention) {
+        // Récupération du logo pour le PDF
+        $logo = $this->getParameter('kernel.project_dir')."/public/images/logo_64.png";
+
+        // Génération du contenu du PDF
+        $html = $this->renderView('facture/donnees_pdf.html.twig', [
+            'uneFacture' => $facture,
+            'listeInterventions' => $intervention,
+            'logo' => $logo
+        ]);
+
+        // Génération nom du fichier avec l'emplacement de sauvegarde du PDF sur le disque
+        $fichier = $facture->getId().'.pdf';
+        $chemin = $this->getParameter('kernel.project_dir')."/public/pdf_facture";
+        $cheminComplet = $chemin."/".$fichier;
+
+        // Génère le PDF final
+        $pdf = new Html2Pdf('P', 'A4', 'fr');
+        $pdf->pdf->setTitle("Facture n°".$facture->getId());
+        $pdf->writeHTML($html);
+
+        // Enregiste le PDF dans un fichier dans le dossier des factures
+        $data = $pdf->pdf->getPDFData();
+        file_put_contents($cheminComplet, $data);
     }
 
     /**

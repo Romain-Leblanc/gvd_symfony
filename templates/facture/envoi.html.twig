@@ -30,9 +30,13 @@
                 </div>
             </div>
             <div class="div-detail mb-3">
-                {{ form_label(formEnvoiFacture.piece_jointe) }}
-                <div class="col-lg-5 col-md-6">
-                    {{ form_widget(formEnvoiFacture.piece_jointe) }}
+                <p class="text-center col-md-5 col-form-label">P.J :</p>
+                <div class="col-lg-5 col-md-6 piece-jointe-facture">
+                    {% if fichier == true %}
+                        <a href="{{ path('facture_telecharger', { 'id': uneFacture.id }) }}" target="_blank" class="link-success">{{ uneFacture.id ~ ".pdf" }}</a>
+                    {% else %}
+                        <a href="{{ path('facture_telecharger', { 'id': uneFacture.id }) }}" target="_blank" class="link-danger">{{ uneFacture.id ~ ".pdf" }}</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="div-detail mb-3">

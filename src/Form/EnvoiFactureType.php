@@ -21,13 +21,7 @@ class EnvoiFactureType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $uneFacture = $options['data']['uneFacture'];
-        // Définit la couleur du texte du champ "piece-jointe" suivant si le fichier PDF existe
-        if($options['data']['fichier'] === true) {
-            $color = "color: green;";
-        }
-        else {
-            $color = "color: #BE1E2D;";
-        }
+        // Génère le contenu du mail
         $message = "Bonjour ".mb_strtoupper($uneFacture->getFkClient()->getNom())." ".ucfirst($uneFacture->getFkClient()->getPrenom()).",<br><br>";
         $message .= "Vous trouverez en pièce jointe la facture n°".$uneFacture->getId().".";
         $message .= "<br><br>Cordialement,<br>";
@@ -63,18 +57,6 @@ class EnvoiFactureType extends AbstractType
                 ],
                 'label' => 'Objet :',
                 'data' => 'Facture n°'.$uneFacture->getId(),
-                'label_attr' => [
-                    'class' => 'text-center col-md-5 col-form-label'
-                ],
-                'required' => true
-            ])
-            ->add('piece_jointe', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control-plaintext',
-                    'style' => $color
-                ],
-                'label' => 'P.J :',
-                'data' => $uneFacture->getId().".pdf",
                 'label_attr' => [
                     'class' => 'text-center col-md-5 col-form-label'
                 ],

@@ -6,12 +6,16 @@ use App\Entity\Client;
 use App\Entity\Facture;
 use App\Entity\MoyenPaiement;
 use App\Entity\TVA;
+use App\Form\EventSubscriber\FactureSubscriber;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ModificationFactureType extends AbstractType
@@ -80,10 +84,10 @@ class ModificationFactureType extends AbstractType
                 ],
                 'required' => true
             ])
-            ->add('montant_ht', HiddenType::class)
-            ->add('montant_tva', HiddenType::class)
-            ->add('montant_ttc', HiddenType::class)
-        ;
+            ->add('client_id', HiddenType::class, ['required' => true, 'mapped' => false, 'data' => $options['data']->getFkClient()->getId()])
+            ->add('montant_ht', HiddenType::class, ['required' => true])
+            ->add('montant_tva', HiddenType::class, ['required' => true])
+            ->add('montant_ttc', HiddenType::class, ['required' => true])
         ;
     }
 

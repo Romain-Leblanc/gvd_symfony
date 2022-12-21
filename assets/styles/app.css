@@ -118,6 +118,11 @@ footer {
         text-align: end;
         margin: 0;
     }
+    .piece-jointe-facture {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+    }
 }
 @media screen and (min-width: 1300px) and (max-width: 1449px) {
     .div-container {
@@ -163,6 +168,11 @@ footer {
     .p-montant {
         text-align: end;
         margin: 0;
+    }
+    .piece-jointe-facture {
+        display: flex;
+        justify-content: start;
+        align-items: center;
     }
 }
 @media screen and (min-width: 992px) and (max-width: 1299px) {
@@ -213,6 +223,11 @@ footer {
         text-align: end;
         margin: 0;
     }
+    .piece-jointe-facture {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+    }
 }
 @media screen and (max-width: 991px) {
     .div-detail {
@@ -237,6 +252,11 @@ footer {
     }
     .input-50-date {
         width: 45%;
+    }
+    .piece-jointe-facture {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
@@ -273,6 +293,11 @@ footer {
     }
     .div-titre-montant {
         text-align: end;
+    }
+    .piece-jointe-facture {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 @media screen and (max-width: 767px) {
@@ -314,6 +339,11 @@ footer {
     .p-montant {
         text-align: end;
         margin: 0;
+    }
+    .piece-jointe-facture {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 .flex-1 {
