@@ -1,7 +1,57 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_admin.html.twig' %}
 
 {% block title %}Liste utilisateurs{% endblock %}
 
 {% block body %}
-    {{ dump(lesUtilisateurs) }}
+    <div class="d-flex flex-column gap-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="{{ path('utilisateur_admin_ajouter') }}" class="btn btn-success fs-13">Ajouter</a>
+            <form action="{{ path('utilisateur_admin_index') }}" method="GET" class="fs-13">
+                <label for="filter-admin" class="mb-0 p-0 d-flex justify-content-end">Nombre lignes :</label>
+                <select id="filter-admin" class="form-select form-select-sm fs-13" name="max" onchange="submit();">
+                    {% for unChoix in choixListe %}
+                        <option
+                                {% if app.request.query.get('max') is not null and unChoix == app.request.query.get('max') %}selected{% endif %}
+                                value="{{ unChoix }}">{{ unChoix }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+        <div class="d-flex justify-content-center align-items-center">
+            {{ knp_pagination_render(lesUtilisateurs) }}
+        </div>
+        {% for notice in app.flashes('utilisateur') %}
+            <div class="alert alert-danger" role="alert">{{ notice|nl2br }}</div>
+        {% endfor %}
+        <table style="overflow-x: auto" class="table table-admin table-admin-marque table-responsive table-hover table-bordered text-center align-middle">
+            <thead class="table-light align-middle">
+            <tr>
+                <th class="{% if lesUtilisateurs.isSorted('u.id') %}sorted{% endif %}">{{ knp_pagination_sortable(lesUtilisateurs, 'Id', 'u.id') }}</th>
+                <th class="{% if lesUtilisateurs.isSorted('u.nom') %}sorted{% endif %}">{{ knp_pagination_sortable(lesUtilisateurs, 'Nom/prénom', 'u.nom') }}</th>
+                <th class="{% if lesUtilisateurs.isSorted('u.roles') %}sorted{% endif %}">{{ knp_pagination_sortable(lesUtilisateurs, 'Rôle', 'u.roles') }}</th>
+                <th class="w-15">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for unUtilisateur in lesUtilisateurs %}
+                <tr>
+                    <td>{{ unUtilisateur.id }}</td>
+                    <td>{{ nomPrenom(unUtilisateur.getNom,unUtilisateur.getPrenom) }}</td>
+                    {% if "ROLE_ADMIN" in unUtilisateur.getRoles %}
+                        <td>{{ "Administrateur" }}</td>
+                    {% else %}
+                        <td>{{ "Utilisateur" }}</td>
+                    {% endif %}
+                    <td>
+                        <div class="div-boutons-admin">
+                            <a href="{{ path('utilisateur_admin_detail', { 'id': unUtilisateur.id }) }}" class="btn btn-primary fs-11 text-white">Détail</a>
+                            <a href="{{ path('utilisateur_admin_modifier', { 'id': unUtilisateur.id }) }}" class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></a>
+                            {{ include('admin/admin_utilisateur/_delete_form.html.twig') }}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

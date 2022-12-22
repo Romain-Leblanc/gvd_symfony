@@ -1,0 +1,45 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Détail utilisateur{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-column gap-4">
+        <div class="d-flex justify-content-center align-items-center">
+            <h6 class="mb-0 text-primary text-decoration-underline">Utilisateur n°{{ formDetailUtilisateur.vars.value.getId }}</h6>
+        </div>
+        <div class="div-form">
+            <div class="d-flex flex-column gap-3">
+                <div class="row">
+                    {{ form_label(formDetailUtilisateur.nom) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formDetailUtilisateur.nom) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formDetailUtilisateur.prenom) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formDetailUtilisateur.prenom) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formDetailUtilisateur.email) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formDetailUtilisateur.email) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <p class="mb-0 fst-italic">Le mot de passe n'est pas affiché</p>
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formDetailUtilisateur.roles) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formDetailUtilisateur.roles) }}
+                    </div>
+                </div>
+            </div>
+            {{ form_end(formDetailUtilisateur) }}
+        </div>
+    </div>
+{% endblock %}
