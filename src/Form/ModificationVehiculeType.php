@@ -14,6 +14,8 @@ use App\Validator\Immatriculation;
 use App\Validator\Kilometrage;
 use App\Validator\Modele as modele_validator;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -53,6 +55,13 @@ class ModificationVehiculeType extends AbstractType
                 'class' => Marque::class,
                 'choice_label' => function(Marque $marque){
                     return mb_strtoupper($marque->getMarque());
+                },
+                // Retourne la liste des marques qui ont au moins 1 modèle d'enregistré dans la table "Modèle"
+                'query_builder' => function(EntityRepository $entityRepository) {
+                    return $entityRepository->createQueryBuilder("ma")
+                        ->innerJoin(Modele::class, 'mo', Join::WITH, 'ma.id = mo.fk_marque')
+                        ->distinct()
+                        ;
                 },
                 'attr' => [
                     'class' => 'form-select text-center',

@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\Utilisateur;
 use App\Form\Admin\AdminAjoutUtilisateurType;
-use App\Form\Admin\AdminDetailUtilisateurType;
 use App\Form\Admin\AdminModificationUtilisateurType;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -145,7 +144,7 @@ class AdminUtilisateurController extends AbstractController
             $request->getSession()->getFlashBag()->add('utilisateur', 'Cet utilisateur n\'existe pas.');
         }
         elseif ($this->isCsrfTokenValid('delete'.$unUtilisateur->getId(), $request->request->get('_token'))) {
-            // Vérifie le token puis supprime l'utilisateur
+            // Vérifie le token puis supprime cet élément
             $utilisateurRepository->remove($unUtilisateur, true);
         }
 

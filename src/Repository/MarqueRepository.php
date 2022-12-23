@@ -40,17 +40,4 @@ class MarqueRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
-    public function findAllWithNombreModele()
-    {
-        return $this->createQueryBuilder('ma')
-            ->select('ma.id')
-            ->addSelect('ma.marque')
-            ->addSelect('COUNT(mo.id) as nombre')
-            ->innerJoin(Modele::class, 'mo', Join::WITH, 'ma.id = mo.fk_marque')
-            ->groupBy('ma.id')
-            ->getQuery()
-            ->getResult()
-            ;
-    }
 }

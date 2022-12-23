@@ -5,7 +5,7 @@
 {% block body %}
     <div class="d-flex flex-column gap-2">
         <div class="d-flex justify-content-between align-items-center">
-            <button class="btn btn-success fs-13">Ajouter</button>
+            <a href="{{ path('modele_admin_ajouter') }}" class="btn btn-success fs-13">Ajouter</a>
             <form action="{{ path('modele_admin_index') }}" method="GET" class="fs-13">
                 <label for="filter-admin" class="mb-0 p-0 d-flex justify-content-end">Nombre lignes :</label>
                 <select id="filter-admin" class="form-select form-select-sm fs-13" name="max" onchange="submit();">
@@ -20,6 +20,9 @@
         <div class="d-flex justify-content-center align-items-center">
             {{ knp_pagination_render(lesModeles) }}
         </div>
+        {% for notice in app.flashes('modele') %}
+            <div class="alert alert-danger" role="alert">{{ notice|nl2br }}</div>
+        {% endfor %}
         <div id="div-table">
             <table class="table table-admin table-admin-marque table-responsive table-hover table-bordered text-center align-middle">
                 <thead class="table-light align-middle">
@@ -33,13 +36,17 @@
                 <tbody>
                 {% for unModele in lesModeles %}
                     <tr>
-                        <td class="w-15">{{ unModele.id }}</td>
-                        <td class="w-30">{{ unModele.getFkMarque.getMarque }}</td>
-                        <td class="w-30">{{ unModele.modele }}</td>
+                        <td class="w-15">{{ unModele[0].id }}</td>
+                        <td class="w-30">{{ unModele[0].getFkMarque.getMarque }}</td>
+                        <td class="w-30">{{ unModele[0].modele }}</td>
                         <td>
                             <div class="div-boutons-admin">
-                                <button class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn btn-danger fs-11"><i class="fa-solid fa-trash"></i></button>
+                                {% if unModele.nombreVehicule == 0 %}
+                                    <a href="{{ path('modele_admin_modifier', { 'id': unModele[0].id }) }}" class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></a>
+                                    {{ include('admin/admin_modele/_delete_form.html.twig') }}
+                                {% else %}
+                                    <p class="mb-0">Action désactivée</p>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
