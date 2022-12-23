@@ -1,11 +1,11 @@
 {% extends 'base_admin.html.twig' %}
 
-{% block title %}Modification utilisateur{% endblock %}
+{% block title %}Ajout utilisateur{% endblock %}
 
 {% block body %}
     <div class="d-flex flex-column gap-4">
         <div class="d-flex justify-content-center align-items-center">
-            <h6 class="mb-0 text-primary text-decoration-underline">Utilisateur n°{{ formAjoutUtilisateur.vars.value.getId }}</h6>
+            <h6 class="mb-0 text-primary text-decoration-underline">Ajout utilisateur</h6>
         </div>
         {% if errors is defined %}
             {% for error in errors %}

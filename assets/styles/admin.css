@@ -71,10 +71,13 @@ html {
 .table-admin-facture tfoot {
     background-color: lightgrey;
 }
-.div-form {
+.div-form, .div-detail {
     height: 550px;
     overflow-y: auto;
     overflow-x: hidden;
+}
+.p-detail-titre {
+    text-align: center !important;
 }
 @media screen and (min-width: 992px) {
     .div-boutons-admin {
@@ -92,5 +95,26 @@ html {
         justify-content: center;
         gap: 5px;
         vertical-align: middle;
+    }
+}
+@media screen and (min-width: 768px) {
+    .div-detail > div > .row > div {
+        border-top: 1px solid #dddddd;
+        border-bottom: 1px solid #dddddd;
+    }
+    .p-detail-contenu {
+        text-align: start !important;
+    }
+}
+@media screen and (max-width: 767px) {
+    .div-detail > div > .row {
+        border-top: 1px solid #dddddd;
+        border-bottom: 1px solid #dddddd;
+    }
+    .div-detail > div > .row > div {
+        border: 0;
+    }
+    .p-detail-contenu {
+        text-align: center !important;
     }
 }

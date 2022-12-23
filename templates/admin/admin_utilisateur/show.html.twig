@@ -5,41 +5,55 @@
 {% block body %}
     <div class="d-flex flex-column gap-4">
         <div class="d-flex justify-content-center align-items-center">
-            <h6 class="mb-0 text-primary text-decoration-underline">Utilisateur n°{{ formDetailUtilisateur.vars.value.getId }}</h6>
+            <h6 class="mb-0 text-primary text-decoration-underline">Utilisateur n°{{ unUtilisateur.id }}</h6>
         </div>
-        <div class="div-form">
+        <div class="div-detail">
             <div class="d-flex flex-column gap-3">
-                <div class="row">
-                    {{ form_label(formDetailUtilisateur.nom) }}
-                    <div class="col-lg-5 col-md-6 row mx-0">
-                        {{ form_widget(formDetailUtilisateur.nom) }}
+                <div class="row justify-content-center">
+                    <div class="py-2 col-md-5">
+                        <p class="mb-0 p-detail-titre fst-italic">Nom :</p>
+                    </div>
+                    <div class="py-2 col-lg-5 col-md-6 row mx-0 align-items-center text-break">
+                        <p class="mb-0 p-detail-contenu">{{ unUtilisateur.nom|upper }}</p>
                     </div>
                 </div>
-                <div class="row">
-                    {{ form_label(formDetailUtilisateur.prenom) }}
-                    <div class="col-lg-5 col-md-6 row mx-0">
-                        {{ form_widget(formDetailUtilisateur.prenom) }}
+                <div class="row justify-content-center">
+                    <div class="py-2 col-md-5">
+                        <p class="mb-0 p-detail-titre fst-italic">Prénom :</p>
+                    </div>
+                    <div class="py-2 col-lg-5 col-md-6 row mx-0 align-items-center text-break">
+                        <p class="mb-0 p-detail-contenu">{{ unUtilisateur.prenom|capitalize }}</p>
                     </div>
                 </div>
-                <div class="row">
-                    {{ form_label(formDetailUtilisateur.email) }}
-                    <div class="col-lg-5 col-md-6 row mx-0">
-                        {{ form_widget(formDetailUtilisateur.email) }}
+                <div class="row justify-content-center">
+                    <div class="py-2 col-md-5">
+                        <p class="mb-0 p-detail-titre fst-italic">Email :</p>
+                    </div>
+                    <div class="py-2 col-lg-5 col-md-6 row mx-0 align-items-center text-break">
+                        <p class="mb-0 p-detail-contenu">{{ unUtilisateur.email }}</p>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="d-flex justify-content-center align-items-center">
-                        <p class="mb-0 fst-italic">Le mot de passe n'est pas affiché</p>
+                <div class="row justify-content-center">
+                    <div class="py-2 col-md-5">
+                        <p class="mb-0 p-detail-titre fst-italic">Mot de passe :</p>
+                    </div>
+                    <div class="py-2 col-lg-5 col-md-6 row mx-0 align-items-center text-break">
+                        <p class="mb-0 p-detail-contenu">N'est pas affiché</p>
                     </div>
                 </div>
-                <div class="row">
-                    {{ form_label(formDetailUtilisateur.roles) }}
-                    <div class="col-lg-5 col-md-6 row mx-0">
-                        {{ form_widget(formDetailUtilisateur.roles) }}
+                <div class="row justify-content-center">
+                    <div class="py-2 col-md-5">
+                        <p class="mb-0 p-detail-titre fst-italic">Rôle :</p>
+                    </div>
+                    <div class="py-2 col-lg-5 col-md-6 row mx-0 align-items-center text-break">
+                        {% if "ROLE_ADMIN" in unUtilisateur.getRoles %}
+                            <p class="mb-0 p-detail-contenu">Administrateur</p>
+                        {% else %}
+                            <p class="mb-0 p-detail-contenu">Utilisateur</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-            {{ form_end(formDetailUtilisateur) }}
         </div>
     </div>
 {% endblock %}

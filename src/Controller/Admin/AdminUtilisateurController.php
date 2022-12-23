@@ -74,12 +74,8 @@ class AdminUtilisateurController extends AbstractController
             return $this->redirectToRoute('utilisateur_admin_index');
         }
 
-        $form = $this->createForm(AdminDetailUtilisateurType::class, $unUtilisateur);
-        $form->handleRequest($request);
-
         return $this->render('admin/admin_utilisateur/show.html.twig', [
-            'errors' => $form->getErrors(true),
-            'formDetailUtilisateur' => $form->createView()
+            'unUtilisateur' => $unUtilisateur
         ]);
     }
 
@@ -144,11 +140,12 @@ class AdminUtilisateurController extends AbstractController
     {
         $unUtilisateur = $utilisateurRepository->find($id);
 
-        // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
+        // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on génère une erreur
         if($id == 0 || $unUtilisateur == null) {
             $request->getSession()->getFlashBag()->add('utilisateur', 'Cet utilisateur n\'existe pas.');
         }
         elseif ($this->isCsrfTokenValid('delete'.$unUtilisateur->getId(), $request->request->get('_token'))) {
+            // Vérifie le token puis supprime l'utilisateur
             $utilisateurRepository->remove($unUtilisateur, true);
         }
 
