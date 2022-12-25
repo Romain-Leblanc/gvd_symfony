@@ -19,6 +19,7 @@ use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -128,10 +129,14 @@ class ModificationVehiculeType extends AbstractType
                 'data' => (int) date('Y')-10,
                 'required' => true
             ])
-            ->add('kilometrage', TextType::class, [
+            ->add('kilometrage', IntegerType::class, [
                 'attr' => [
+                    'type' => 'number',
+                    'precision' => false,
+                    'scale' => false,
                     'class' => 'form-control text-center input-50',
-                    'placeholder' => 'km'
+                    'placeholder' => 'km',
+                    'min' => 1
                 ],
                 'label' => "Kilométrage :",
                 'label_attr' => [

@@ -15,9 +15,9 @@ class KilometrageValidator extends ConstraintValidator
             return;
         }
 
-        // Valeur comprise entre 1 et 2 millions de kms
+        // Si la valeur n'est pas comprise entre 1 et 2 millions de kms, on génère une erreur
         if($value < 1 || $value > 2000000){
-            $this->context->buildViolation($constraint->message)
+            $this->context->buildViolation($constraint->message_valeur)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();
         }

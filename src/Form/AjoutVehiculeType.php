@@ -104,10 +104,14 @@ class AjoutVehiculeType extends AbstractType
                 ],
                 'required' => true
             ])
-            ->add('kilometrage', TextType::class, [
+            ->add('kilometrage', IntegerType::class, [
                 'attr' => [
+                    'type' => 'number',
+                    'precision' => false,
+                    'scale' => false,
                     'class' => 'form-control text-center input-50',
-                    'placeholder' => 'km'
+                    'placeholder' => 'km',
+                    'min' => 1
                 ],
                 'label' => "Kilométrage :",
                 'label_attr' => [

@@ -26,7 +26,14 @@
                 </thead>
                 <tbody>
                 {% for uneIntervention in lesInterventions %}
-                    <tr>
+                    {% if uneIntervention.getFkEtat.getEtat == "Facturé" %}
+                    {% set couleur = "tr-vert" %}
+                    {% elseif uneIntervention.getFkEtat.getEtat == "Terminé" %}
+                    {% set couleur = "tr-bleu" %}
+                    {% else %}
+                    {% set couleur = "tr-orange" %}
+                    {% endif %}
+                    <tr class="{{ couleur }}">
                         <td id="radio-button-table">
                             <input type="radio" class="form-check-input" id="radio-input" name="radio-input" onclick="boutonModifier({{ uneIntervention.id }});"/>
                         </td>

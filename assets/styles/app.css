@@ -487,6 +487,15 @@ textarea {
     color: black;
     font-weight: bold;
 }
+.tr-orange {
+    background-color: orange;
+}
+.tr-bleu {
+    background-color: lightblue;
+}
+.tr-vert {
+    background-color: lightgreen;
+}
 .afficher {
     display: inherit !important;
 }
