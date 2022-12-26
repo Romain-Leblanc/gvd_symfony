@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,21 +25,11 @@ class AjoutFactureType extends AbstractType
     {
         $dateFacture = new \DateTime();
 
+        // La date de facture sera ajoutée dans le contrôleur
         $builder
-            ->add('date_facture', DateType::class, [
-                'widget' => 'single_text',
-                'data' => $dateFacture,
-                'attr' => [
-                    'class' => 'form-control input-50',
-                    'min' => $dateFacture->format('Y-m-d')
-                ],
-                'label' => "Date facture :",
-                'label_attr' => [
-                    'class' => 'text-center col-md-5 col-form-label'
-                ],
-                'required' => true
-            ])
-            ->add('fk_client', EntityType::class, [
+            ->add('date_facture', HiddenType::class);
+        $builder->get('date_facture')->addModelTransformer( new DateTimeToStringTransformer());
+            $builder->add('fk_client', EntityType::class, [
                 'class' => Client::class,
                 "placeholder" => "-- CLIENTS --",
                 // Retourne la liste des clients qui ont au moins 1 intervention terminée non facturé
@@ -86,6 +77,7 @@ class AjoutFactureType extends AbstractType
                 'choice_label' => function(MoyenPaiement $moyenPaiement){
                     return $moyenPaiement->getMoyenPaiement();
                 },
+                'placeholder' => '',
                 'attr' => [
                     'class' => 'form-select',
                     'disabled' => true,
@@ -94,11 +86,10 @@ class AjoutFactureType extends AbstractType
                 'label_attr' => [
                     'class' => 'text-center col-md-6 col-form-label'
                 ],
-                'required' => true
+                'required' => false
             ])
             ->add('date_paiement', DateType::class, [
                 'widget' => 'single_text',
-                'data' => $dateFacture,
                 'attr' => [
                     'class' => 'form-control',
                     'min' => $dateFacture->format('Y-m-d'),
@@ -108,7 +99,7 @@ class AjoutFactureType extends AbstractType
                 'label_attr' => [
                     'class' => 'text-center col-md-6 col-form-label'
                 ],
-                'required' => true
+                'required' => false
             ])
             ->add('montant_ht', HiddenType::class, [
                 'data' => '0,00 €'

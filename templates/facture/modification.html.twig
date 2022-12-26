@@ -5,6 +5,13 @@
 {% block body %}
     <div class="div-liste">
         <div id="div-tab">
+            {% if formModificationFacture.fk_moyen_paiement.vars.value != ""
+                and formModificationFacture.date_paiement.vars.value != "" %}
+                {% set factureModifiable = false %}
+                <div class="alert alert-danger" role="alert">Cette facture n'est pas modifiable.</div>
+            {% else %}
+                {% set factureModifiable = true %}
+            {% endif %}
             {% if errors is defined %}
                 {% for error in errors %}
                     <div class="alert alert-danger" role="alert">{{ error.message|nl2br }}</div>
@@ -23,7 +30,6 @@
                     {{ form_widget(formModificationFacture.fk_client) }}
                 </div>
             </div>
-{#            {{ dump(formModificationFacture.client_id) }}#}
             <div class="div-detail mb-3">
                 {{ form_label(formModificationFacture.fk_taux) }}
                 <div class="col-lg-5 col-md-6">
@@ -94,7 +100,9 @@
             </div>
         </div>
         <div class="div-envoi-form">
-            <button id="btn-submit" type="submit" class="btn btn-success">Valider</button>
+            {% if factureModifiable == true %}
+                <button id="btn-submit" type="submit" class="btn btn-success">Valider</button>
+            {% endif %}
         </div>
         {{ form_end(formModificationFacture) }}
     </div>

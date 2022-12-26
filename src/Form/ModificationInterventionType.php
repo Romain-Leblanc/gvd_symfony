@@ -28,16 +28,16 @@ class ModificationInterventionType extends AbstractType
     }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // Initialisation de la date
-        $dateCreation = new \DateTime();
+        // Date minimale pour la date d'intervention
+        $dateCreation = $options['data']->getDateCreation();
         // Récupère le libellé de l'état de l'intervention
         $etat = $this->etatRepository->find($builder->getData()->getFkEtat()->getId())->getEtat();
 
         // Une fois l'intervention créée, il n'est pas possible de modifier le client ni le véhicule
         $etatClient = true;
         $etatVehicule = true;
-        // Si l'état de la facture est à "Facturé" ou "Terminé", on désactive la modification du formulaire
-        if($etat == "Facturé" || $etat == "Terminé") {
+        // Si l'état de la facture est à "Facturé", on désactive la modification du formulaire
+        if($etat == "Facturé") {
             $etatElements = true;
             $etatDateIntervention = true;
             $etatFkEtat = true;

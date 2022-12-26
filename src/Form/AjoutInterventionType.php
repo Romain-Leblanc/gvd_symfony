@@ -31,13 +31,14 @@ class AjoutInterventionType extends AbstractType
         $dateCreation = new \DateTime();
         $dateIntervention = new \DateTime();
 
-        // On suppose qu'il n'est pas possible d'ajouter une intervention pour le dimanche, donc on la reporte au lendemain
+        // Impossible d'ajouter une intervention pour le dimanche, donc on la reporte au lendemain
         // Sinon on ajoute un jour à la date de l'intervention
-        if(date_modify(date_modify(new \DateTime(), ' - 2 days'), ' + 1 day')->format("l") == "Sunday") {
-            $date = date("Y-m-d", strtotime($dateIntervention->format("Y-m-d"). ' + 2 days'));
+        $dateLendemain = date_modify($dateIntervention, ' + 1 day');
+        if(date("l", $dateLendemain->getTimestamp()) == "Sunday") {
+            $date = date("Y-m-d", date_modify($dateLendemain, ' + 1 day')->getTimestamp());
         }
         else {
-            $date = date("Y-m-d", strtotime($dateIntervention->format("Y-m-d"). ' + 1 day'));
+            $date = date("Y-m-d", $dateLendemain->getTimestamp());
         }
         // On transforme la chaine de date en objet DateTime
         $dateIntervention = new \DateTime($date);

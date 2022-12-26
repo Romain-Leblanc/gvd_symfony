@@ -20,6 +20,7 @@ use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Parsing\Html;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,6 +69,23 @@ class FactureController extends AbstractController
 
         // Si le formulaire a bien été soumis et est validé
         if ($form->isSubmitted() && $form->isValid()){
+            $idClient = $uneFacture->getFkClient()->getId();
+            $idIntervention = $interventionRepository->findOneBy(
+                ['fk_client' => $uneFacture->getFKClient()->getId(),
+                    'fk_facture' => null,
+                    'fk_etat' => $etatRepository->findOneBy(['etat' => 'Terminé'])->getId()],
+                ['id' => 'DESC']
+            )->getFkClient()->getId();
+            // Si le client des interventions est différent de celui de la facture qui sera ajoutée,
+            // on génère une erreur
+            if($idClient !== $idIntervention) {
+                $message = "Le client de ces interventions n'est pas le même que celui de la facture.";
+                return $this->render('facture/ajout.html.twig', [
+                    'errors' => $form->addError(new FormError($message))->getErrors(true),
+                    'formAjoutFacture' => $form->createView(),
+                    'listeInterventions' => $listeInterventions
+                ]);
+            }
             // On persiste l'objet Facture dans l'entité Facture
             $entityManager->persist($uneFacture);
             $entityManager->flush();

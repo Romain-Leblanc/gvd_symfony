@@ -31,7 +31,7 @@ class Facture
 
     /**
      * @ORM\ManyToOne(targetEntity=MoyenPaiement::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $fk_moyen_paiement;
 
@@ -41,7 +41,7 @@ class Facture
     private $date_facture;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date",nullable=true)
      */
     private $date_paiement;
 
@@ -123,7 +123,7 @@ class Facture
         return $this->date_paiement;
     }
 
-    public function setDatePaiement(\DateTimeInterface $date_paiement): self
+    public function setDatePaiement(?\DateTimeInterface $date_paiement): self
     {
         $this->date_paiement = $date_paiement;
 

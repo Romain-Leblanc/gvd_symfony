@@ -75,7 +75,7 @@ class InterventionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Si l'intervention s'apprête à être terminée et que le montant HT est à zéro, on génère une erreur
             if($uneIntervention->getFkEtat()->getEtat() == "Terminé" && $uneIntervention->getMontantHt() == 0) {
-                $message = "Le statut de l'intervention est défini sur 'terminé' mais le montant HT est à zéro.";
+                $message = "L'état de l'intervention est défini sur 'Terminé' mais le montant HT est à zéro.";
                 return $this->render('intervention/modification.html.twig', [
                     'errors' => $form->addError(new FormError($message))->getErrors(true),
                     'formModificationIntervention' => $form->createView()

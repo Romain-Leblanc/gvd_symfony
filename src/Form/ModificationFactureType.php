@@ -22,7 +22,14 @@ class ModificationFactureType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $datePaiement = new \DateTime();
+        $dateMaximalePaiement = new \DateTime();
+        $uneFacture = $options['data'];
+
+        // Définit la modification du formulaire en fonction des valeurs du moyen/date de paiement
+        if($uneFacture->getFkMoyenPaiement() == null) { $etatMoyenPaiement = false; }
+        else { $etatMoyenPaiement = true; }
+        if($uneFacture->getDatePaiement() == null) { $etatDatePaiement = false; }
+        else { $etatDatePaiement = true; }
 
         // La date est cachée puisque elle sera simplement affichée
         $builder
@@ -63,27 +70,50 @@ class ModificationFactureType extends AbstractType
                 'choice_label' => function(MoyenPaiement $moyenPaiement){
                     return $moyenPaiement->getMoyenPaiement();
                 },
+                'placeholder' => '-- Moyen paiement --',
                 'attr' => [
-                    'class' => 'form-select'
+                    'class' => 'form-select',
+                    'disabled' => $etatMoyenPaiement
                 ],
                 'label' => "Moyen paiement :",
                 'label_attr' => [
                     'class' => 'text-center col-md-6 col-form-label'
                 ],
                 'required' => true
-            ])
-            ->add('date_paiement', DateType::class, [
-                'widget' => 'single_text',
-                'attr' => [
-                    'class' => 'form-control',
-                    'min' => $datePaiement->format('Y-m-d')
-                ],
-                'label' => "Date paiement :",
-                'label_attr' => [
-                    'class' => 'text-center col-md-6 col-form-label'
-                ],
-                'required' => true
-            ])
+            ]);
+        if ($etatMoyenPaiement == true && $etatDatePaiement == true) {
+            $builder
+                ->add('date_paiement', DateType::class, [
+                    'widget' => 'single_text',
+                    'attr' => [
+                        'class' => 'form-control',
+                        'disabled' => $etatDatePaiement
+                    ],
+                    'label' => "Date paiement :",
+                    'label_attr' => [
+                        'class' => 'text-center col-md-6 col-form-label'
+                    ],
+                    'required' => true
+                ]);
+        }
+        else {
+            $builder
+                ->add('date_paiement', DateType::class, [
+                    'widget' => 'single_text',
+                    'attr' => [
+                        'class' => 'form-control',
+                        'min' => $uneFacture->getDateFacture()->format('Y-m-d'),
+                        'max' => $dateMaximalePaiement->format('Y-m-d'),
+                        'disabled' => $etatDatePaiement
+                    ],
+                    'label' => "Date paiement :",
+                    'label_attr' => [
+                        'class' => 'text-center col-md-6 col-form-label'
+                    ],
+                    'required' => true
+                ]);
+        }
+        $builder
             ->add('client_id', HiddenType::class, ['required' => true, 'mapped' => false, 'data' => $options['data']->getFkClient()->getId()])
             ->add('montant_ht', HiddenType::class, ['required' => true])
             ->add('montant_tva', HiddenType::class, ['required' => true])

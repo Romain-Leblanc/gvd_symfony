@@ -1,6 +1,7 @@
 {% extends 'facture/base_pdf.html.twig' %}
 
 {% block title %}Facture n°{{ uneFacture.id }}{% endblock %}
+
 {% block body %}
     <table style="width:100%;">
         <tr>
@@ -111,12 +112,20 @@
     <br>
     <table style="border-collapse: collapse;width:100%;">
             <tr>
-                <td style="width:60%;">Moyen de paiement : {{ uneFacture.getFkMoyenPaiement.getMoyenPaiement }}</td>
+                {% if uneFacture.getFkMoyenPaiement is null %}
+                    <td style="width:60%;">Moyen de paiement : <span style="color: red;">Aucun précisé</span></td>
+                {% else %}
+                    <td style="width:60%;">Moyen de paiement : {{ uneFacture.getFkMoyenPaiement.getMoyenPaiement }}</td>
+                {% endif %}
                 <td style="border-collapse: collapse;border: 1px solid #C0C0C0;width:20%;">Montant HT :</td>
                 <td style="border-collapse: collapse;border: 1px solid #C0C0C0;width:20%;text-align:right;padding-right:5px;">{{ formatMontantEuros(uneFacture.getMontantHT) }}</td>
             </tr>
             <tr>
-                <td style="width:60%;">Date paiement : {{ uneFacture.getDatePaiement|date('d/m/Y') }}</td>
+                {% if uneFacture.getDatePaiement is null %}
+                    <td style="width:60%;">Date paiement : <span style="color: red;">Aucune précisée</span></td>
+                {% else %}
+                    <td style="width:60%;">Date paiement : {{ uneFacture.getDatePaiement|date('d/m/Y') }}</td>
+                {% endif %}
                 <td style="border-collapse:collapse; border: 1px solid #C0C0C0;width:20%;">Montant TVA ({{ uneFacture.getFkTaux.getTaux ~ "%" }}) :</td>
                 <td style="border-collapse: collapse;border: 1px solid #C0C0C0;width:20%;text-align:right;padding-right:5px;">{{ formatMontantEuros(formatTotalTVA(uneFacture.getMontantHT, uneFacture.getFkTaux.getTaux)) }}</td>
             </tr>
