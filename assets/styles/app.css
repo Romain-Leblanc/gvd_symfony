@@ -97,8 +97,11 @@ footer {
         width: 50%;
         align-items: center;
     }
+    .div-detail {
+        align-items: center;
+    }
     .input-50 {
-        width: 50%;
+        width: 50% !important;
     }
     .input-50-date {
         width: 45%;
@@ -148,8 +151,11 @@ footer {
         width: 50%;
         align-items: center;
     }
+    .div-detail {
+        align-items: center;
+    }
     .input-50 {
-        width: 50%;
+        width: 50% !important;
     }
     .input-50-date {
         width: 45%;
@@ -202,8 +208,11 @@ footer {
         width: 50%;
         align-items: center;
     }
+    .div-detail {
+        align-items: center;
+    }
     .input-50 {
-        width: 50%;
+        width: 50% !important;
     }
     .input-50-date {
         width: 45%;
@@ -408,7 +417,7 @@ footer {
     padding: 5px;
     border: 1px solid #BE1E2D;
 }
-.div-detail, .div-ajouter-modifier {
+.div-ajouter-modifier {
     overflow-y: auto;
 }
 .div-detail {
@@ -441,6 +450,9 @@ footer {
 }
 textarea {
     resize: none;
+}
+.select2-container {
+    padding: 0 !important;
 }
 .table {
     border-color: rgb(123, 0, 11);

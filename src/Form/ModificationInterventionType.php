@@ -79,7 +79,7 @@ class ModificationInterventionType extends AbstractType
                     return mb_strtoupper($client->getNom())." ".ucfirst($client->getPrenom())." - ".mb_strtoupper($client->getVille());
                 },
                 'attr' => [
-                    'class' => 'form-select',
+                    'class' => 'select2-value-100',
                     'disabled' => $etatClient,
                 ],
                 'label' => "Client :",
@@ -94,7 +94,7 @@ class ModificationInterventionType extends AbstractType
                     return mb_strtoupper($vehicule->getFKMarque()->getMarque())." ".ucfirst($vehicule->getFKModele()->getModele())." (".mb_strtoupper($vehicule->getImmatriculation()).")";
                 },
                 'attr' => [
-                    'class' => 'form-select text-center',
+                    'class' => 'text-center select2-value-100',
                     'disabled' => $etatVehicule,
                 ],
                 'label' => "Véhicule :",

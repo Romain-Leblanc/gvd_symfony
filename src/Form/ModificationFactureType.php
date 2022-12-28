@@ -41,7 +41,7 @@ class ModificationFactureType extends AbstractType
                     return mb_strtoupper($client->getNom())." ".ucfirst($client->getPrenom())." - ".mb_strtoupper($client->getVille());
                 },
                 'attr' => [
-                    'class' => 'form-select',
+                    'class' => 'select2-value-100',
                     'disabled' => true
                 ],
                 'label' => "Client :",

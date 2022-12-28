@@ -12,18 +12,20 @@
                 <div class="alert alert-danger" role="alert">{{ error.message|nl2br }}</div>
             {% endfor %}
         {% endif %}
-        {{ form_start(formModificationMarque) }}
-        <div class="d-flex flex-column gap-3">
-            <div class="row">
-                {{ form_label(formModificationMarque.marque) }}
-                <div class="col-lg-5 col-md-6 row mx-0">
-                    {{ form_widget(formModificationMarque.marque) }}
+        <div class="div-form">
+            {{ form_start(formModificationMarque) }}
+            <div class="d-flex flex-column gap-3">
+                <div class="row">
+                    {{ form_label(formModificationMarque.marque) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formModificationMarque.marque) }}
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center align-items-center">
+                    <button class="btn btn-success fs-14" type="submit">Valider</button>
                 </div>
             </div>
-            <div class="d-flex justify-content-center align-items-center">
-                <button class="btn btn-success fs-14" type="submit">Valider</button>
-            </div>
+            {{ form_end(formModificationMarque) }}
         </div>
-        {{ form_end(formModificationMarque) }}
     </div>
 {% endblock %}

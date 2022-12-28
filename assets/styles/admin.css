@@ -79,6 +79,12 @@ html {
 .p-detail-titre {
     text-align: center !important;
 }
+.select2-container {
+    padding: 0 !important;
+}
+.row {
+    align-items: center;
+}
 @media screen and (min-width: 992px) {
     .div-boutons-admin {
         display: flex;

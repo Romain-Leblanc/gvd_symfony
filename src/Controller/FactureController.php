@@ -211,7 +211,7 @@ class FactureController extends AbstractController
         return $this->render('facture/envoi.html.twig', [
             'errors' => $form->getErrors(true),
             'formEnvoiFacture' => $form->createView(),
-            "fichier" => false,
+            "fichier" => file_exists($cheminCompletFacture),
             'uneFacture' => $uneFacture, // Les informations de cette facture seront affichées avec le template twig
         ]);
     }

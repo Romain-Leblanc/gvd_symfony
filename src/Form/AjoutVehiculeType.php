@@ -30,7 +30,7 @@ class AjoutVehiculeType extends AbstractType
                     return mb_strtoupper($client->getNom())." ".ucfirst($client->getPrenom())." - ".mb_strtoupper($client->getVille());
                 },
                 'attr' => [
-                    'class' => 'form-select select-client',
+                    'class' => 'select-client select2-value-100',
                 ],
                 'label' => "Client :",
                 'label_attr' => [
@@ -52,7 +52,7 @@ class AjoutVehiculeType extends AbstractType
                         ;
                 },
                 'attr' => [
-                    'class' => 'form-select text-center',
+                    'class' => 'text-center select2-value-100',
                     'onchange' => 'getModeleFromMarque(this.value);'
                 ],
                 'label' => "Marque :",
@@ -68,7 +68,7 @@ class AjoutVehiculeType extends AbstractType
                     return mb_strtoupper($modele->getModele());
                 },
                 'attr' => [
-                    'class' => 'form-select text-center',
+                    'class' => 'text-center select2-value-100',
                     // Actualisé par Ajax
                     'disabled' => true
                 ],
@@ -108,7 +108,7 @@ class AjoutVehiculeType extends AbstractType
                     return mb_strtoupper($carburant->getCarburant());
                 },
                 'attr' => [
-                    'class' => 'form-select text-center input-50',
+                    'class' => 'text-center select2-value-50',
                 ],
                 'label' => "Carburant :",
                 'label_attr' => [
@@ -117,7 +117,7 @@ class AjoutVehiculeType extends AbstractType
             ])
             ->add('annee', IntegerType::class, [
                 'attr' => [
-                    'class' => 'form-control  input-50',
+                    'class' => 'form-control input-50',
                     'min' => (int) date('Y') - 75,
                     'max' => (int) date('Y'),
                     'placeholder' => ((int) date('Y') - 75)." à ".((int) date('Y')),

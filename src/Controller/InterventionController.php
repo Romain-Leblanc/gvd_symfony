@@ -40,6 +40,7 @@ class InterventionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
+            dd("ajout", $uneIntervention);
             // Redéfinit les valeurs par défaut
             $uneIntervention->setFkFacture(null);
             $uneIntervention->setDateCreation(new \DateTime());

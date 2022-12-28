@@ -12,46 +12,48 @@
                 <div class="alert alert-danger" role="alert">{{ error.message|nl2br }}</div>
             {% endfor %}
         {% endif %}
-        {{ form_start(formAjoutUtilisateur) }}
-        <div class="d-flex flex-column gap-3">
-            <div class="row">
-                {{ form_label(formAjoutUtilisateur.nom) }}
-                <div class="col-lg-5 col-md-6 row mx-0">
-                    {{ form_widget(formAjoutUtilisateur.nom) }}
+        <div class="div-form">
+            {{ form_start(formAjoutUtilisateur) }}
+            <div class="d-flex flex-column gap-3">
+                <div class="row">
+                    {{ form_label(formAjoutUtilisateur.nom) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formAjoutUtilisateur.nom) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formAjoutUtilisateur.prenom) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formAjoutUtilisateur.prenom) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formAjoutUtilisateur.email) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formAjoutUtilisateur.email) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formAjoutUtilisateur.password) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {{ form_widget(formAjoutUtilisateur.password) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {{ form_label(formAjoutUtilisateur.roles) }}
+                    <div class="col-lg-5 col-md-6 row mx-0">
+                        {% if "ROLE_ADMIN" in formAjoutUtilisateur.roles.vars.value %}
+                            {{ form_widget(formAjoutUtilisateur.roles, { 'value': "ROLE_ADMIN" }) }}
+                        {% else %}
+                            {{ form_widget(formAjoutUtilisateur.roles, { 'value': "ROLE_USER" }) }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center align-items-center">
+                    <button class="btn btn-success fs-14" type="submit">Valider</button>
                 </div>
             </div>
-            <div class="row">
-                {{ form_label(formAjoutUtilisateur.prenom) }}
-                <div class="col-lg-5 col-md-6 row mx-0">
-                    {{ form_widget(formAjoutUtilisateur.prenom) }}
-                </div>
-            </div>
-            <div class="row">
-                {{ form_label(formAjoutUtilisateur.email) }}
-                <div class="col-lg-5 col-md-6 row mx-0">
-                    {{ form_widget(formAjoutUtilisateur.email) }}
-                </div>
-            </div>
-            <div class="row">
-                {{ form_label(formAjoutUtilisateur.password) }}
-                <div class="col-lg-5 col-md-6 row mx-0">
-                    {{ form_widget(formAjoutUtilisateur.password) }}
-                </div>
-            </div>
-            <div class="row">
-                {{ form_label(formAjoutUtilisateur.roles) }}
-                <div class="col-lg-5 col-md-6 row mx-0">
-                    {% if "ROLE_ADMIN" in formAjoutUtilisateur.roles.vars.value %}
-                        {{ form_widget(formAjoutUtilisateur.roles, { 'value': "ROLE_ADMIN" }) }}
-                    {% else %}
-                        {{ form_widget(formAjoutUtilisateur.roles, { 'value': "ROLE_USER" }) }}
-                    {% endif %}
-                </div>
-            </div>
-            <div class="d-flex justify-content-center align-items-center">
-                <button class="btn btn-success fs-14" type="submit">Valider</button>
-            </div>
+            {{ form_end(formAjoutUtilisateur) }}
         </div>
-        {{ form_end(formAjoutUtilisateur) }}
     </div>
 {% endblock %}

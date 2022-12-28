@@ -32,7 +32,7 @@ class AdminAjoutModeleType extends AbstractType
                             ->setParameter(':id_marque', $data);
                     },
                     'attr' => [
-                        'class' => 'form-select input-50'
+                        'class' => 'select2-value-100'
                     ],
                     'label' => "Marque :",
                     'label_attr' => [
@@ -50,7 +50,7 @@ class AdminAjoutModeleType extends AbstractType
                         return mb_strtoupper($marque->getMarque());
                     },
                     'attr' => [
-                        'class' => 'form-select input-50'
+                        'class' => 'select2-value-100'
                     ],
                     'label' => "Marque :",
                     'label_attr' => [

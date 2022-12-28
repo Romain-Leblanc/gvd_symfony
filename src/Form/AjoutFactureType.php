@@ -47,7 +47,7 @@ class AjoutFactureType extends AbstractType
                     return mb_strtoupper($client->getNom())." ".ucfirst($client->getPrenom())." - ".mb_strtoupper($client->getVille());
                 },
                 'attr' => [
-                    'class' => 'form-select',
+                    'class' => 'select2-value-100',
                     'onchange' => 'getInfosFromClientFacture();'
                 ],
                 'label' => "Client :",
@@ -77,7 +77,7 @@ class AjoutFactureType extends AbstractType
                 'choice_label' => function(MoyenPaiement $moyenPaiement){
                     return $moyenPaiement->getMoyenPaiement();
                 },
-                'placeholder' => '',
+                'placeholder' => '-- Moyen paiement --',
                 'attr' => [
                     'class' => 'form-select',
                     'disabled' => true,

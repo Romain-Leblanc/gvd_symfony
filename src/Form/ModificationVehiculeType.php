@@ -46,7 +46,7 @@ class ModificationVehiculeType extends AbstractType
                     return mb_strtoupper($client->getNom())." ".ucfirst($client->getPrenom())." - ".mb_strtoupper($client->getVille());
                 },
                 'attr' => [
-                    'class' => 'form-select select-client'
+                    'class' => 'select-client select2-value-100'
                 ],
                 'label' => "Client :",
                 'label_attr' => [
@@ -66,7 +66,7 @@ class ModificationVehiculeType extends AbstractType
                         ;
                 },
                 'attr' => [
-                    'class' => 'form-select text-center',
+                    'class' => 'text-center select2-value-100',
                     'onchange' => 'getModeleFromMarque(this.value);'
                 ],
                 'label' => "Marque :",
@@ -83,21 +83,21 @@ class ModificationVehiculeType extends AbstractType
                         ->setParameter(':id_marque', $builder->getData()->getFkMarque()->getId())
                         ->orderBy('mo.id');
                 },
-           'choice_label' => function(Modele $modele){
-               return mb_strtoupper($modele->getModele());
-           },
-           'attr' => [
-               'class' => 'form-select text-center',
-           ],
-           'label' => "Modèle :",
-           'label_attr' => [
-               'class' => 'label-select-line col-md-6 col-form-label'
-           ],
-           'required' => true,
-           'constraints' => [
-               new modele_validator(),
-               new NotBlank()
-           ],
+                'choice_label' => function(Modele $modele){
+                    return mb_strtoupper($modele->getModele());
+                },
+                'attr' => [
+                    'class' => 'text-center select2-value-100',
+                ],
+                'label' => "Modèle :",
+                'label_attr' => [
+                    'class' => 'label-select-line col-md-6 col-form-label'
+                ],
+                'required' => true,
+                'constraints' => [
+                    new modele_validator(),
+                    new NotBlank()
+                ],
             ])
             // Obligatoire pour traduire les valeurs transmises par Ajax
             // en entité afin d'être mis à jour ensuite
@@ -130,7 +130,7 @@ class ModificationVehiculeType extends AbstractType
                     return mb_strtoupper($carburant->getCarburant());
                 },
                 'attr' => [
-                    'class' => 'form-select text-center input-50',
+                    'class' => 'select2-value-50',
                 ],
                 'label' => "Carburant :",
                 'label_attr' => [
@@ -140,7 +140,7 @@ class ModificationVehiculeType extends AbstractType
             ])
             ->add('annee', IntegerType::class, [
                 'attr' => [
-                    'class' => 'form-control  input-50',
+                    'class' => 'form-control input-50',
                     'min' => (int) date('Y') - 75,
                     'max' => (int) date('Y'),
                     'placeholder' => ((int) date('Y') - 75)." à ".((int) date('Y')),
