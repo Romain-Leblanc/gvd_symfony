@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Carburant;
 use App\Entity\Client;
+use App\Entity\Etat;
 use App\Entity\Intervention;
 use App\Entity\Marque;
 use App\Entity\Modele;
@@ -101,7 +102,29 @@ class ModificationVehiculeType extends AbstractType
             // Obligatoire pour traduire les valeurs transmises par Ajax
             // en entité afin d'être mis à jour ensuite
             ->addEventSubscriber(new ModeleSubscriber($this->em));
-        $builder->add('fk_carburant', EntityType::class, [
+        $builder->add('fk_etat', EntityType::class, [
+                'class' => Etat::class,
+                'choice_label' => function(Etat $etat){
+                    return ucfirst($etat->getEtat());
+                },
+                // Sélection des états de véhicule possibles
+                'query_builder' => function(EntityRepository $entityRepository) {
+                    return $entityRepository->createQueryBuilder("e")
+                        ->select("e")
+                        ->andWhere('e.type = :type')
+                        ->setParameter(':type', 'vehicule')
+                        ;
+                },
+                'attr' => [
+                    'class' => 'form-select text-center input-50',
+                ],
+                'label' => "État :",
+                'label_attr' => [
+                    'class' => 'text-center col-md-5 col-form-label'
+                ],
+                'required' => true,
+            ])
+            ->add('fk_carburant', EntityType::class, [
                 'class' => Carburant::class,
                 'choice_label' => function(Carburant $carburant){
                     return mb_strtoupper($carburant->getCarburant());

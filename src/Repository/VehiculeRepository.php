@@ -50,6 +50,7 @@ class VehiculeRepository extends ServiceEntityRepository
             ->set('v.immatriculation', ":immatriculation")
             ->set('v.annee', ":annee")
             ->set('v.kilometrage', ":kilometrage")
+            ->set('v.fk_etat', ":id_etat")
             ->where('v.id = :id_vehicule')
             ->setParameter("id_vehicule", $vehicule->getId())
             ->setParameter("id_client", $vehicule->getFkClient()->getId())
@@ -59,6 +60,7 @@ class VehiculeRepository extends ServiceEntityRepository
             ->setParameter("immatriculation", $vehicule->getImmatriculation())
             ->setParameter("annee", $vehicule->getAnnee())
             ->setParameter("kilometrage", $vehicule->getKilometrage())
+            ->setParameter("id_etat", $vehicule->getFkEtat()->getId())
             ->getQuery()
             ->getResult()
             ;

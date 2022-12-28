@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Carburant;
 use App\Entity\Client;
+use App\Entity\Etat;
 use App\Entity\Marque;
 use App\Entity\Modele;
 use App\Entity\Vehicule;
@@ -76,6 +77,29 @@ class AjoutVehiculeType extends AbstractType
                     'class' => 'label-select-line col-md-6 col-form-label'
                 ],
                 'required' => true,
+            ])
+            ->add('fk_etat', EntityType::class, [
+                'class' => Etat::class,
+                'choice_label' => function(Etat $etat){
+                    return ucfirst($etat->getEtat());
+                },
+                // Sélection de l'état par défaut "fonctionnel" puisqu'on ajoute simplement un véhicule
+                'query_builder' => function(EntityRepository $entityRepository) {
+                    return $entityRepository->createQueryBuilder("e")
+                        ->select("e")
+                        ->where('e.etat = :etat')
+                        ->andWhere('e.type = :type')
+                        ->setParameter(':etat', 'Fonctionnel')
+                        ->setParameter(':type', 'vehicule')
+                        ;
+                },
+                'attr' => [
+                    'class' => 'form-select text-center input-50',
+                ],
+                'label' => "État :",
+                'label_attr' => [
+                    'class' => 'text-center col-md-5 col-form-label'
+                ]
             ])
             ->add('fk_carburant', EntityType::class, [
                 'class' => Carburant::class,

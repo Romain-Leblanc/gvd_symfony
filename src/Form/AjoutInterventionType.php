@@ -62,11 +62,16 @@ class AjoutInterventionType extends AbstractType
             ->add('fk_client', EntityType::class, [
                 'class' => Client::class,
                 "placeholder" => "-- CLIENTS --",
-                // Retourne la liste des clients qui ont au moins 1 véhicule d'enregistré dans la table "Véhicule"
+                // Retourne la liste des clients qui ont au moins 1 véhicule fonctionnel d'enregistré dans la table "Véhicule"
                 'query_builder' => function(EntityRepository $entityRepository) {
                     return $entityRepository->createQueryBuilder("c")
                         ->select("c")
                         ->innerJoin(Vehicule::class, 'v', Join::WITH, 'v.fk_client = c.id')
+                        ->innerJoin(Etat::class, 'e', Join::WITH, 'v.fk_etat = e.id')
+                        ->where('e.etat = :etat')
+                        ->andWhere('e.type = :type')
+                        ->setParameter(':etat', 'Fonctionnel')
+                        ->setParameter(':type', 'vehicule')
                         ->groupBy("c.id")
                         ->distinct()
                         ;
@@ -108,7 +113,9 @@ class AjoutInterventionType extends AbstractType
                     return $entityRepository->createQueryBuilder("e")
                         ->select("e")
                         ->where("e.etat LIKE :etat")
+                        ->andWhere("e.type = :type")
                         ->setParameter(':etat', '%attente%')
+                        ->setParameter(':type', 'intervention')
                         ;
                 },
                 'choice_label' => function(Etat $etat){

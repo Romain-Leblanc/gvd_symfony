@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Intervention;
 use App\Form\AjoutInterventionType;
 use App\Form\ModificationInterventionType;
+use App\Repository\EtatRepository;
 use App\Repository\InterventionRepository;
 use App\Repository\VehiculeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,7 +23,6 @@ class InterventionController extends AbstractController
      */
     public function index(InterventionRepository $interventionRepository): Response
     {
-//        $lesInterventions = $interventionRepository->findAll();
         $lesInterventions = $interventionRepository->findBy([], ['id' => 'DESC']);
 
         return $this->render('intervention/index.html.twig', [
@@ -81,7 +81,14 @@ class InterventionController extends AbstractController
                     'formModificationIntervention' => $form->createView()
                 ]);
             }
-            // Sinon on met à jour les données
+            // Sinon si le type d'état de l'intervention concerne ceux des véhicules, on génère une erreur
+            elseif ($uneIntervention->getFkEtat()->getType() == "vehicule") {
+                $message = "L'état de l'intervention doit être concernés ceux pour les interventions.";
+                return $this->render('intervention/modification.html.twig', [
+                    'errors' => $form->addError(new FormError($message))->getErrors(true),
+                    'formModificationIntervention' => $form->createView()
+                ]);
+            }
             else {
                 $interventionRepository->updateIntervention($uneIntervention);
                 return $this->redirectToRoute('intervention_index');
@@ -97,19 +104,15 @@ class InterventionController extends AbstractController
     /**
      * @Route("/intervention/infos", name="intervention_infos")
      */
-    public function infos(VehiculeRepository $vehiculeRepository, Request $request)
+    public function infos(VehiculeRepository $vehiculeRepository, EtatRepository $etatRepository, Request $request)
     {
         $id = (int) $request->request->get('clientID');
         // Si la requête est bien en POST
         if($request->isMethod(Request::METHOD_POST)) {
             if (!empty($id) && $id !== 0) {
-                // Renvoi la liste des véhicules du client pour Ajax
-                $liste = $vehiculeRepository->findBy(['fk_client' => $id]);
+                // Renvoi la liste des véhicules fonctionnel du client
+                $liste = $vehiculeRepository->findBy(['fk_client' => $id, 'fk_etat' => $etatRepository->findOneBy(['etat' => 'Fonctionnel', 'type' => 'vehicule'])]);
                 return $this->json(['donnees' => $liste]);
-            }
-            else {
-                $request->getSession()->getFlashBag()->add('intervention', 'Cet accès est restreint.');
-                return $this->redirectToRoute('intervention_index');
             }
         }
         else {

@@ -56,6 +56,12 @@ class Vehicule
      */
     private $annee;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Etat::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $fk_etat;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -141,6 +147,18 @@ class Vehicule
     public function setAnnee(int $annee): self
     {
         $this->annee = $annee;
+
+        return $this;
+    }
+
+    public function getFkEtat(): ?Etat
+    {
+        return $this->fk_etat;
+    }
+
+    public function setFkEtat(?Etat $fk_etat): self
+    {
+        $this->fk_etat = $fk_etat;
 
         return $this;
     }

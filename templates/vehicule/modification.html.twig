@@ -28,6 +28,12 @@
                 </div>
             </div>
             <div class="div-detail mb-3">
+                {{ form_label(formModificationVehicule.fk_etat) }}
+                <div class="col-lg-5 col-md-6">
+                    {{ form_widget(formModificationVehicule.fk_etat) }}
+                </div>
+            </div>
+            <div class="div-detail mb-3">
                 {{ form_label(formModificationVehicule.fk_carburant) }}
                 <div class="col-lg-5 col-md-6">
                     {{ form_widget(formModificationVehicule.fk_carburant) }}

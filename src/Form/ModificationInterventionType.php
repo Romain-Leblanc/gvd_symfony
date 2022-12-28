@@ -105,12 +105,14 @@ class ModificationInterventionType extends AbstractType
             ])
             ->add('fk_etat', EntityType::class, [
                 'class' => Etat::class,
-                // Sélection des états possibles hormis "Facturé"
+                // Sélection des états d'intervention possibles hormis "Facturé"
                 'query_builder' => function(EntityRepository $entityRepository) {
                     return $entityRepository->createQueryBuilder("e")
                         ->select("e")
                         ->where("e.etat NOT LIKE :etat")
+                        ->andWhere("e.type = :type")
                         ->setParameter(':etat', '%Facturé%')
+                        ->setParameter(':type', 'intervention')
                         ;
                 },
                 'choice_label' => function(Etat $etat){

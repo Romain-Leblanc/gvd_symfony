@@ -22,6 +22,11 @@ class Etat
      */
     private $etat;
 
+    /**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $type;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -35,6 +40,18 @@ class Etat
     public function setEtat(string $etat): self
     {
         $this->etat = $etat;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }
