@@ -110,7 +110,8 @@ class VehiculeController extends AbstractController
 
         return $this->render('vehicule/modification.html.twig', [
             'errors' => $form->getErrors(true),
-            'formModificationVehicule' => $form->createView()
+            'formModificationVehicule' => $form->createView(),
+            'unVehicule' => $unVehicule
         ]);
     }
 

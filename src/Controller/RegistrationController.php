@@ -19,7 +19,9 @@ class RegistrationController extends AbstractController
      */
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
-        $user = new Utilisateur();
+        $request->getSession()->getFlashBag()->add('utilisateur', 'L\'inscription via le formulaire de connexion est désactivée.');
+        return $this->redirectToRoute('app_connexion');
+/*        $user = new Utilisateur();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
@@ -42,6 +44,6 @@ class RegistrationController extends AbstractController
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
             'error' => $form->getErrors(true)
-        ]);
+        ]);*/
     }
 }

@@ -123,6 +123,11 @@ class AdminUtilisateurController extends AbstractController
             }
             $entityManager->persist($unUtilisateur);
             $entityManager->flush();
+            // Si l'utilisateur modifié est celui actuellement connecté, on le force à se reconnecter
+            if ($unUtilisateur->getId() === $this->getUser()->getId()) {
+                $request->getSession()->getFlashBag()->add('utilisateur', 'Veuillez vous reconnecter.');
+                return $this->redirectToRoute('app_deconnexion');
+            }
             return $this->redirectToRoute('utilisateur_admin_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -144,10 +149,20 @@ class AdminUtilisateurController extends AbstractController
             $request->getSession()->getFlashBag()->add('utilisateur', 'Cet utilisateur n\'existe pas.');
         }
         elseif ($this->isCsrfTokenValid('delete'.$unUtilisateur->getId(), $request->request->get('_token'))) {
-            // Vérifie le token puis supprime cet élément
-            $utilisateurRepository->remove($unUtilisateur, true);
+            // Si l'utilisateur supprimé est celui actuellement connecté, on le force à se reconnecter
+            dd("suppr");
+            if ($unUtilisateur->getId() === $this->getUser()->getId()) {
+                // Réinitialise la session utilisateur
+                $this->container->get('security.token_storage')->setToken(null);
+                // Supprime l'utilisateur et redirige vers le formulaire de connexion
+                $utilisateurRepository->remove($unUtilisateur, true);
+                return $this->redirectToRoute('app_deconnexion');
+            }
+            else {
+                // Vérifie le token puis supprime cet élément
+                $utilisateurRepository->remove($unUtilisateur, true);
+            }
         }
-
         return $this->redirectToRoute('utilisateur_admin_index');
     }
 }

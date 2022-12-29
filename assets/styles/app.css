@@ -73,6 +73,11 @@ footer {
     width: 65px;
     height: 65px;
 }
+.div-liste > .div-table > table > thead > tr > th > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 @media screen and (min-width: 1450px) {
     .div-container {
         display: flex;
@@ -86,6 +91,10 @@ footer {
     .div-liste > .div-table {
         height: 600px;
         overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
     .div-row {
         display: flex;
@@ -261,6 +270,9 @@ footer {
     }
     .input-50-date {
         width: 45%;
+    }
+    .select2-selection__rendered, .select2-results__options li {
+        text-align: center;
     }
     .piece-jointe-facture {
         display: flex;

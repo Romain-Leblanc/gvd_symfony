@@ -21,6 +21,7 @@
                     <th scope="col">Client</th>
                     <th scope="col">Voiture</th>
                     <th scope="col">Immatriculation</th>
+                    <th scope="col">État</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -33,6 +34,11 @@
                         <td data-label="client">{{ nomPrenom(unVehicule.getFKClient.getNom,unVehicule.getFKClient.getPrenom) }}</td>
                         <td data-label="voiture">{{ marqueModele(unVehicule.getFKMarque.getMarque, unVehicule.getFKModele.getModele) }}</td>
                         <td data-label="immatriculation">{{ unVehicule.Immatriculation }}</td>
+                        {% if unVehicule.getFkEtat.getEtat == "Hors service" %}
+                            <td data-label="etat">H.S</td>
+                        {% else %}
+                            <td data-label="etat">F</td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>

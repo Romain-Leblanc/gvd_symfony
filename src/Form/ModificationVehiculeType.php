@@ -72,7 +72,8 @@ class ModificationVehiculeType extends AbstractType
                 'label' => "Marque :",
                 'label_attr' => [
                     'class' => 'label-select-line col-md-6 col-form-label'
-                ]
+                ],
+                'required' => true,
             ]);
         $builder->add('fk_modele', EntityType::class, [
                 'class' => Modele::class,
@@ -88,6 +89,7 @@ class ModificationVehiculeType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'text-center select2-value-100',
+                    'onchange' => 'enableBtnSubmitOnModele(this.value)'
                 ],
                 'label' => "Modèle :",
                 'label_attr' => [
@@ -95,8 +97,7 @@ class ModificationVehiculeType extends AbstractType
                 ],
                 'required' => true,
                 'constraints' => [
-                    new modele_validator(),
-                    new NotBlank()
+                    new modele_validator()
                 ],
             ])
             // Obligatoire pour traduire les valeurs transmises par Ajax
@@ -130,7 +131,7 @@ class ModificationVehiculeType extends AbstractType
                     return mb_strtoupper($carburant->getCarburant());
                 },
                 'attr' => [
-                    'class' => 'select2-value-50',
+                    'class' => 'input-50 select2-value-50',
                 ],
                 'label' => "Carburant :",
                 'label_attr' => [

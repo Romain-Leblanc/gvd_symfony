@@ -20,7 +20,8 @@ class ModeleValidator extends ConstraintValidator
         /* @var Modele $constraint */
 
         if (null === $value || '' === $value) {
-            return;
+            return $this->context->buildViolation("Veuillez sélectionner un modèle de la marque.")
+                ->addViolation();
         }
 
         // Si aucun modèle n'est associé à l'identifiant de la marque, on génère une erreur

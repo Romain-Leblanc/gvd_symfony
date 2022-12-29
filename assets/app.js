@@ -23,13 +23,24 @@ const $ = require('jquery');
 global.$ = global.jQuery = $;
 // Importation de select2 pour les listes déroulantes
 require('select2');
-$('.select2-value-50').select2({
-    language: 'fr',
-    dropdownAutoWidth : true,
-    width: '50%',
-});
+/* Définition des classes pour l'appel de Select2 */
+// select2-value-100 => largeur maximale
+// select2-value-50 => largeur en fonction de la taille de la fenêtre
 $('.select2-value-100').select2({
     language: 'fr',
     dropdownAutoWidth : true,
     width: '100%'
 });
+function resizeSelect2() {
+    $('.select2-value-50').select2({
+        language: 'fr',
+        dropdownAutoWidth : true,
+        width: document.querySelector('.input-50').scrollWidth+'px',
+    });
+}
+window.onresize = function( event ) {
+    resizeSelect2();
+}
+if (document.querySelector('.input-50') !== null) {
+    resizeSelect2();
+}

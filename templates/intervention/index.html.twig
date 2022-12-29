@@ -17,7 +17,15 @@
                 <thead class="thead-light align-middle">
                     <tr>
                         <th scope="col"></th>
-                        <th scope="col">N° inter.</th>
+                        <th scope="col">
+                            <form action="{{ path('vehicule_index') }}" method="post">
+                                <label for="num_inter">N° inter.</label>
+                                <select class="select2-value-100" name="num_inter" id="num_inter">
+                                    <option value="1">1</option>
+                                </select>
+                            </form>
+                        </th>
+{#                        <th scope="col">N° inter.</th>#}
                         <th scope="col">Date intervention</th>
                         <th scope="col">Voiture</th>
                         <th scope="col">Client</th>

@@ -32,6 +32,7 @@ class AjoutVehiculeType extends AbstractType
                 'attr' => [
                     'class' => 'select-client select2-value-100',
                 ],
+                'placeholder' => '-- CLIENTS --',
                 'label' => "Client :",
                 'label_attr' => [
                     'class' => 'text-center col-md-5 col-form-label'
@@ -69,6 +70,7 @@ class AjoutVehiculeType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'text-center select2-value-100',
+                    'onchange' => 'enableBtnSubmitOnModele(this.value)',
                     // Actualisé par Ajax
                     'disabled' => true
                 ],
@@ -108,7 +110,7 @@ class AjoutVehiculeType extends AbstractType
                     return mb_strtoupper($carburant->getCarburant());
                 },
                 'attr' => [
-                    'class' => 'text-center select2-value-50',
+                    'class' => 'text-center input-50 select2-value-50',
                 ],
                 'label' => "Carburant :",
                 'label_attr' => [

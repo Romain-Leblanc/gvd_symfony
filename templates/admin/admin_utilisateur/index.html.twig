@@ -27,6 +27,7 @@
             <thead class="table-light align-middle">
             <tr>
                 <th class="{% if lesUtilisateurs.isSorted('u.id') %}sorted{% endif %}">{{ knp_pagination_sortable(lesUtilisateurs, 'Id', 'u.id') }}</th>
+                <th class="w-5">Connecté</th>
                 <th class="{% if lesUtilisateurs.isSorted('u.nom') %}sorted{% endif %}">{{ knp_pagination_sortable(lesUtilisateurs, 'Nom/prénom', 'u.nom') }}</th>
                 <th class="{% if lesUtilisateurs.isSorted('u.roles') %}sorted{% endif %}">{{ knp_pagination_sortable(lesUtilisateurs, 'Rôle', 'u.roles') }}</th>
                 <th class="w-15">Actions</th>
@@ -36,6 +37,13 @@
             {% for unUtilisateur in lesUtilisateurs %}
                 <tr>
                     <td>{{ unUtilisateur.id }}</td>
+                    {% if app.user.id == unUtilisateur.id %}
+                        {% set utilisateurConnecte = true %}
+                        <td><i style="color: red" class="fa-solid fa-circle"></i></td>
+                    {% else %}
+                        {% set utilisateurConnecte = false %}
+                        <td>&nbsp;</td>
+                    {% endif %}
                     <td>{{ nomPrenom(unUtilisateur.getNom,unUtilisateur.getPrenom) }}</td>
                     {% if "ROLE_ADMIN" in unUtilisateur.getRoles %}
                         <td>{{ "Administrateur" }}</td>

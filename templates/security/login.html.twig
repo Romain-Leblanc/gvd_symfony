@@ -6,8 +6,11 @@
     <form method="post">
         {% if error %}
             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% elseif app.flashes('utilisateur') is defined %}
+            {% for notice in app.flashes('utilisateur') %}
+                <div class="alert alert-danger" role="alert">{{ notice|nl2br }}</div>
+            {% endfor %}
         {% endif %}
-
         {% if app.user %}
             <div class="alert alert-danger">
                 Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_deconnexion') }}">Déconnexion</a>
@@ -40,8 +43,4 @@
             </div>
         </div>
     </form>
-    <div class="mt-5 d-flex justify-content-end align-items-center">
-        <span>Pas encore inscrit ?</span>
-        <a href="{{ path('app_inscription') }}" class="btn btn-link">S'inscrire</a>
-    </div>
 {% endblock %}

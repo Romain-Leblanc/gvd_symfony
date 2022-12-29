@@ -67,6 +67,18 @@ global.getModeleFromMarque = function getModeleFromMarque(value) {
     }
 }
 
+global.enableBtnSubmitOnModele = function enableBtnSubmitOnModele(value) {
+    // Active ou désactive le bouton de validation du formulaire en fonction de la valeur
+    // du modèle d'une marque sélectionné
+    let btnSubmit = $('#btn-submit');
+    if(value !== undefined && value !== "") {
+        btnSubmit.prop("disabled", false);
+    }
+    else {
+        btnSubmit.prop("disabled", true);
+    }
+}
+
 function ajaxQueryModele(inputModele, btnSubmit, value) {
     // Requête Ajax pour les modèles de voitures
     $.ajax({
@@ -81,7 +93,6 @@ function ajaxQueryModele(inputModele, btnSubmit, value) {
             inputModele.empty().append(liste);
             // Réactive les élements
             inputModele.prop("disabled", false);
-            btnSubmit.prop("disabled", false);
         }
     });
 }
