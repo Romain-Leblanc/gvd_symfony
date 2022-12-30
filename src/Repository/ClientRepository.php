@@ -67,4 +67,33 @@ class ClientRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
+
+    /* Récupère les résultats de(s) filtre(s) saisi(s) */
+    public function filtreTableClient(array $filtre) {
+        $query = $this->createQueryBuilder('c');
+        // Ajoute les valeurs de filtres en fonction de ceux qui ont été saisis
+        if ($filtre['id_client'] !== "" || $filtre['client'] !== "") {
+            if ($filtre['id_client']) { $value = $filtre['id_client']; }
+            else { $value = $filtre['client']; }
+            $query
+                ->andWhere('c.id LIKE :id')
+                ->setParameter('id', $value)
+            ;
+        }
+        if ($filtre['coordonnees'] !== "") {
+            $value = $filtre['coordonnees'];
+            $value = str_replace(" ", "", $value);
+            $query
+                ->andWhere('c.tel LIKE :coordonnees OR c.email LIKE :coordonnees')
+                ->setParameter('coordonnees', '%'.$value.'%');
+            ;
+        }
+        if ($filtre['adresse_complete'] !== "") {
+            $value = $filtre['adresse_complete'];
+            $query
+                ->andWhere('c.adresse LIKE :adresse_complete OR c.suite_adresse LIKE :adresse_complete OR c.code_postal LIKE :adresse_complete OR c.ville LIKE :adresse_complete')
+                ->setParameter('adresse_complete', '%'.$value.'%');
+        }
+        return $query->getQuery()->getResult();
+    }
 }

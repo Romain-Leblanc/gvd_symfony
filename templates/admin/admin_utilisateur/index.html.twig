@@ -18,7 +18,7 @@
             </form>
         </div>
         <div class="d-flex justify-content-center align-items-center">
-            {{ knp_pagination_render(lesUtilisateurs) }}
+            {{ knp_pagination_render(lesUtilisateursPagination) }}
         </div>
         {% for notice in app.flashes('utilisateur') %}
             <div class="alert alert-danger" role="alert">{{ notice|nl2br }}</div>
@@ -26,39 +26,56 @@
         <table style="overflow-x: auto" class="table table-admin table-admin-marque table-responsive table-hover table-bordered text-center align-middle">
             <thead class="table-light align-middle">
             <tr>
-                <th class="{% if lesUtilisateurs.isSorted('u.id') %}sorted{% endif %}">{{ knp_pagination_sortable(lesUtilisateurs, 'Id', 'u.id') }}</th>
+                {{ form_start(formFiltreTable) }}
+                <th class="{% if lesUtilisateursPagination.isSorted('u.id') %}sorted{% endif %}">
+                    {{ knp_pagination_sortable(lesUtilisateursPagination, 'Id', 'u.id') }}
+                    {{ form_widget(formFiltreTable.id_utilisateur) }}
+                </th>
                 <th class="w-5">Connecté</th>
-                <th class="{% if lesUtilisateurs.isSorted('u.nom') %}sorted{% endif %}">{{ knp_pagination_sortable(lesUtilisateurs, 'Nom/prénom', 'u.nom') }}</th>
-                <th class="{% if lesUtilisateurs.isSorted('u.roles') %}sorted{% endif %}">{{ knp_pagination_sortable(lesUtilisateurs, 'Rôle', 'u.roles') }}</th>
+                <th class="{% if lesUtilisateursPagination.isSorted('u.nom') %}sorted{% endif %}">
+                    {{ knp_pagination_sortable(lesUtilisateursPagination, 'Nom/prénom', 'u.nom') }}
+                    {{ form_widget(formFiltreTable.utilisateur) }}
+                </th>
+                <th class="{% if lesUtilisateursPagination.isSorted('u.roles') %}sorted{% endif %}">
+                    {{ knp_pagination_sortable(lesUtilisateursPagination, 'Rôle', 'u.roles') }}
+                    {{ form_widget(formFiltreTable.roles) }}
+                </th>
                 <th class="w-15">Actions</th>
+                {{ form_end(formFiltreTable) }}
             </tr>
             </thead>
             <tbody>
-            {% for unUtilisateur in lesUtilisateurs %}
+            {% if lesUtilisateursForm is not empty %}
+                {% for unUtilisateur in lesUtilisateursForm %}
+                    <tr>
+                        <td>{{ unUtilisateur.id }}</td>
+                        {% if app.user.id == unUtilisateur.id %}
+                            {% set utilisateurConnecte = true %}
+                            <td><i style="color: red" class="fa-solid fa-circle"></i></td>
+                        {% else %}
+                            {% set utilisateurConnecte = false %}
+                            <td>&nbsp;</td>
+                        {% endif %}
+                        <td class="text-wrap">{{ nomPrenom(unUtilisateur.getNom,unUtilisateur.getPrenom) }}</td>
+                        {% if "ROLE_ADMIN" in unUtilisateur.getRoles %}
+                            <td>{{ "Administrateur" }}</td>
+                        {% else %}
+                            <td>{{ "Utilisateur" }}</td>
+                        {% endif %}
+                        <td>
+                            <div class="div-boutons-admin">
+                                <a href="{{ path('utilisateur_admin_detail', { 'id': unUtilisateur.id }) }}" class="btn btn-primary fs-11 text-white">Détail</a>
+                                <a href="{{ path('utilisateur_admin_modifier', { 'id': unUtilisateur.id }) }}" class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></a>
+                                {{ include('admin/admin_utilisateur/_delete_form.html.twig') }}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
                 <tr>
-                    <td>{{ unUtilisateur.id }}</td>
-                    {% if app.user.id == unUtilisateur.id %}
-                        {% set utilisateurConnecte = true %}
-                        <td><i style="color: red" class="fa-solid fa-circle"></i></td>
-                    {% else %}
-                        {% set utilisateurConnecte = false %}
-                        <td>&nbsp;</td>
-                    {% endif %}
-                    <td>{{ nomPrenom(unUtilisateur.getNom,unUtilisateur.getPrenom) }}</td>
-                    {% if "ROLE_ADMIN" in unUtilisateur.getRoles %}
-                        <td>{{ "Administrateur" }}</td>
-                    {% else %}
-                        <td>{{ "Utilisateur" }}</td>
-                    {% endif %}
-                    <td>
-                        <div class="div-boutons-admin">
-                            <a href="{{ path('utilisateur_admin_detail', { 'id': unUtilisateur.id }) }}" class="btn btn-primary fs-11 text-white">Détail</a>
-                            <a href="{{ path('utilisateur_admin_modifier', { 'id': unUtilisateur.id }) }}" class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></a>
-                            {{ include('admin/admin_utilisateur/_delete_form.html.twig') }}
-                        </div>
-                    </td>
+                    <td colspan="5">Aucune donnée.</td>
                 </tr>
-            {% endfor %}
+            {% endif %}
             </tbody>
         </table>
     </div>

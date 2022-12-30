@@ -41,6 +41,6 @@ function resizeSelect2() {
 window.onresize = function( event ) {
     resizeSelect2();
 }
-if (document.querySelector('.input-50') !== null) {
+if (document.querySelector('.input-50') !== null || document.querySelector('.select2-value-50') !== null) {
     resizeSelect2();
 }

@@ -7,13 +7,17 @@ use App\Entity\Modele;
 use App\Entity\Vehicule;
 use App\Form\Admin\AdminAjoutModeleType;
 use App\Form\Admin\AdminModificationModeleType;
+use App\Form\FiltreTable\Admin\AdminFiltreTableModeleType;
 use App\Repository\MarqueRepository;
 use App\Repository\ModeleRepository;
 use App\Repository\VehiculeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminModeleController extends AbstractController
 {
     /**
-     * @Route("/", name="modele_admin_index", methods={"GET"})
+     * @Route("/", name="modele_admin_index", methods={"GET", "POST"})
      */
     public function index(ModeleRepository $modeleRepository, PaginatorInterface $paginator, Request $request): Response
     {
@@ -52,15 +56,53 @@ class AdminModeleController extends AbstractController
         }
 
         // Traitement des données par KnpPaginator
-        $lesModeles = $paginator->paginate(
+        $lesModelesPagination = $paginator->paginate(
             $donnees,
             $request->query->getInt('page', 1),
             $limite
         );
+        // Valeurs par défaut des résultats des filtres
+        $lesModelesForm = $lesModelesPagination->getItems();
+
+        $form = $this->createForm(AdminFiltreTableModeleType::class, $modeleRepository->findAll());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Récupère les données du formulaire de recherche
+            $data = $request->request->get('admin_filtre_table_modele');
+            $query = $modeleRepository->createQueryBuilder('mo')
+                ->select('mo')
+                ->addSelect('COUNT(v.fk_modele) as nombreVehicule')
+                ->leftJoin(Vehicule::class, 'v', Join::WITH, 'v.fk_modele = mo.id')
+                ->join('mo.fk_marque', 'ma')
+            ;
+            // Vérifie si un filtre a été saisi puis définit ses valeurs
+            if ($data['id_modele'] !== "" || $data['modele'] !== "" || $data['marque'] !== "") {
+                if ($data['id_modele'] !== "" || $data['modele'] !== "") {
+                    if ($data['id_modele']) { $value = $data['id_modele']; }
+                    else { $value = $data['modele']; }
+                    $query = $query
+                        ->andWhere('mo.id = :id')
+                        ->setParameter('id', $value)
+                    ;
+                }
+                if ($data['marque'] !== "") {
+                    $query = $query
+                        ->andWhere('mo.fk_marque = :id_marque')
+                        ->setParameter('id_marque', $data['marque'])
+                    ;
+                }
+                $lesModelesForm = $query->groupBy('mo.id')->getQuery()->getResult();
+            }
+        }
 
         return $this->render('admin/admin_modele/index.html.twig', [
-            'lesModeles' => $lesModeles,
-            'choixListe' => $choixListe
+            // Données pour Knppaginator
+            'lesModelesPagination' => $lesModelesPagination,
+            // Données pour le formulaire et tableau
+            'lesModelesForm' => $lesModelesForm,
+            'choixListe' => $choixListe,
+            'formFiltreTable' => $form->createView()
         ]);
     }
 

@@ -16,42 +16,57 @@
             <table class="table table-hover table-bordered align-middle text-center">
                 <thead class="thead-light align-middle">
                     <tr>
+                        {{ form_start(formFiltreTable) }}
                         <th scope="col"></th>
                         <th scope="col">
-                            <form action="{{ path('vehicule_index') }}" method="post">
-                                <label for="num_inter">N° inter.</label>
-                                <select class="select2-value-100" name="num_inter" id="num_inter">
-                                    <option value="1">1</option>
-                                </select>
-                            </form>
+                            {{ form_label(formFiltreTable.id_intervention) }}
+                            {{ form_widget(formFiltreTable.id_intervention) }}
                         </th>
-{#                        <th scope="col">N° inter.</th>#}
-                        <th scope="col">Date intervention</th>
-                        <th scope="col">Voiture</th>
-                        <th scope="col">Client</th>
-                        <th scope="col">Montant HT</th>
+                        <th scope="col">
+                            {{ form_label(formFiltreTable.date_intervention) }}
+                            {{ form_widget(formFiltreTable.date_intervention) }}
+                        </th>
+                        <th scope="col">
+                            {{ form_label(formFiltreTable.vehicule) }}
+                            {{ form_widget(formFiltreTable.vehicule) }}
+                        </th>
+                        <th scope="col">
+                            {{ form_label(formFiltreTable.client) }}
+                            {{ form_widget(formFiltreTable.client) }}
+                        </th>
+                        <th scope="col">
+                            {{ form_label(formFiltreTable.montant_ht) }}
+                            {{ form_widget(formFiltreTable.montant_ht) }}
+                        </th>
+                        {{ form_end(formFiltreTable) }}
                     </tr>
                 </thead>
                 <tbody>
-                {% for uneIntervention in lesInterventions %}
-                    {% if uneIntervention.getFkEtat.getEtat == "Facturé" %}
-                    {% set couleur = "tr-vert" %}
-                    {% elseif uneIntervention.getFkEtat.getEtat == "Terminé" %}
-                    {% set couleur = "tr-bleu" %}
-                    {% else %}
-                    {% set couleur = "tr-orange" %}
-                    {% endif %}
-                    <tr class="{{ couleur }}">
-                        <td id="radio-button-table">
-                            <input type="radio" class="form-check-input" id="radio-input" name="radio-input" onclick="boutonModifier({{ uneIntervention.id }});"/>
-                        </td>
-                        <td data-label="id_intervention">{{ uneIntervention.id }}</td>
-                        <td data-label="date_intervention">{{ dateEnFrancais(uneIntervention.getDateIntervention) }}</td>
-                        <td data-label="vehicule">{{ marqueModele(uneIntervention.getFKVehicule.getFKMarque.getMarque,uneIntervention.getFKVehicule.getFKModele.getModele) }}</td>
-                        <td data-label="client">{{ nomPrenom(uneIntervention.getFKClient.getNom,uneIntervention.getFKClient.getPrenom) }}</td>
-                        <td data-label="montant_ht">{{ formatMontantEuros(uneIntervention.getMontantHT) }}</td>
+                {% if lesInterventions is not empty %}
+                    {% for uneIntervention in lesInterventions %}
+                        {% if uneIntervention.getFkEtat.getEtat == "Facturé" %}
+                        {% set couleur = "tr-vert" %}
+                        {% elseif uneIntervention.getFkEtat.getEtat == "Terminé" %}
+                        {% set couleur = "tr-bleu" %}
+                        {% else %}
+                        {% set couleur = "tr-orange" %}
+                        {% endif %}
+                        <tr class="{{ couleur }}">
+                            <td id="radio-button-table">
+                                <input type="radio" class="form-check-input" id="radio-input" name="radio-input" onclick="boutonModifier({{ uneIntervention.id }});"/>
+                            </td>
+                            <td data-label="id_intervention">{{ uneIntervention.id }}</td>
+                            <td data-label="date_intervention">{{ dateEnFrancais(uneIntervention.getDateIntervention) }}</td>
+                            <td data-label="vehicule">{{ marqueModele(uneIntervention.getFKVehicule.getFKMarque.getMarque,uneIntervention.getFKVehicule.getFKModele.getModele) }}</td>
+                            <td data-label="client">{{ nomPrenom(uneIntervention.getFKClient.getNom,uneIntervention.getFKClient.getPrenom) }}</td>
+                            <td data-label="montant_ht">{{ formatMontantEuros(uneIntervention.getMontantHT) }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6">Aucune donnée.</td>
                     </tr>
-                {% endfor %}
+                {% endif %}
                 </tbody>
             </table>
         </div>

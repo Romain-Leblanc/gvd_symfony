@@ -18,7 +18,7 @@
             </form>
         </div>
         <div class="d-flex justify-content-center align-items-center">
-            {{ knp_pagination_render(lesModeles) }}
+            {{ knp_pagination_render(lesModelesPagination) }}
         </div>
         {% for notice in app.flashes('modele') %}
             <div class="alert alert-danger" role="alert">{{ notice|nl2br }}</div>
@@ -27,30 +27,47 @@
             <table class="table table-admin table-admin-marque table-responsive table-hover table-bordered text-center align-middle">
                 <thead class="table-light align-middle">
                 <tr>
-                    <th class="w-15 {% if lesModeles.isSorted('mo.id') %}sorted{% endif %}">{{ knp_pagination_sortable(lesModeles, 'Id', 'mo.id') }}</th>
-                    <th class="w-30 {% if lesModeles.isSorted('ma.marque') %}sorted{% endif %}">{{ knp_pagination_sortable(lesModeles, 'Marque', 'ma.marque') }}</th>
-                    <th class="w-30 {% if lesModeles.isSorted('mo.modele') %}sorted{% endif %}">{{ knp_pagination_sortable(lesModeles, 'Modèle', 'mo.modele') }}</th>
+                    {{ form_start(formFiltreTable) }}
+                    <th class="w-15 {% if lesModelesPagination.isSorted('mo.id') %}sorted{% endif %}">
+                        {{ knp_pagination_sortable(lesModelesPagination, 'Id', 'mo.id') }}
+                        {{ form_widget(formFiltreTable.id_modele) }}
+                    </th>
+                    <th class="w-30 {% if lesModelesPagination.isSorted('ma.marque') %}sorted{% endif %}">
+                        {{ knp_pagination_sortable(lesModelesPagination, 'Marque', 'ma.marque') }}
+                        {{ form_widget(formFiltreTable.marque) }}
+                    </th>
+                    <th class="w-30 {% if lesModelesPagination.isSorted('mo.modele') %}sorted{% endif %}">
+                        {{ knp_pagination_sortable(lesModelesPagination, 'Modèle', 'mo.modele') }}
+                        {{ form_widget(formFiltreTable.modele) }}
+                    </th>
                     <th class="w-15">Actions</th>
+                    {{ form_end(formFiltreTable) }}
                 </tr>
                 </thead>
                 <tbody>
-                {% for unModele in lesModeles %}
+                {% if lesModelesForm is not empty %}
+                    {% for unModele in lesModelesForm %}
+                        <tr>
+                            <td class="w-15">{{ unModele[0].id }}</td>
+                            <td class="w-30">{{ unModele[0].getFkMarque.getMarque }}</td>
+                            <td class="w-30">{{ unModele[0].modele }}</td>
+                            <td>
+                                <div class="div-boutons-admin">
+                                    {% if unModele.nombreVehicule == 0 %}
+                                        <a href="{{ path('modele_admin_modifier', { 'id': unModele[0].id }) }}" class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></a>
+                                        {{ include('admin/admin_modele/_delete_form.html.twig') }}
+                                    {% else %}
+                                        <p class="mb-0">Action désactivée</p>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
                     <tr>
-                        <td class="w-15">{{ unModele[0].id }}</td>
-                        <td class="w-30">{{ unModele[0].getFkMarque.getMarque }}</td>
-                        <td class="w-30">{{ unModele[0].modele }}</td>
-                        <td>
-                            <div class="div-boutons-admin">
-                                {% if unModele.nombreVehicule == 0 %}
-                                    <a href="{{ path('modele_admin_modifier', { 'id': unModele[0].id }) }}" class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></a>
-                                    {{ include('admin/admin_modele/_delete_form.html.twig') }}
-                                {% else %}
-                                    <p class="mb-0">Action désactivée</p>
-                                {% endif %}
-                            </div>
-                        </td>
+                        <td colspan="4">Aucune donnée.</td>
                     </tr>
-                {% endfor %}
+                {% endif %}
                 </tbody>
             </table>
         </div>

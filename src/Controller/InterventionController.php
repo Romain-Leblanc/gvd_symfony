@@ -2,15 +2,27 @@
 
 namespace App\Controller;
 
+use App\Entity\Client;
 use App\Entity\Intervention;
+use App\Entity\Marque;
+use App\Entity\Modele;
+use App\Entity\Vehicule;
 use App\Form\AjoutInterventionType;
+use App\Form\FiltreTable\FiltreTableInterventionType;
 use App\Form\ModificationInterventionType;
 use App\Repository\EtatRepository;
 use App\Repository\InterventionRepository;
 use App\Repository\VehiculeRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,12 +33,32 @@ class InterventionController extends AbstractController
     /**
      * @Route("/intervention", name="intervention_index")
      */
-    public function index(InterventionRepository $interventionRepository): Response
+    public function index(InterventionRepository $interventionRepository, Request $request): Response
     {
         $lesInterventions = $interventionRepository->findBy([], ['id' => 'DESC']);
 
+        $form = $this->createForm(FiltreTableInterventionType::class, $lesInterventions);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Récupère les données du formulaire de recherche
+            $data = $request->request->get('filtre_table_intervention');
+            $filtre = [];
+            // Vérifie si un filtre a été saisi puis définit ses valeurs
+            if ($data['id_intervention'] !== "") { $filtre['id'] = (int) $data['id_intervention']; }
+            if ($data['date_intervention'] !== "") { $filtre['date_intervention'] = new DateTime($data['date_intervention']); }
+            if ($data['vehicule'] !== "") { $filtre['fk_vehicule'] = (int) $data['vehicule']; }
+            if ($data['client'] !== "") { $filtre['fk_client'] = (int) $data['client']; }
+            if ($data['montant_ht'] !== "") { $filtre['montant_ht'] = $data['montant_ht']; }
+            // Si un filtre a été saisi, on récupère les nouvelles valeurs
+            if (isset($filtre)) {
+                $lesInterventions = $interventionRepository->findBy($filtre, ['id' => 'DESC']);
+            }
+        }
+
         return $this->render('intervention/index.html.twig', [
             'lesInterventions' => $lesInterventions,
+            'formFiltreTable' => $form->createView()
         ]);
     }
 

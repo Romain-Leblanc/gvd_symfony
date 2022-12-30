@@ -5,10 +5,14 @@ namespace App\Controller\Admin;
 use App\Entity\Utilisateur;
 use App\Form\Admin\AdminAjoutUtilisateurType;
 use App\Form\Admin\AdminModificationUtilisateurType;
+use App\Form\FiltreTable\Admin\AdminFiltreTableUtilisateurType;
 use App\Repository\UtilisateurRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -20,7 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminUtilisateurController extends AbstractController
 {
     /**
-     * @Route("/", name="utilisateur_admin_index", methods={"GET"})
+     * @Route("/", name="utilisateur_admin_index", methods={"GET", "POST"})
      */
     public function index(UtilisateurRepository $utilisateurRepository, PaginatorInterface $paginator, Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -48,15 +52,48 @@ class AdminUtilisateurController extends AbstractController
         }
 
         // Traitement des données par KnpPaginator
-        $lesUtilisateurs = $paginator->paginate(
+        $lesUtilisateursPagination = $paginator->paginate(
             $donnees,
             $request->query->getInt('page', 1),
             $limite
         );
+        // Valeurs par défaut des résultats des filtres
+        $lesUtilisateursForm = $lesUtilisateursPagination->getItems();
+
+        $form = $this->createForm(AdminFiltreTableUtilisateurType::class, $lesUtilisateursPagination->getItems());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Récupère les données du formulaire de recherche
+            $data = $request->request->get('admin_filtre_table_utilisateur');
+            $query = $utilisateurRepository->createQueryBuilder('u');
+            // Vérifie si un filtre a été saisi puis définit ses valeurs
+            if ($data['id_utilisateur'] !== "" || $data['utilisateur'] !== "" || $data['roles'] !== "") {
+                if ($data['id_utilisateur'] !== "" || $data['utilisateur'] !== "") {
+                    if ($data['id_utilisateur']) { (int) $value = $data['id_utilisateur']; }
+                    else { $value = (int) $data['utilisateur']; }
+                    $query = $query
+                        ->andWhere('u.id = :id')
+                        ->setParameter('id', $value)
+                    ;
+                }
+                if ($data['roles'] !== "") {
+                    $query = $query
+                        ->andWhere('u.roles LIKE :role')
+                        ->setParameter('role', "%".$data['roles']."%")
+                    ;
+                }
+                $lesUtilisateursForm = $query->getQuery()->getResult();
+            }
+        }
 
         return $this->render('admin/admin_utilisateur/index.html.twig', [
-            'lesUtilisateurs' => $lesUtilisateurs,
-            'choixListe' => $choixListe
+            // Données pour Knppaginator
+            'lesUtilisateursPagination' => $lesUtilisateursPagination,
+            // Données pour le formulaire et tableau
+            'lesUtilisateursForm' => $lesUtilisateursForm,
+            'choixListe' => $choixListe,
+            'formFiltreTable' => $form->createView()
         ]);
     }
 
@@ -150,7 +187,6 @@ class AdminUtilisateurController extends AbstractController
         }
         elseif ($this->isCsrfTokenValid('delete'.$unUtilisateur->getId(), $request->request->get('_token'))) {
             // Si l'utilisateur supprimé est celui actuellement connecté, on le force à se reconnecter
-            dd("suppr");
             if ($unUtilisateur->getId() === $this->getUser()->getId()) {
                 // Réinitialise la session utilisateur
                 $this->container->get('security.token_storage')->setToken(null);

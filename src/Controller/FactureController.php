@@ -2,24 +2,34 @@
 
 namespace App\Controller;
 
+use App\Entity\Client;
 use App\Entity\Facture;
 use App\Entity\Intervention;
+use App\Entity\Vehicule;
 use App\Form\AjoutFactureType;
 use App\Form\EnvoiFactureType;
+use App\Form\FiltreTable\FiltreTableFactureType;
 use App\Form\ModificationFactureType;
 use App\Repository\ClientRepository;
 use App\Repository\EtatRepository;
 use App\Repository\FactureRepository;
 use App\Repository\InterventionRepository;
 use App\Repository\TVARepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Parsing\Html;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,12 +48,30 @@ class FactureController extends AbstractController
     /**
      * @Route("/facture", name="facture_index")
      */
-    public function index(FactureRepository  $factureRepository): Response
+    public function index(FactureRepository  $factureRepository, Request $request): Response
     {
         $lesFactures = $factureRepository->findAll();
 
+        $form = $this->createForm(FiltreTableFactureType::class, $lesFactures);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Récupère les données du formulaire de recherche
+            $data = $request->request->get('filtre_table_facture');
+            $filtre = [];
+            // Vérifie si un filtre a été saisi puis définit ses valeurs
+            if ($data['id_facture'] !== "") { $filtre['id'] = (int) $data['id_facture']; }
+            if ($data['date_facture'] !== "") { $filtre['date_facture'] = new DateTime($data['date_facture']); }
+            if ($data['client'] !== "") { $filtre['fk_client'] = (int) $data['client']; }
+            if ($data['montant_ht'] !== "") { $filtre['montant_ht'] = $data['montant_ht']; }
+            // Si un filtre a été saisi, on récupère les nouvelles valeurs
+            if (isset($filtre)) {
+                $lesFactures = $factureRepository->findBy($filtre);
+            }
+        }
+
         return $this->render('facture/index.html.twig', [
-            'lesFactures' => $lesFactures
+            'lesFactures' => $lesFactures,
+            'formFiltreTable' => $form->createView()
         ]);
     }
 

@@ -6,12 +6,16 @@ use App\Entity\Marque;
 use App\Entity\Modele;
 use App\Form\Admin\AdminAjoutMarqueType;
 use App\Form\Admin\AdminModificationMarqueType;
+use App\Form\FiltreTable\Admin\AdminFiltreTableMarqueType;
 use App\Repository\MarqueRepository;
 use App\Repository\ModeleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminMarqueController extends AbstractController
 {
     /**
-     * @Route("/", name="marque_admin_index", methods={"GET"})
+     * @Route("/", name="marque_admin_index", methods={"GET", "POST"})
      */
     public function index(MarqueRepository $marqueRepository, PaginatorInterface $paginator, Request $request): Response
     {
@@ -50,15 +54,45 @@ class AdminMarqueController extends AbstractController
         }
 
         // Traitement des données par KnpPaginator
-        $lesMarques = $paginator->paginate(
+        $lesMarquesPagination = $paginator->paginate(
             $donnees,
             $request->query->getInt('page', 1),
             $limite
         );
+        // Valeurs par défaut des résultats des filtres
+        $lesMarquesForm = $lesMarquesPagination->getItems();
+
+        $form = $this->createForm(AdminFiltreTableMarqueType::class, $marqueRepository->findAll());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Récupère les données du formulaire de recherche
+            $data = $request->request->get('admin_filtre_table_marque');
+            // Vérifie si un filtre a été saisi puis définit ses valeurs
+            if ($data['id_marque'] !== "" || $data['marque'] !== "") {
+                if ($data['id_marque']) { $value = $data['id_marque']; }
+                else { $value = $data['marque']; }
+                $lesMarquesForm = $marqueRepository->createQueryBuilder('ma')
+                    ->select('ma.id')
+                    ->addSelect('ma.marque')
+                    ->addSelect('COUNT(mo.id) as nombre')
+                    ->leftJoin(Modele::class, 'mo', Join::WITH, 'ma.id = mo.fk_marque')
+                    ->where('ma.id = :value')
+                    ->setParameter('value', $value)
+                    ->groupBy('ma.id')
+                    ->getQuery()
+                    ->getResult()
+                ;
+            }
+        }
 
         return $this->render('admin/admin_marque/index.html.twig', [
-            'lesMarques' => $lesMarques,
-            'choixListe' => $choixListe
+            // Données pour Knppaginator
+            'lesMarquesPagination' => $lesMarquesPagination,
+            // Données pour le formulaire et tableau
+            'lesMarquesForm' => $lesMarquesForm,
+            'choixListe' => $choixListe,
+            'formFiltreTable' => $form->createView()
         ]);
     }
 

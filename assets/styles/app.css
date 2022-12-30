@@ -76,7 +76,7 @@ footer {
 .div-liste > .div-table > table > thead > tr > th > form {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    /*align-items: center;*/
 }
 @media screen and (min-width: 1450px) {
     .div-container {
@@ -271,9 +271,9 @@ footer {
     .input-50-date {
         width: 45%;
     }
-    .select2-selection__rendered, .select2-results__options li {
+/*    .select2-selection__rendered, .select2-results__options li {
         text-align: center;
-    }
+    }*/
     .piece-jointe-facture {
         display: flex;
         justify-content: center;

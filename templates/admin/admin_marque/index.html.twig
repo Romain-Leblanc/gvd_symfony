@@ -18,7 +18,7 @@
             </form>
         </div>
         <div class="d-flex justify-content-center align-items-center">
-            {{ knp_pagination_render(lesMarques) }}
+            {{ knp_pagination_render(lesMarquesPagination) }}
         </div>
         {% for notice in app.flashes('marque') %}
             <div class="alert alert-danger" role="alert">{{ notice|nl2br }}</div>
@@ -26,28 +26,44 @@
         <table style="overflow-x: auto" class="table table-admin table-admin-marque table-responsive table-hover table-bordered text-center align-middle">
             <thead class="table-light align-middle">
             <tr>
-                <th class="w-15{% if lesMarques.isSorted('ma.id') %}sorted{% endif %}">{{ knp_pagination_sortable(lesMarques, 'Id', 'ma.id') }}</th>
-                <th class="w-50{% if lesMarques.isSorted('ma.marque') %}sorted{% endif %}">{{ knp_pagination_sortable(lesMarques, 'Marque', 'ma.marque') }}</th>
-                <th class="w-15{% if lesMarques.isSorted('nombre') %}sorted{% endif %}">{{ knp_pagination_sortable(lesMarques, 'Nombre modèles', 'nombre') }}</th>
+                {{ form_start(formFiltreTable) }}
+                <th class="w-15{% if lesMarquesPagination.isSorted('ma.id') %}sorted{% endif %}">
+                    {{ knp_pagination_sortable(lesMarquesPagination, 'Id', 'ma.id') }}
+                    {{ form_widget(formFiltreTable.id_marque) }}
+                </th>
+                <th class="w-50{% if lesMarquesPagination.isSorted('ma.marque') %}sorted{% endif %}">
+                    {{ knp_pagination_sortable(lesMarquesPagination, 'Marque', 'ma.marque') }}
+                    {{ form_widget(formFiltreTable.marque) }}
+                </th>
+                <th class="w-15{% if lesMarquesPagination.isSorted('nombre') %}sorted{% endif %}">
+                    {{ knp_pagination_sortable(lesMarquesPagination, 'Nombre modèles', 'nombre') }}
+                </th>
                 <th class="w-30">Actions</th>
+                {{ form_end(formFiltreTable) }}
             </tr>
             </thead>
             <tbody>
-            {% for uneMarque in lesMarques %}
+            {% if lesMarquesForm is not empty %}
+                {% for uneMarque in lesMarquesForm %}
+                    <tr>
+                        <td class="w-15">{{ uneMarque.id }}</td>
+                        <td class="w-50">{{ uneMarque.marque|upper }}</td>
+                        <td class="w-15">{{ uneMarque.nombre }}</td>
+                        <td>
+                            <div class="div-boutons-admin">
+                                <a href="{{ path('marque_admin_modifier', { 'id': uneMarque.id }) }}" class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></a>
+                                {% if uneMarque.nombre == 0 %}
+                                    {{ include('admin/admin_marque/_delete_form.html.twig') }}
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
                 <tr>
-                    <td class="w-15">{{ uneMarque.id }}</td>
-                    <td class="w-50">{{ uneMarque.marque|upper }}</td>
-                    <td class="w-15">{{ uneMarque.nombre }}</td>
-                    <td>
-                        <div class="div-boutons-admin">
-                            <a href="{{ path('marque_admin_modifier', { 'id': uneMarque.id }) }}" class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></a>
-                            {% if uneMarque.nombre == 0 %}
-                                {{ include('admin/admin_marque/_delete_form.html.twig') }}
-                            {% endif %}
-                        </div>
-                    </td>
+                    <td colspan="4">Aucune donnée.</td>
                 </tr>
-            {% endfor %}
+            {% endif %}
             </tbody>
         </table>
     </div>

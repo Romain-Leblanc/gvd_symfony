@@ -16,25 +16,45 @@
             <table class="table table-hover table-bordered align-middle text-center">
                 <thead class="thead-light align-middle">
                 <tr>
+                    {{ form_start(formFiltreTable) }}
                     <th scope="col"></th>
-                    <th scope="col">N° Client</th>
-                    <th scope="col">Client</th>
-                    <th scope="col">Coordonnées</th>
-                    <th scope="col">Adresse complète</th>
+                    <th scope="col">
+                        {{ form_label(formFiltreTable.id_client) }}
+                        {{ form_widget(formFiltreTable.id_client) }}
+                    </th>
+                    <th scope="col">
+                        {{ form_label(formFiltreTable.client) }}
+                        {{ form_widget(formFiltreTable.client) }}
+                    </th>
+                    <th scope="col">
+                        {{ form_label(formFiltreTable.coordonnees) }}
+                        {{ form_widget(formFiltreTable.coordonnees) }}
+                    </th>
+                    <th scope="col">
+                        {{ form_label(formFiltreTable.adresse_complete) }}
+                        {{ form_widget(formFiltreTable.adresse_complete) }}
+                    </th>
+                    {{ form_end(formFiltreTable) }}
                 </tr>
                 </thead>
                 <tbody>
-                {% for unClient in lesClients %}
+                {% if lesClients is not empty %}
+                    {% for unClient in lesClients %}
+                        <tr>
+                            <td id="radio-button-table">
+                                <input type="radio" class="form-check-input" id="radio-input" name="radio-input" onclick="boutonModifier({{ unClient.id }});" />
+                            </td>
+                            <td data-label="id_client">{{ unClient.id }}</td>
+                            <td data-label="client">{{ nomPrenom(unClient.Nom,unClient.Prenom) }}</td>
+                            <td data-label="coordonnees">{{ numTelEmail(unClient.Tel,unClient.Email)|raw }}</td>
+                            <td data-label="adresse_complète">{{ adresseComplete(unClient.Adresse,unClient.getSuiteAdresse,unClient.getCodePostal,unClient.Ville) }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
                     <tr>
-                        <td id="radio-button-table">
-                            <input type="radio" class="form-check-input" id="radio-input" name="radio-input" onclick="boutonModifier({{ unClient.id }});" />
-                        </td>
-                        <td data-label="id_client">{{ unClient.id }}</td>
-                        <td data-label="client">{{ nomPrenom(unClient.Nom,unClient.Prenom) }}</td>
-                        <td data-label="coordonnees">{{ numTelEmail(unClient.Tel,unClient.Email)|raw }}</td>
-                        <td data-label="adresse_complète">{{ adresseComplete(unClient.Adresse,unClient.getSuiteAdresse,unClient.getCodePostal,unClient.Ville) }}</td>
+                        <td colspan="5">Aucune donnée.</td>
                     </tr>
-                {% endfor %}
+                {% endif %}
                 </tbody>
             </table>
         </div>
