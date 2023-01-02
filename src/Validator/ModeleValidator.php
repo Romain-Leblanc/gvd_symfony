@@ -19,17 +19,24 @@ class ModeleValidator extends ConstraintValidator
     {
         /* @var Modele $constraint */
 
-        if (null === $value || '' === $value) {
-            return $this->context->buildViolation("Veuillez sélectionner un modèle de la marque.")
-                ->addViolation();
-        }
+        // Récupère les données du formulaires
+        $modele = $this->context->getObject()->getParent()->getData();
 
-        // Si aucun modèle n'est associé à l'identifiant de la marque, on génère une erreur
-        if(empty($this->repository->findBy(['fk_marque' => $value->getFkMarque()->getId(), 'modele' => $value->getModele()]))) {
-            $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ marque }}', $value->getFkMarque()->getMarque())
-                ->setParameter('{{ modele }}', $value->getModele())
-                ->addViolation();
+        // Si le véhicule est déjà dans une intervention, la modification du client, marque et modèle est désactivé.
+        // Étant donné que si ces champs sont désactivés, ils ne sont pas envoyés dans les données du formulaire.
+        // Alors la vérification du modèle de la marque n'est pas prise en compte
+        if ($modele->getFkClient() !== null && $modele->getFkMarque() !== null && $modele->getFkModele() !== null) {
+            if ('' === $value) {
+                return $this->context->buildViolation("Veuillez sélectionner un modèle de la marque.")
+                    ->addViolation();
+            }
+            // Si aucun modèle n'est associé à l'identifiant de la marque, on génère une erreur
+            if(empty($this->repository->findBy(['fk_marque' => $value->getFkMarque()->getId(), 'modele' => $value->getModele()]))) {
+                $this->context->buildViolation($constraint->message)
+                    ->setParameter('{{ marque }}', $value->getFkMarque()->getMarque())
+                    ->setParameter('{{ modele }}', $value->getModele())
+                    ->addViolation();
+            }
         }
     }
 }

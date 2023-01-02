@@ -140,13 +140,18 @@ class AdminModeleController extends AbstractController
     /**
      * @Route("/modifier/{id}", name="modele_admin_modifier", methods={"GET", "POST"})
      */
-    public function modifier(int $id, Request $request, ModeleRepository $modeleRepository, EntityManagerInterface $entityManager): Response
+    public function modifier(int $id, Request $request, ModeleRepository $modeleRepository, VehiculeRepository $vehiculeRepository, EntityManagerInterface $entityManager): Response
     {
         $unModele = $modeleRepository->find($id);
 
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
         if($id == 0 || $unModele == null) {
-            $request->getSession()->getFlashBag()->add('modele', 'Ce modèle n\'existe pas.');
+            $this->addFlash('modele', 'Ce modèle n\'existe pas.');
+            return $this->redirectToRoute('modele_admin_index');
+        }
+        elseif(!empty($vehiculeRepository->findBy(['fk_marque' => $unModele->getFkMarque()->getId(), 'fk_modele' => $unModele->getId()]))) {
+            // Si l'identifiant existe dans la table correspondante, on génère un message d'erreur
+            $this->addFlash('modele', 'Ce modèle n\'est pas supprimable.');
             return $this->redirectToRoute('modele_admin_index');
         }
 
@@ -176,10 +181,11 @@ class AdminModeleController extends AbstractController
 
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
         if($id == 0 || $unModele == null) {
-            $request->getSession()->getFlashBag()->add('modele', 'Ce modèle n\'existe pas.');
+            $this->addFlash('modele', 'Ce modèle n\'existe pas.');
         }
         elseif(!empty($vehiculeRepository->findBy(['fk_marque' => $unModele->getFkMarque()->getId(), 'fk_modele' => $unModele->getId()]))) {
-            $request->getSession()->getFlashBag()->add('modele', 'Ce modèle n\'est pas supprimable.');
+            // Si l'identifiant existe dans la table correspondante, on génère un message d'erreur
+            $this->addFlash('modele', 'Ce modèle n\'est pas supprimable.');
         }
         elseif (
             $this->isCsrfTokenValid('delete'.$unModele->getId(), $request->request->get('_token'))

@@ -4,12 +4,6 @@
 
 {% block body %}
     <div class="div-liste">
-        {% for notice in app.flashes('facture_mail_success') %}
-            <div class="alert alert-success" role="alert">{{ notice|nl2br }}</div>
-        {% endfor %}
-        {% for notice in app.flashes('facture') %}
-            <div class="alert alert-danger" role="alert">{{ notice|nl2br }}</div>
-        {% endfor %}
         <div class="div-boutons mb-3">
             <a href="{{ path('facture_ajouter') }}" class="btn btn-success" id="bouton-ajouter"><i class="fa-solid fa-plus"></i> Ajouter</a>
             {# La valeur pour la route suivant change au clic sur un bouton radio du tableau #}
@@ -17,6 +11,12 @@
             <a href="{{ path('facture_telecharger') }}" class="btn btn-secondary cacher" id="bouton-telecharger" target="_blank">Télécharger</a>
             <a href="{{ path('facture_envoyer') }}" class="btn btn-light cacher" id="bouton-envoyer">Envoyer</a>
         </div>
+        {% for notice in app.flashes('facture_mail_success') %}
+            <div class="alert alert-success" role="alert">{{ notice|nl2br }}</div>
+        {% endfor %}
+        {% for notice in app.flashes('facture') %}
+            <div class="alert alert-danger" role="alert">{{ notice|nl2br }}</div>
+        {% endfor %}
         <div class="div-table">
             <table class="table table-hover table-bordered align-middle text-center">
                 <thead class="thead-light align-middle">

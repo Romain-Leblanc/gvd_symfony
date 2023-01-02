@@ -59,9 +59,6 @@
                         <td class="text-wrap">{{ nomPrenom(unUtilisateur.getNom,unUtilisateur.getPrenom) }}</td>
                         {% if "ROLE_ADMIN" in unUtilisateur.getRoles %}
                             <td>{{ "Administrateur" }}</td>
-                        {% else %}
-                            <td>{{ "Utilisateur" }}</td>
-                        {% endif %}
                         <td>
                             <div class="div-boutons-admin">
                                 <a href="{{ path('utilisateur_admin_detail', { 'id': unUtilisateur.id }) }}" class="btn btn-primary fs-11 text-white">Détail</a>
@@ -69,6 +66,19 @@
                                 {{ include('admin/admin_utilisateur/_delete_form.html.twig') }}
                             </div>
                         </td>
+                        {% elseif "ROLE_SUPER_ADMIN" in unUtilisateur.getRoles %}
+                            <td>{{ "SuperAdministrateur" }}</td>
+                            <td>Action désactivée</td>
+                        {% else %}
+                            <td>{{ "Utilisateur" }}</td>
+                        <td>
+                            <div class="div-boutons-admin">
+                                <a href="{{ path('utilisateur_admin_detail', { 'id': unUtilisateur.id }) }}" class="btn btn-primary fs-11 text-white">Détail</a>
+                                <a href="{{ path('utilisateur_admin_modifier', { 'id': unUtilisateur.id }) }}" class="btn btn-warning fs-11 text-dark"><i class="fa-solid fa-pen"></i></a>
+                                {{ include('admin/admin_utilisateur/_delete_form.html.twig') }}
+                            </div>
+                        </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             {% else %}

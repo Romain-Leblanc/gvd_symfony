@@ -97,7 +97,7 @@ class InterventionController extends AbstractController
 
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
         if($id == 0 || $uneIntervention == null) {
-            $request->getSession()->getFlashBag()->add('intervention', 'Cette intervention n\'existe pas.');
+            $this->addFlash('intervention', 'Cette intervention n\'existe pas.');
             return $this->redirectToRoute('intervention_index');
         }
 
@@ -148,7 +148,7 @@ class InterventionController extends AbstractController
             }
         }
         else {
-            $request->getSession()->getFlashBag()->add('intervention', 'Cet accès est restreint.');
+            $this->addFlash('intervention', 'Cet accès est restreint.');
             return $this->redirectToRoute('intervention_index');
         }
     }

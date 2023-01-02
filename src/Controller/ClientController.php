@@ -77,7 +77,7 @@ class ClientController extends AbstractController
 
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
         if($id == 0 || $unClient == null) {
-            $request->getSession()->getFlashBag()->add('client', 'Ce client n\'existe pas.');
+            $this->addFlash('client', 'Ce client n\'existe pas.');
             return $this->redirectToRoute('client_index');
         }
         $form = $this->createForm(ModificationClientType::class, $unClient);

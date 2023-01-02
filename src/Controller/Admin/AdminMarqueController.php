@@ -122,14 +122,18 @@ class AdminMarqueController extends AbstractController
     /**
      * @Route("/modifier/{id}", name="marque_admin_modifier", methods={"GET", "POST"})
      */
-    public function modifier(int $id, Request $request, MarqueRepository $marqueRepository, EntityManagerInterface $entityManager): Response
+    public function modifier(int $id, Request $request, MarqueRepository $marqueRepository, ModeleRepository $modeleRepository, EntityManagerInterface $entityManager): Response
     {
         $uneMarque = $marqueRepository->find($id);
 
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
         if($id == 0 || $uneMarque == null) {
-            $request->getSession()->getFlashBag()->add('marque', 'Cette marque n\'existe pas.');
+            $this->addFlash('marque', 'Cette marque n\'existe pas.');
             return $this->redirectToRoute('marque_admin_index');
+        }
+        elseif(!empty($modeleRepository->findBy(['fk_marque' => $uneMarque->getId()]))) {
+            // Si l'identifiant existe dans la table correspondante, on génère un message d'erreur
+            $this->addFlash('marque', 'Cette marque n\'est pas supprimable.');
         }
 
         $form = $this->createForm(AdminModificationMarqueType::class, $uneMarque);
@@ -158,10 +162,11 @@ class AdminMarqueController extends AbstractController
 
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
         if($id == 0 || $uneMarque == null) {
-            $request->getSession()->getFlashBag()->add('marque', 'Cette marque n\'existe pas.');
+            $this->addFlash('marque', 'Cette marque n\'existe pas.');
         }
         elseif(!empty($modeleRepository->findBy(['fk_marque' => $uneMarque->getId()]))) {
-            $request->getSession()->getFlashBag()->add('marque', 'Cette marque n\'est pas supprimable.');
+            // Si l'identifiant existe dans la table correspondante, on génère un message d'erreur
+            $this->addFlash('marque', 'Cette marque n\'est pas supprimable.');
         }
         elseif (
             $this->isCsrfTokenValid('delete'.$uneMarque->getId(), $request->request->get('_token'))

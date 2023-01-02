@@ -110,7 +110,7 @@ class VehiculeController extends AbstractController
         $unVehicule = $vehiculeRepository->find($id);
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
         if($id == 0 || $unVehicule == null) {
-            $request->getSession()->getFlashBag()->add('vehicule', 'Ce véhicule n\'existe pas.');
+            $this->addFlash('vehicule', 'Ce véhicule n\'existe pas.');
             return $this->redirectToRoute('vehicule_index');
         }
         // Si le véhicule est déjà dans une intervention, on ne peut pas modifier à quel client appartient ce véhicule, ni la marque et le modèle.
@@ -156,12 +156,12 @@ class VehiculeController extends AbstractController
                 return $this->json(['donnees' => $liste]);
             }
             else {
-                $request->getSession()->getFlashBag()->add('vehicule', 'Cet accès est restreint.');
+                $this->addFlash('vehicule', 'Cet accès est restreint.');
                 return $this->redirectToRoute('vehicule_index');
             }
         }
         else {
-            $request->getSession()->getFlashBag()->add('vehicule', 'Cet accès est restreint.');
+            $this->addFlash('vehicule', 'Cet accès est restreint.');
             return $this->redirectToRoute('vehicule_index');
         }
     }

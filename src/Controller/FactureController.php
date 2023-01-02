@@ -86,7 +86,7 @@ class FactureController extends AbstractController
 
         // Si aucune intervention est terminée (et donc n'a pas besoin d'être facturé), alors on renvoie un message puis une redirection
         if(empty($listeInterventions)){
-            $request->getSession()->getFlashBag()->add('facture', 'Aucun intervention à facturée.');
+            $this->addFlash('facture', 'Aucun intervention à facturée.');
             return $this->redirectToRoute("facture_index");
         }
 
@@ -157,7 +157,7 @@ class FactureController extends AbstractController
 
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
         if($id == 0 || $uneFacture == null) {
-            $request->getSession()->getFlashBag()->add('facture', 'Cette facture n\'existe pas.');
+            $this->addFlash('facture', 'Cette facture n\'existe pas.');
             return $this->redirectToRoute('facture_index');
         }
 
@@ -202,7 +202,7 @@ class FactureController extends AbstractController
 
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
         if ($id == 0 || $uneFacture == null) {
-            $request->getSession()->getFlashBag()->add('facture', 'Cette facture n\'existe pas.');
+            $this->addFlash('facture', 'Cette facture n\'existe pas.');
             return $this->redirectToRoute('facture_index');
         }
 
@@ -229,7 +229,7 @@ class FactureController extends AbstractController
 
             try {
                 $mailer->send($email);
-                $request->getSession()->getFlashBag()->add('facture_mail_success', 'Le mail a été envoyé.');
+                $this->addFlash('facture_mail_success', 'Le mail a été envoyé.');
                 return $this->redirectToRoute('facture_index');
             } catch (\Exception $t) {
                 return new Response($t->getMessage());
@@ -254,7 +254,7 @@ class FactureController extends AbstractController
 
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
         if($id == 0 || $uneFacture == null) {
-            $request->getSession()->getFlashBag()->add('facture', 'Cette facture n\'existe pas.');
+            $this->addFlash('facture', 'Cette facture n\'existe pas.');
             return $this->redirectToRoute('facture_index');
         }
 
@@ -263,6 +263,7 @@ class FactureController extends AbstractController
         return $this->file($chemin, null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
+    // Fonction qui génère le PDF à partir de l'objet Facture et d'un tableau d'interventions
     public function genererPdf(Facture $facture, array $intervention) {
         // Récupération du logo pour le PDF
         $logo = $this->getParameter('kernel.project_dir')."/public/images/logo_64.png";
@@ -303,12 +304,12 @@ class FactureController extends AbstractController
                 return $this->json(['donnees' => $liste]);
             }
             else {
-                $request->getSession()->getFlashBag()->add('facture', 'Cet accès est restreint.');
+                $this->addFlash('facture', 'Cet accès est restreint.');
                 return $this->redirectToRoute('facture_index');
             }
         }
         else {
-            $request->getSession()->getFlashBag()->add('facture', 'Cet accès est restreint.');
+            $this->addFlash('facture', 'Cet accès est restreint.');
             return $this->redirectToRoute('facture_index');
         }
     }

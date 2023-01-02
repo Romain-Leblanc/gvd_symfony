@@ -106,7 +106,12 @@ class AdminUtilisateurController extends AbstractController
 
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
         if($id == 0 || $unUtilisateur == null) {
-            $request->getSession()->getFlashBag()->add('utilisateur', 'Cet utilisateur n\'existe pas.');
+            $this->addFlash('utilisateur', 'Cet utilisateur n\'existe pas.');
+            return $this->redirectToRoute('utilisateur_admin_index');
+        }
+        elseif(in_array('ROLE_SUPER_ADMIN', $unUtilisateur->getRoles())) {
+            // Si l'identifiant existe dans la table correspondante, on génère un message d'erreur
+            $this->addFlash('utilisateur', 'Impossible de voir le détail de cet utilisateur.');
             return $this->redirectToRoute('utilisateur_admin_index');
         }
 
@@ -146,7 +151,12 @@ class AdminUtilisateurController extends AbstractController
 
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on renvoi au tableau principal correspondant
         if($id == 0 || $unUtilisateur == null) {
-            $request->getSession()->getFlashBag()->add('utilisateur', 'Cet utilisateur n\'existe pas.');
+            $this->addFlash('utilisateur', 'Cet utilisateur n\'existe pas.');
+            return $this->redirectToRoute('utilisateur_admin_index');
+        }
+        elseif(in_array('ROLE_SUPER_ADMIN', $unUtilisateur->getRoles())) {
+            // Si l'identifiant existe dans la table correspondante, on génère un message d'erreur
+            $this->addFlash('utilisateur', 'Cet utilisateur n\'est pas modifiable.');
             return $this->redirectToRoute('utilisateur_admin_index');
         }
 
@@ -162,7 +172,7 @@ class AdminUtilisateurController extends AbstractController
             $entityManager->flush();
             // Si l'utilisateur modifié est celui actuellement connecté, on le force à se reconnecter
             if ($unUtilisateur->getId() === $this->getUser()->getId()) {
-                $request->getSession()->getFlashBag()->add('utilisateur', 'Veuillez vous reconnecter.');
+                $this->addFlash('utilisateur', 'Veuillez vous reconnecter.');
                 return $this->redirectToRoute('app_deconnexion');
             }
             return $this->redirectToRoute('utilisateur_admin_index', [], Response::HTTP_SEE_OTHER);
@@ -183,7 +193,12 @@ class AdminUtilisateurController extends AbstractController
 
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on génère une erreur
         if($id == 0 || $unUtilisateur == null) {
-            $request->getSession()->getFlashBag()->add('utilisateur', 'Cet utilisateur n\'existe pas.');
+            $this->addFlash('utilisateur', 'Cet utilisateur n\'existe pas.');
+        }
+        elseif(in_array('ROLE_SUPER_ADMIN', $unUtilisateur->getRoles())) {
+            // Si l'identifiant existe dans la table correspondante, on génère un message d'erreur
+            $this->addFlash('utilisateur', 'Cet utilisateur n\'est pas supprimable.');
+            return $this->redirectToRoute('utilisateur_admin_index');
         }
         elseif ($this->isCsrfTokenValid('delete'.$unUtilisateur->getId(), $request->request->get('_token'))) {
             // Si l'utilisateur supprimé est celui actuellement connecté, on le force à se reconnecter
