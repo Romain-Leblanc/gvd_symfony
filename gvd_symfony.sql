@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : lun. 02 jan. 2023 à 13:49
+-- Généré le : lun. 02 jan. 2023 à 15:25
 -- Version du serveur :  5.7.31
 -- Version de PHP : 7.4.12
 
@@ -387,15 +387,16 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   `prenom` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_1D1C63B3E7927C74` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `utilisateur`
 --
 
 INSERT INTO `utilisateur` (`id`, `email`, `roles`, `password`, `nom`, `prenom`) VALUES
-(1, 'utilisateur@gvd.test', '[\"ROLE_USER\"]', '$2y$13$clWii7h2Bj8bmxSFQM69t.5c1/VeZPkgV0AV647pLNtrjNGSm3OjS', 'DUPONT', 'Thomas'),
-(2, 'administrateur@gvd.test', '[\"ROLE_ADMIN\"]', '$2y$13$UkTKP4gX0DtvrQgDxozgqeX02VaAoHXilctKTC0NVecqdsZpRGGWK', 'Admin', 'Admin');
+(1, 'utilisateur@gvd.test', '{\"1\": \"ROLE_USER\"}', '$2y$13$0RmN.5LKVUbjKvV5CV6MyexMRMNZbR4uFShikTID3laH905rzefN6', 'DUPONT', 'Thomas'),
+(2, 'administrateur@gvd.test', '[\"ROLE_ADMIN\"]', '$2y$13$UkTKP4gX0DtvrQgDxozgqeX02VaAoHXilctKTC0NVecqdsZpRGGWK', 'DUPOND', 'Pascal'),
+(3, 'administrateur@sylles.test', '[\"ROLE_SUPER_ADMIN\"]', '$2y$13$XXgTOMKjWZ1lI8KNudC4nuGD0VEmEWS7rW1KVJHXjoxH/2.HlS4/2', 'Sylles', 'Admin');
 
 -- --------------------------------------------------------
 
