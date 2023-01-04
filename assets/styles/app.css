@@ -91,10 +91,6 @@ footer {
     .div-liste > .div-table {
         height: 600px;
         overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
     }
     .div-row {
         display: flex;
