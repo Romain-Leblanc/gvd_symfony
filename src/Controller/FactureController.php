@@ -50,7 +50,7 @@ class FactureController extends AbstractController
      */
     public function index(FactureRepository  $factureRepository, Request $request): Response
     {
-        $lesFactures = $factureRepository->findAll();
+        $lesFactures = $factureRepository->findBy([], ['id' => 'DESC']);;
 
         $form = $this->createForm(FiltreTableFactureType::class, $lesFactures);
         $form->handleRequest($request);
@@ -65,7 +65,7 @@ class FactureController extends AbstractController
             if ($data['montant_ht'] !== "") { $filtre['montant_ht'] = $data['montant_ht']; }
             // Si un filtre a été saisi, on récupère les nouvelles valeurs
             if (isset($filtre)) {
-                $lesFactures = $factureRepository->findBy($filtre);
+                $lesFactures = $factureRepository->findBy($filtre, ['id' => 'DESC']);
             }
         }
 

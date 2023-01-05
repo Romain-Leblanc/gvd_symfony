@@ -172,7 +172,6 @@ class AdminUtilisateurController extends AbstractController
             $entityManager->flush();
             // Si l'utilisateur modifié est celui actuellement connecté, on le force à se reconnecter
             if ($unUtilisateur->getId() === $this->getUser()->getId()) {
-                $this->addFlash('utilisateur', 'Veuillez vous reconnecter.');
                 return $this->redirectToRoute('app_deconnexion');
             }
             return $this->redirectToRoute('utilisateur_admin_index', [], Response::HTTP_SEE_OTHER);
