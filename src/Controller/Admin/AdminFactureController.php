@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminFactureController extends AbstractController
 {
     /**
-     * @Route("/admin/facture", name="facture_admin_index")
+     * @Route("/admin/facture", name="facture_admin_index", methods={"GET"})
      */
     public function index(FactureRepository $factureRepository): Response
     {
@@ -35,8 +35,7 @@ class AdminFactureController extends AbstractController
         $tableauResultat = [];
 
         // Boucle sur chaque mois pour définir sa traduction et son montant HT si égal à zéro.
-        // Le groupement par mois de l'année n'est pas utilisé parce que la requête ne retournera rien
-        // si aucune facture d'un certain mois n'existe pas 
+        // Le groupement par mois de l'année n'est pas utilisé parce que la requête ne retournera rien si aucune facture d'un certain mois n'existe pas
         foreach ($tableauMois as $mois) {
             // Récupère les infos des factures du mois 
             $resultat = $factureRepository->findByMois($annee, $mois);
@@ -44,7 +43,7 @@ class AdminFactureController extends AbstractController
             if(array_search($mois, $tableauMois)) {
                 $resultat['mois'] = array_search($mois, $tableauMois);
             }
-            // Définit
+            // Définit les montants à zéro si null
             if(is_null($resultat['montant'])) {
                 $resultat['nombre'] = 0;
                 $resultat['montant'] = 0;

@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ClientController extends AbstractController
 {
     /**
-     * @Route("/client", name="client_index")
+     * @Route("/client", name="client_index", methods={"GET", "POST"})
      */
     public function index(ClientRepository $clientRepository, Request $request): Response
     {
@@ -47,7 +47,7 @@ class ClientController extends AbstractController
     }
 
     /**
-     * @Route("/client/ajouter", name="client_ajouter")
+     * @Route("/client/ajouter", name="client_ajouter", methods={"GET", "POST"})
      */
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -69,7 +69,7 @@ class ClientController extends AbstractController
     }
 
     /**
-     * @Route("/client/modifier/{id}", name="client_modifier", defaults={"id" = 0})
+     * @Route("/client/modifier/{id}", name="client_modifier", defaults={"id" = 0}, methods={"GET", "POST"})
      */
     public function modifier(int $id, ClientRepository $clientRepository, Request $request): Response
     {

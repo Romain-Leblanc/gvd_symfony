@@ -109,11 +109,6 @@ class AdminUtilisateurController extends AbstractController
             $this->addFlash('utilisateur', 'Cet utilisateur n\'existe pas.');
             return $this->redirectToRoute('utilisateur_admin_index');
         }
-        elseif(in_array('ROLE_SUPER_ADMIN', $unUtilisateur->getRoles())) {
-            // Si l'identifiant existe dans la table correspondante, on génère un message d'erreur
-            $this->addFlash('utilisateur', 'Impossible de voir le détail de cet utilisateur.');
-            return $this->redirectToRoute('utilisateur_admin_index');
-        }
 
         return $this->render('admin/admin_utilisateur/show.html.twig', [
             'unUtilisateur' => $unUtilisateur
@@ -154,11 +149,6 @@ class AdminUtilisateurController extends AbstractController
             $this->addFlash('utilisateur', 'Cet utilisateur n\'existe pas.');
             return $this->redirectToRoute('utilisateur_admin_index');
         }
-        elseif(in_array('ROLE_SUPER_ADMIN', $unUtilisateur->getRoles())) {
-            // Si l'identifiant existe dans la table correspondante, on génère un message d'erreur
-            $this->addFlash('utilisateur', 'Cet utilisateur n\'est pas modifiable.');
-            return $this->redirectToRoute('utilisateur_admin_index');
-        }
 
         $form = $this->createForm(AdminModificationUtilisateurType::class, $unUtilisateur);
         $form->handleRequest($request);
@@ -193,11 +183,6 @@ class AdminUtilisateurController extends AbstractController
         // Si le paramètre est égale à zéro ou que les resultats du Repository est null, on génère une erreur
         if($id == 0 || $unUtilisateur == null) {
             $this->addFlash('utilisateur', 'Cet utilisateur n\'existe pas.');
-        }
-        elseif(in_array('ROLE_SUPER_ADMIN', $unUtilisateur->getRoles())) {
-            // Si l'identifiant existe dans la table correspondante, on génère un message d'erreur
-            $this->addFlash('utilisateur', 'Cet utilisateur n\'est pas supprimable.');
-            return $this->redirectToRoute('utilisateur_admin_index');
         }
         elseif ($this->isCsrfTokenValid('delete'.$unUtilisateur->getId(), $request->request->get('_token'))) {
             // Si l'utilisateur supprimé est celui actuellement connecté, on le force à se reconnecter

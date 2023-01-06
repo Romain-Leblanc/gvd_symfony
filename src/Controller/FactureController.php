@@ -76,7 +76,7 @@ class FactureController extends AbstractController
     }
 
     /**
-     * @Route("/facture/ajouter", name="facture_ajouter")
+     * @Route("/facture/ajouter", name="facture_ajouter", methods={"GET", "POST"})
      * @throws \Spipu\Html2Pdf\Exception\Html2PdfException
      */
     public function ajouter(InterventionRepository $interventionRepository, EtatRepository $etatRepository, Request $request, EntityManagerInterface $entityManager): Response
@@ -108,6 +108,19 @@ class FactureController extends AbstractController
             // on génère une erreur
             if($idClient !== $idIntervention) {
                 $message = "Le client de ces interventions n'est pas le même que celui de la facture.";
+                return $this->render('facture/ajout.html.twig', [
+                    'errors' => $form->addError(new FormError($message))->getErrors(true),
+                    'formAjoutFacture' => $form->createView(),
+                    'listeInterventions' => $listeInterventions
+                ]);
+            }
+            // Si seulement un des 2 champs de paiement a été saisi, on génère une erreur
+            // Sinon si les 2 sont vides, on met à jour la facture (cela laisse la possibilité de reporter un paiement d'une facture)
+            if (
+                ($uneFacture->getFkMoyenPaiement() !== null && $uneFacture->getDatePaiement() === null) ||
+                ($uneFacture->getFkMoyenPaiement() == null && $uneFacture->getDatePaiement() !== null)
+            ) {
+                $message = "L'un des champs de paiement a été saisi, veuillez les remplir ou les laisser vide.";
                 return $this->render('facture/ajout.html.twig', [
                     'errors' => $form->addError(new FormError($message))->getErrors(true),
                     'formAjoutFacture' => $form->createView(),
@@ -148,7 +161,7 @@ class FactureController extends AbstractController
     }
 
     /**
-     * @Route("/facture/modifier/{id}", name="facture_modifier", defaults={"id" = 0})
+     * @Route("/facture/modifier/{id}", name="facture_modifier", defaults={"id" = 0}, methods={"GET", "POST"})
      */
     public function modifier(int $id, FactureRepository $factureRepository, InterventionRepository $interventionRepository, TVARepository $TVARepository, ClientRepository $clientRepository, Request $request): Response
     {
@@ -194,7 +207,7 @@ class FactureController extends AbstractController
     }
 
     /**
-     * @Route("/facture/envoyer/{id}", name="facture_envoyer", defaults={"id" = 0})
+     * @Route("/facture/envoyer/{id}", name="facture_envoyer", defaults={"id" = 0}, methods={"GET", "POST"})
      */
     public function envoyer(int $id, FactureRepository $factureRepository, Request $request, MailerInterface $mailer): Response
     {
@@ -245,7 +258,7 @@ class FactureController extends AbstractController
     }
 
     /**
-     * @Route("/facture/telecharger/{id}", name="facture_telecharger", defaults={"id" = 0})
+     * @Route("/facture/telecharger/{id}", name="facture_telecharger", defaults={"id" = 0}, methods={"GET"})
      */
     public function telecharger(int $id, FactureRepository $factureRepository, Request $request): Response
     {
@@ -291,22 +304,16 @@ class FactureController extends AbstractController
     }
 
     /**
-     * @Route("/facture/infos", name="facture_infos")
+     * @Route("/facture/infos", name="facture_infos", methods={"POST"})
      */
     public function infos(InterventionRepository $interventionRepository, EtatRepository $etatRepository, Request $request)
     {
+        // Récupère l'identifiant pour la requête
         $id = (int) $request->request->get('clientID');
-        // Si la requête est bien en POST
-        if($request->isMethod(Request::METHOD_POST)) {
-            if (!empty($id) && $id !== 0) {
-                // Renvoi la liste des interventions non facturés des véhicules du client
-                $liste = $interventionRepository->findBy(['fk_client' => $id, 'fk_facture' => null, 'fk_etat' => $etatRepository->findOneBy(['etat' => 'Terminé'])->getId()]);
-                return $this->json(['donnees' => $liste]);
-            }
-            else {
-                $this->addFlash('facture', 'Cet accès est restreint.');
-                return $this->redirectToRoute('facture_index');
-            }
+        if (!empty($id) && $id !== 0) {
+            // Renvoi la liste des interventions non facturés des véhicules du client pour Ajax au format JSON
+            $liste = $interventionRepository->findBy(['fk_client' => $id, 'fk_facture' => null, 'fk_etat' => $etatRepository->findOneBy(['etat' => 'Terminé'])->getId()]);
+            return $this->json(['donnees' => $liste]);
         }
         else {
             $this->addFlash('facture', 'Cet accès est restreint.');

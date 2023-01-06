@@ -131,10 +131,6 @@ class AdminMarqueController extends AbstractController
             $this->addFlash('marque', 'Cette marque n\'existe pas.');
             return $this->redirectToRoute('marque_admin_index');
         }
-        elseif(!empty($modeleRepository->findBy(['fk_marque' => $uneMarque->getId()]))) {
-            // Si l'identifiant existe dans la table correspondante, on génère un message d'erreur
-            $this->addFlash('marque', 'Cette marque n\'est pas supprimable.');
-        }
 
         $form = $this->createForm(AdminModificationMarqueType::class, $uneMarque);
         $form->handleRequest($request);

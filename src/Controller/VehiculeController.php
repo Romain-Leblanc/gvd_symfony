@@ -28,7 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class VehiculeController extends AbstractController
 {
     /**
-     * @Route("/vehicule", name="vehicule_index")
+     * @Route("/vehicule", name="vehicule_index", methods={"GET", "POST"})
      */
     public function index(VehiculeRepository $vehiculeRepository, Request $request): Response
     {
@@ -59,7 +59,7 @@ class VehiculeController extends AbstractController
     }
 
     /**
-     * @Route("/vehicule/ajouter", name="vehicule_ajouter")
+     * @Route("/vehicule/ajouter", name="vehicule_ajouter", methods={"GET", "POST"})
      */
     public function ajouter(Request $request, VehiculeRepository $vehiculeRepository, EntityManagerInterface $entityManager): Response
     {
@@ -103,7 +103,7 @@ class VehiculeController extends AbstractController
     }
 
     /**
-     * @Route("/vehicule/modifier/{id}", name="vehicule_modifier", defaults={"id" = 0})
+     * @Route("/vehicule/modifier/{id}", name="vehicule_modifier", defaults={"id" = 0}, methods={"GET", "POST"})
      */
     public function modifier(int $id, VehiculeRepository $vehiculeRepository, InterventionRepository $interventionRepository, Request $request): Response
     {
@@ -143,22 +143,16 @@ class VehiculeController extends AbstractController
     }
 
     /**
-     * @Route("/vehicule/infos", name="vehicule_infos")
+     * @Route("/vehicule/infos", name="vehicule_infos", methods={"POST"})
      */
     public function infos(ModeleRepository $modeleRepository, Request $request)
     {
+        // Récupère l'identifiant pour la requête
         $id = (int) $request->request->get('marqueID');
-        // Si la requête est bien en POST
-        if($request->isMethod(Request::METHOD_POST)) {
-            if (!empty($id) && $id !== 0) {
-                // Renvoi la liste des modèles de la marque de voiture pour Ajax
-                $liste = $modeleRepository->findBy(['fk_marque' => $id]);
-                return $this->json(['donnees' => $liste]);
-            }
-            else {
-                $this->addFlash('vehicule', 'Cet accès est restreint.');
-                return $this->redirectToRoute('vehicule_index');
-            }
+        if (!empty($id) && $id !== 0) {
+            // Renvoi la liste des modèles de la marque de voiture pour Ajax au format JSON
+            $liste = $modeleRepository->findBy(['fk_marque' => $id]);
+            return $this->json(['donnees' => $liste]);
         }
         else {
             $this->addFlash('vehicule', 'Cet accès est restreint.');

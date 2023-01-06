@@ -31,7 +31,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class InterventionController extends AbstractController
 {
     /**
-     * @Route("/intervention", name="intervention_index")
+     * @Route("/intervention", name="intervention_index", methods={"GET", "POST"})
      */
     public function index(InterventionRepository $interventionRepository, Request $request): Response
     {
@@ -63,7 +63,7 @@ class InterventionController extends AbstractController
     }
 
     /**
-     * @Route("/intervention/ajouter", name="intervention_ajouter")
+     * @Route("/intervention/ajouter", name="intervention_ajouter", methods={"GET", "POST"})
      */
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -89,7 +89,7 @@ class InterventionController extends AbstractController
     }
 
     /**
-     * @Route("/intervention/modifier/{id}", name="intervention_modifier", defaults={"id" = 0})
+     * @Route("/intervention/modifier/{id}", name="intervention_modifier", defaults={"id" = 0}, methods={"GET", "POST"})
      */
     public function modifier(int $id, InterventionRepository $interventionRepository, Request $request): Response
     {
@@ -134,18 +134,16 @@ class InterventionController extends AbstractController
     }
 
     /**
-     * @Route("/intervention/infos", name="intervention_infos")
+     * @Route("/intervention/infos", name="intervention_infos", methods={"POST"})
      */
     public function infos(VehiculeRepository $vehiculeRepository, EtatRepository $etatRepository, Request $request)
     {
+        // Récupère l'identifiant pour la requête
         $id = (int) $request->request->get('clientID');
-        // Si la requête est bien en POST
-        if($request->isMethod(Request::METHOD_POST)) {
-            if (!empty($id) && $id !== 0) {
-                // Renvoi la liste des véhicules fonctionnel du client
-                $liste = $vehiculeRepository->findBy(['fk_client' => $id, 'fk_etat' => $etatRepository->findOneBy(['etat' => 'Fonctionnel', 'type' => 'vehicule'])]);
-                return $this->json(['donnees' => $liste]);
-            }
+        if (!empty($id) && $id !== 0) {
+            // Renvoi la liste des véhicules fonctionnel du client pour Ajax au format JSON
+            $liste = $vehiculeRepository->findBy(['fk_client' => $id, 'fk_etat' => $etatRepository->findOneBy(['etat' => 'Fonctionnel', 'type' => 'vehicule'])]);
+            return $this->json(['donnees' => $liste]);
         }
         else {
             $this->addFlash('intervention', 'Cet accès est restreint.');

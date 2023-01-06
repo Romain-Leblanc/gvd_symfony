@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.4
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : lun. 02 jan. 2023 à 15:25
+-- Généré le : ven. 06 jan. 2023 à 10:27
 -- Version du serveur :  5.7.31
--- Version de PHP : 7.4.12
+-- Version de PHP : 7.4.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `marque` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `marque` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `marque`
@@ -236,7 +236,8 @@ INSERT INTO `marque` (`id`, `marque`) VALUES
 (7, 'OPEL'),
 (8, 'PEUGEOT'),
 (9, 'RENAULT'),
-(10, 'VOLKSWAGEN');
+(10, 'VOLKSWAGEN'),
+(11, 'TESLA');
 
 -- --------------------------------------------------------
 
@@ -272,7 +273,7 @@ CREATE TABLE IF NOT EXISTS `modele` (
   `modele` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_10028558297E6E22` (`fk_marque_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `modele`
@@ -326,7 +327,8 @@ INSERT INTO `modele` (`id`, `fk_marque_id`, `modele`) VALUES
 (45, 10, 'PASSAT'),
 (46, 10, 'POLO'),
 (47, 10, 'TIGUAN'),
-(48, 10, 'TOUAREG');
+(48, 10, 'TOUAREG'),
+(49, 11, 'MODEL 3');
 
 -- --------------------------------------------------------
 
@@ -387,16 +389,15 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   `prenom` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_1D1C63B3E7927C74` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `utilisateur`
 --
 
 INSERT INTO `utilisateur` (`id`, `email`, `roles`, `password`, `nom`, `prenom`) VALUES
-(1, 'utilisateur@gvd.test', '{\"1\": \"ROLE_USER\"}', '$2y$13$0RmN.5LKVUbjKvV5CV6MyexMRMNZbR4uFShikTID3laH905rzefN6', 'DUPONT', 'Thomas'),
-(2, 'administrateur@gvd.test', '[\"ROLE_ADMIN\"]', '$2y$13$UkTKP4gX0DtvrQgDxozgqeX02VaAoHXilctKTC0NVecqdsZpRGGWK', 'DUPOND', 'Pascal'),
-(3, 'administrateur@sylles.test', '[\"ROLE_SUPER_ADMIN\"]', '$2y$13$XXgTOMKjWZ1lI8KNudC4nuGD0VEmEWS7rW1KVJHXjoxH/2.HlS4/2', 'Sylles', 'Admin');
+(1, 'utilisateur@gvd.test', '{\"1\": \"ROLE_USER\"}', '$2y$13$8WeflDctpdvXugKI/HoAiOTyLnwoBOfy6cCaQSS1mM4LGkoZ6GMGK', 'DUPONT', 'Thomas'),
+(2, 'administrateur@gvd.test', '[\"ROLE_ADMIN\"]', '$2y$13$UkTKP4gX0DtvrQgDxozgqeX02VaAoHXilctKTC0NVecqdsZpRGGWK', 'DUPOND', 'Pascal');
 
 -- --------------------------------------------------------
 

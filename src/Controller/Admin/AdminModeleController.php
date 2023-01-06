@@ -151,7 +151,7 @@ class AdminModeleController extends AbstractController
         }
         elseif(!empty($vehiculeRepository->findBy(['fk_marque' => $unModele->getFkMarque()->getId(), 'fk_modele' => $unModele->getId()]))) {
             // Si l'identifiant existe dans la table correspondante, on génère un message d'erreur
-            $this->addFlash('modele', 'Ce modèle n\'est pas supprimable.');
+            $this->addFlash('modele', 'Ce modèle n\'est pas modifiable.');
             return $this->redirectToRoute('modele_admin_index');
         }
 

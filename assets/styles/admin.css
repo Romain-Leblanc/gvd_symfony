@@ -85,7 +85,10 @@ html {
 .row {
     align-items: center;
 }
-@media screen and (min-width: 992px) {
+.div-boutons-admin > form > button {
+    width: 100%;
+}
+@media screen and (min-width: 1200px) {
     .div-boutons-admin {
         display: flex;
         flex-direction: row;
@@ -94,7 +97,8 @@ html {
         vertical-align: middle;
     }
 }
-@media screen and (max-width: 991px) {
+/*@media screen and (max-width: 991px) {*/
+@media screen and (max-width: 1199px) {
     .div-boutons-admin {
         display: flex;
         flex-direction: column;
