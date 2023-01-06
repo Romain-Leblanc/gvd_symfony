@@ -1,76 +1,44 @@
--- phpMyAdmin SQL Dump
--- version 5.0.2
--- https://www.phpmyadmin.net/
---
--- Hôte : 127.0.0.1:3306
--- Généré le : ven. 06 jan. 2023 à 10:27
--- Version du serveur :  5.7.31
--- Version de PHP : 7.4.9
+/* Création de la base de données 'gvd_symfony' */
+DROP DATABASE IF EXISTS gvd_symfony;
+CREATE DATABASE gvd_symfony DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE gvd_symfony;
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
+/* Prise en compte des accents dans les requêtes d'insertions de données */
+SET NAMES utf8;
 
+/* Table carburant + insertions */
+DROP TABLE IF EXISTS carburant;
+CREATE TABLE carburant (
+    id INT AUTO_INCREMENT NOT NULL,
+    carburant VARCHAR(25) NOT NULL,
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Base de données : `gvd_symfony`
---
-
--- --------------------------------------------------------
-
---
--- Structure de la table `carburant`
---
-
-DROP TABLE IF EXISTS `carburant`;
-CREATE TABLE IF NOT EXISTS `carburant` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `carburant` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `carburant`
---
-
-INSERT INTO `carburant` (`id`, `carburant`) VALUES
+INSERT INTO carburant (id, carburant) VALUES
 (1, 'Gasoil'),
 (2, 'Essence'),
 (3, 'Hybride'),
 (4, 'Electrique'),
 (5, 'Éthanol');
 
--- --------------------------------------------------------
 
---
--- Structure de la table `client`
---
+/* Table client + insertions */
+DROP TABLE IF EXISTS client;
+CREATE TABLE client (
+    id INT AUTO_INCREMENT NOT NULL,
+    nom VARCHAR(255) NOT NULL,
+    prenom VARCHAR(255) NOT NULL,
+    tel VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    adresse VARCHAR(255) NOT NULL,
+    suite_adresse VARCHAR(50) DEFAULT NULL,
+    code_postal VARCHAR(255) NOT NULL,
+    ville VARCHAR(255) NOT NULL,
+    num_tva VARCHAR(100) DEFAULT NULL,
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `client`;
-CREATE TABLE IF NOT EXISTS `client` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `prenom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tel` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `adresse` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `suite_adresse` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `code_postal` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ville` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `num_tva` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `client`
---
-
-INSERT INTO `client` (`id`, `nom`, `prenom`, `tel`, `email`, `adresse`, `suite_adresse`, `code_postal`, `ville`, `num_tva`) VALUES
+INSERT INTO client (id, nom, prenom, tel, email, adresse, suite_adresse, code_postal, ville, num_tva) VALUES
 (1, 'Deschênes', 'Pierrette', '0433453716', 'pierrettedeschenes@test.com', '68 rue des Soeurs', NULL, '13600', 'LA CIOTAT', NULL),
 (2, 'Nutman', 'Lief', '0155580653', 'liefnutman@test.com', '4 Lotheville Lane', NULL, '92600', 'ASNIÈRES-SUR-SEINE', NULL),
 (3, 'Richer', 'Roslyn', '0156816643', 'roslynricher@test.com', '79 rue de Lille', NULL, '75017', 'PARIS', NULL),
@@ -83,25 +51,20 @@ INSERT INTO `client` (`id`, `nom`, `prenom`, `tel`, `email`, `adresse`, `suite_a
 (10, 'Tétrault', 'Étienne', '0441213577', 'etiennetetrault@test.com', '7 cours Franklin Roosevelt', NULL, '13007', 'MARSEILLE', NULL),
 (11, 'Tougas', 'Thibaut', '0163501697', 'thibauttougas@test.com', '79 rue de Lille', NULL, '93270', 'SEVRAN', NULL);
 
--- --------------------------------------------------------
 
---
--- Structure de la table `doctrine_migration_versions`
---
-
-DROP TABLE IF EXISTS `doctrine_migration_versions`;
-CREATE TABLE IF NOT EXISTS `doctrine_migration_versions` (
-  `version` varchar(191) COLLATE utf8_unicode_ci NOT NULL,
-  `executed_at` datetime DEFAULT NULL,
-  `execution_time` int(11) DEFAULT NULL,
-  PRIMARY KEY (`version`)
+/**
+  Table doctrine_migration_versions + insertions
+  Ajouté par Symfony
+  */
+DROP TABLE IF EXISTS doctrine_migration_versions;
+CREATE TABLE IF NOT EXISTS doctrine_migration_versions (
+  version VARCHAR(191) COLLATE utf8_unicode_ci NOT NULL,
+  executed_at DATETIME DEFAULT NULL,
+  execution_time INT(11) DEFAULT NULL,
+  PRIMARY KEY (version)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Déchargement des données de la table `doctrine_migration_versions`
---
-
-INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
+INSERT INTO doctrine_migration_versions (version, executed_at, execution_time) VALUES
 ('DoctrineMigrations\\Version20221122233318', '2022-11-22 23:39:52', 2035),
 ('DoctrineMigrations\\Version20221123165143', '2022-11-23 16:52:19', 116),
 ('DoctrineMigrations\\Version20221123173051', '2022-11-23 17:36:36', 267),
@@ -111,59 +74,43 @@ INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_
 ('DoctrineMigrations\\Version20221226162830', '2022-12-28 10:24:16', 592),
 ('DoctrineMigrations\\Version20221228112802', '2022-12-28 11:29:26', 553);
 
--- --------------------------------------------------------
 
---
--- Structure de la table `etat`
---
+/* Table etat + insertions */
+DROP TABLE IF EXISTS etat;
+CREATE TABLE etat (
+    id INT AUTO_INCREMENT NOT NULL,
+    etat VARCHAR(30) NOT NULL,
+    type VARCHAR(30) NOT NULL,
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `etat`;
-CREATE TABLE IF NOT EXISTS `etat` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `etat` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `etat`
---
-
-INSERT INTO `etat` (`id`, `etat`, `type`) VALUES
+INSERT INTO etat (id, etat, type) VALUES
 (1, 'En attente', 'intervention'),
 (2, 'Terminé', 'intervention'),
 (3, 'Facturé', 'intervention'),
 (4, 'Fonctionnel', 'vehicule'),
 (5, 'Hors service', 'vehicule');
 
--- --------------------------------------------------------
 
---
--- Structure de la table `facture`
---
+/* Table facture + insertions */
+DROP TABLE IF EXISTS facture;
+CREATE TABLE facture (
+    id INT AUTO_INCREMENT NOT NULL,
+    fk_client_id INT NOT NULL,
+    fk_taux_id INT NOT NULL,
+    fk_moyen_paiement_id INT DEFAULT NULL,
+    date_facture DATE NOT NULL,
+    date_paiement DATE DEFAULT NULL,
+    montant_ht DOUBLE PRECISION NOT NULL,
+    montant_tva DOUBLE PRECISION NOT NULL,
+    montant_ttc DOUBLE PRECISION NOT NULL,
+    INDEX IDX_FE86641078B2BEB1 (fk_client_id),
+    INDEX IDX_FE866410B075317B (fk_taux_id),
+    INDEX IDX_FE8664105249AB64 (fk_moyen_paiement_id),
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `facture`;
-CREATE TABLE IF NOT EXISTS `facture` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `fk_client_id` int(11) NOT NULL,
-  `fk_taux_id` int(11) NOT NULL,
-  `fk_moyen_paiement_id` int(11) DEFAULT NULL,
-  `date_facture` date NOT NULL,
-  `date_paiement` date DEFAULT NULL,
-  `montant_ht` double NOT NULL,
-  `montant_tva` double NOT NULL,
-  `montant_ttc` double NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_FE86641078B2BEB1` (`fk_client_id`),
-  KEY `IDX_FE866410B075317B` (`fk_taux_id`),
-  KEY `IDX_FE8664105249AB64` (`fk_moyen_paiement_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `facture`
---
-
-INSERT INTO `facture` (`id`, `fk_client_id`, `fk_taux_id`, `fk_moyen_paiement_id`, `date_facture`, `date_paiement`, `montant_ht`, `montant_tva`, `montant_ttc`) VALUES
+INSERT INTO facture (id, fk_client_id, fk_taux_id, fk_moyen_paiement_id, date_facture, date_paiement, montant_ht, montant_tva, montant_ttc) VALUES
 (1, 1, 1, 1, '2022-11-25', '2022-11-25', 80, 16.4, 98.4),
 (2, 2, 1, 3, '2022-11-25', '2022-11-25', 130, 26, 156),
 (3, 3, 1, 3, '2022-11-26', '2022-11-27', 120, 24, 144),
@@ -171,36 +118,27 @@ INSERT INTO `facture` (`id`, `fk_client_id`, `fk_taux_id`, `fk_moyen_paiement_id
 (5, 3, 1, 1, '2022-12-03', '2022-12-03', 365, 73, 438),
 (6, 3, 1, 3, '2023-01-02', '2023-01-02', 115, 23, 138);
 
--- --------------------------------------------------------
 
---
--- Structure de la table `intervention`
---
+/* Table intervention + insertions */
+DROP TABLE IF EXISTS intervention;
+CREATE TABLE intervention (id INT AUTO_INCREMENT NOT NULL,
+    fk_client_id INT NOT NULL,
+    fk_vehicule_id INT NOT NULL,
+    fk_facture_id INT DEFAULT NULL,
+    date_creation DATE NOT NULL,
+    date_intervention DATE NOT NULL,
+    duree_intervention SMALLINT NOT NULL,
+    detail_intervention VARCHAR(500) NOT NULL,
+    montant_ht DOUBLE PRECISION DEFAULT NULL,
+    fk_etat_id INT NOT NULL,
+    INDEX IDX_D11814AB78B2BEB1 (fk_client_id),
+    INDEX IDX_D11814AB23BC9925 (fk_vehicule_id),
+    INDEX IDX_D11814AB8F43249B (fk_facture_id),
+    INDEX IDX_292FFF1DFD71BBD3 (fk_etat_id),
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `intervention`;
-CREATE TABLE IF NOT EXISTS `intervention` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `fk_client_id` int(11) NOT NULL,
-  `fk_vehicule_id` int(11) NOT NULL,
-  `fk_facture_id` int(11) DEFAULT NULL,
-  `fk_etat_id` int(11) NOT NULL,
-  `date_creation` date NOT NULL,
-  `date_intervention` date NOT NULL,
-  `duree_intervention` smallint(6) NOT NULL,
-  `detail_intervention` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `montant_ht` double DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_D11814AB78B2BEB1` (`fk_client_id`),
-  KEY `IDX_D11814AB23BC9925` (`fk_vehicule_id`),
-  KEY `IDX_D11814AB8F43249B` (`fk_facture_id`),
-  KEY `IDX_D11814ABFD71BBD3` (`fk_etat_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `intervention`
---
-
-INSERT INTO `intervention` (`id`, `fk_client_id`, `fk_vehicule_id`, `fk_facture_id`, `fk_etat_id`, `date_creation`, `date_intervention`, `duree_intervention`, `detail_intervention`, `montant_ht`) VALUES
+INSERT INTO intervention (id, fk_client_id, fk_vehicule_id, fk_facture_id, fk_etat_id, date_creation, date_intervention, duree_intervention, detail_intervention, montant_ht) VALUES
 (1, 1, 1, 1, 3, '2022-11-25', '2022-11-25', 1, 'Révision', 80),
 (2, 2, 2, 2, 3, '2022-11-25', '2022-11-26', 2, 'Changement pneus\r\nParallélisme\r\nChangement capot moteur', 130),
 (3, 3, 3, 3, 3, '2022-11-26', '2022-11-27', 1, 'Contrôle technique', 120),
@@ -209,24 +147,16 @@ INSERT INTO `intervention` (`id`, `fk_client_id`, `fk_vehicule_id`, `fk_facture_
 (6, 3, 3, 6, 3, '2023-01-02', '2023-01-02', 1, 'pneus\r\nvidange', 115),
 (7, 9, 7, NULL, 2, '2023-01-02', '2023-01-03', 1, 'Changement rétro droit', 65);
 
--- --------------------------------------------------------
 
---
--- Structure de la table `marque`
---
+/* Table marque + insertions */
+DROP TABLE IF EXISTS marque;
+CREATE TABLE marque (
+    id INT AUTO_INCREMENT NOT NULL,
+    marque VARCHAR(50) NOT NULL,
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `marque`;
-CREATE TABLE IF NOT EXISTS `marque` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `marque` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `marque`
---
-
-INSERT INTO `marque` (`id`, `marque`) VALUES
+INSERT INTO marque (id, marque) VALUES
 (1, 'CITROEN'),
 (2, 'DACIA'),
 (3, 'FIAT'),
@@ -239,47 +169,38 @@ INSERT INTO `marque` (`id`, `marque`) VALUES
 (10, 'VOLKSWAGEN'),
 (11, 'TESLA');
 
--- --------------------------------------------------------
 
---
--- Structure de la table `messenger_messages`
---
+/**
+  Table messenger_messages
+  Ajouté par Symfony
+  */
+DROP TABLE IF EXISTS messenger_messages;
+CREATE TABLE messenger_messages (
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    body LONGTEXT NOT NULL,
+    headers LONGTEXT NOT NULL,
+    queue_name VARCHAR(190) NOT NULL,
+    created_at DATETIME NOT NULL,
+    available_at DATETIME NOT NULL,
+    delivered_at DATETIME DEFAULT NULL,
+    INDEX IDX_75EA56E0FB7336F0 (queue_name),
+    INDEX IDX_75EA56E0E3BD61CE (available_at),
+    INDEX IDX_75EA56E016BA31DB (delivered_at),
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `messenger_messages`;
-CREATE TABLE IF NOT EXISTS `messenger_messages` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `body` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `headers` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue_name` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` datetime NOT NULL,
-  `available_at` datetime NOT NULL,
-  `delivered_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_75EA56E0FB7336F0` (`queue_name`),
-  KEY `IDX_75EA56E0E3BD61CE` (`available_at`),
-  KEY `IDX_75EA56E016BA31DB` (`delivered_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
+/* Table modele + insertions */
+DROP TABLE IF EXISTS modele;
+CREATE TABLE modele (
+    id INT AUTO_INCREMENT NOT NULL,
+    fk_marque_id INT NOT NULL,
+    modele VARCHAR(100) NOT NULL,
+    INDEX IDX_10028558297E6E22 (fk_marque_id),
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
---
--- Structure de la table `modele`
---
-
-DROP TABLE IF EXISTS `modele`;
-CREATE TABLE IF NOT EXISTS `modele` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `fk_marque_id` int(11) NOT NULL,
-  `modele` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_10028558297E6E22` (`fk_marque_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `modele`
---
-
-INSERT INTO `modele` (`id`, `fk_marque_id`, `modele`) VALUES
+INSERT INTO modele (id, fk_marque_id, modele) VALUES
 (1, 1, 'C2'),
 (2, 1, 'C3'),
 (3, 1, 'C4'),
@@ -330,105 +251,71 @@ INSERT INTO `modele` (`id`, `fk_marque_id`, `modele`) VALUES
 (48, 10, 'TOUAREG'),
 (49, 11, 'MODEL 3');
 
--- --------------------------------------------------------
 
---
--- Structure de la table `moyen_paiement`
---
+/* Table moyen_paiement + insertions */
+DROP TABLE IF EXISTS moyen_paiement;
+CREATE TABLE moyen_paiement (
+    id INT AUTO_INCREMENT NOT NULL,
+    moyen_paiement VARCHAR(255) NOT NULL,
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `moyen_paiement`;
-CREATE TABLE IF NOT EXISTS `moyen_paiement` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `moyen_paiement` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `moyen_paiement`
---
-
-INSERT INTO `moyen_paiement` (`id`, `moyen_paiement`) VALUES
+INSERT INTO moyen_paiement (id, moyen_paiement) VALUES
 (1, 'Carte bancaire'),
 (2, 'Virement'),
 (3, 'Chèque');
 
--- --------------------------------------------------------
 
---
--- Structure de la table `tva`
---
+/* Table tva + insertions */
+DROP TABLE IF EXISTS tva;
+CREATE TABLE tva (
+    id INT AUTO_INCREMENT NOT NULL,
+    taux DOUBLE PRECISION NOT NULL,
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `tva`;
-CREATE TABLE IF NOT EXISTS `tva` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `taux` double NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `tva`
---
-
-INSERT INTO `tva` (`id`, `taux`) VALUES
+INSERT INTO tva (id, taux) VALUES
 (1, 20),
 (2, 10);
 
--- --------------------------------------------------------
 
---
--- Structure de la table `utilisateur`
---
+/* Table utilisateur + insertions */
+DROP TABLE IF EXISTS utilisateur;
+CREATE TABLE utilisateur (
+    id INT AUTO_INCREMENT NOT NULL,
+    email VARCHAR(180) NOT NULL,
+    roles JSON NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    nom VARCHAR(50) NOT NULL,
+    prenom VARCHAR(50) NOT NULL,
+    UNIQUE INDEX UNIQ_1D1C63B3E7927C74 (email),
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `utilisateur`;
-CREATE TABLE IF NOT EXISTS `utilisateur` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `roles` json NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nom` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `prenom` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_1D1C63B3E7927C74` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO utilisateur (id, email, roles, password, nom, prenom) VALUES
+(1, 'utilisateur@gvd.test', '["ROLE_USER"]', '$2y$13$XLR8GIvul6YwfmAmIJeKU.Stzvz2gBL9lBPEYByiAdi83n/cTx4Ry', 'DUPONT', 'Thomas'),
+(2, 'administrateur@gvd.test', '["ROLE_ADMIN"]', '$2y$13$UkTKP4gX0DtvrQgDxozgqeX02VaAoHXilctKTC0NVecqdsZpRGGWK', 'DUPOND', 'Pascal');
 
---
--- Déchargement des données de la table `utilisateur`
---
 
-INSERT INTO `utilisateur` (`id`, `email`, `roles`, `password`, `nom`, `prenom`) VALUES
-(1, 'utilisateur@gvd.test', '{\"1\": \"ROLE_USER\"}', '$2y$13$8WeflDctpdvXugKI/HoAiOTyLnwoBOfy6cCaQSS1mM4LGkoZ6GMGK', 'DUPONT', 'Thomas'),
-(2, 'administrateur@gvd.test', '[\"ROLE_ADMIN\"]', '$2y$13$UkTKP4gX0DtvrQgDxozgqeX02VaAoHXilctKTC0NVecqdsZpRGGWK', 'DUPOND', 'Pascal');
+/* Table vehicule + insertions */
+DROP TABLE IF EXISTS vehicule;
+CREATE TABLE vehicule (id INT AUTO_INCREMENT NOT NULL,
+    fk_client_id INT NOT NULL,
+    fk_marque_id INT NOT NULL,
+    fk_modele_id INT NOT NULL,
+    fk_carburant_id INT NOT NULL,
+    immatriculation VARCHAR(10) NOT NULL,
+    kilometrage BIGINT NOT NULL,
+    annee INT NOT NULL,
+    fk_etat_id INT NOT NULL,
+    INDEX IDX_292FFF1D78B2BEB1 (fk_client_id),
+    INDEX IDX_292FFF1D297E6E22 (fk_marque_id),
+    INDEX IDX_292FFF1DCD4D609A (fk_modele_id),
+    INDEX IDX_292FFF1D1307AF3D (fk_carburant_id),
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
--- --------------------------------------------------------
-
---
--- Structure de la table `vehicule`
---
-
-DROP TABLE IF EXISTS `vehicule`;
-CREATE TABLE IF NOT EXISTS `vehicule` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `fk_client_id` int(11) NOT NULL,
-  `fk_marque_id` int(11) NOT NULL,
-  `fk_modele_id` int(11) NOT NULL,
-  `fk_carburant_id` int(11) NOT NULL,
-  `immatriculation` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `kilometrage` bigint(20) NOT NULL,
-  `annee` int(11) NOT NULL,
-  `fk_etat_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_292FFF1D78B2BEB1` (`fk_client_id`),
-  KEY `IDX_292FFF1D297E6E22` (`fk_marque_id`),
-  KEY `IDX_292FFF1DCD4D609A` (`fk_modele_id`),
-  KEY `IDX_292FFF1D1307AF3D` (`fk_carburant_id`),
-  KEY `IDX_292FFF1DFD71BBD3` (`fk_etat_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `vehicule`
---
-
-INSERT INTO `vehicule` (`id`, `fk_client_id`, `fk_marque_id`, `fk_modele_id`, `fk_carburant_id`, `immatriculation`, `kilometrage`, `annee`, `fk_etat_id`) VALUES
+INSERT INTO vehicule (id, fk_client_id, fk_marque_id, fk_modele_id, fk_carburant_id, immatriculation, kilometrage, annee, fk_etat_id) VALUES
 (1, 1, 1, 3, 2, 'TW-012-ET', 70000, 2014, 4),
 (2, 2, 1, 3, 1, 'QY-228-JO', 200000, 2017, 4),
 (3, 3, 3, 13, 2, 'WK-883-XB', 90000, 2013, 5),
@@ -437,44 +324,24 @@ INSERT INTO `vehicule` (`id`, `fk_client_id`, `fk_marque_id`, `fk_modele_id`, `f
 (6, 7, 4, 16, 1, 'PS-671-LY', 312096, 2012, 4),
 (7, 9, 9, 36, 2, 'ZZ-321-AA', 264567, 2013, 4);
 
---
--- Contraintes pour les tables déchargées
---
 
---
--- Contraintes pour la table `facture`
---
-ALTER TABLE `facture`
-  ADD CONSTRAINT `FK_FE8664105249AB64` FOREIGN KEY (`fk_moyen_paiement_id`) REFERENCES `moyen_paiement` (`id`),
-  ADD CONSTRAINT `FK_FE86641078B2BEB1` FOREIGN KEY (`fk_client_id`) REFERENCES `client` (`id`),
-  ADD CONSTRAINT `FK_FE866410B075317B` FOREIGN KEY (`fk_taux_id`) REFERENCES `tva` (`id`);
+/* Contraintes pour les tables */
+ALTER TABLE facture
+    ADD CONSTRAINT FK_FE86641078B2BEB1 FOREIGN KEY (fk_client_id) REFERENCES client (id),
+    ADD CONSTRAINT FK_FE866410B075317B FOREIGN KEY (fk_taux_id) REFERENCES tva (id),
+    ADD CONSTRAINT FK_FE8664105249AB64 FOREIGN KEY (fk_moyen_paiement_id) REFERENCES moyen_paiement (id);
 
---
--- Contraintes pour la table `intervention`
---
-ALTER TABLE `intervention`
-  ADD CONSTRAINT `FK_D11814AB23BC9925` FOREIGN KEY (`fk_vehicule_id`) REFERENCES `vehicule` (`id`),
-  ADD CONSTRAINT `FK_D11814AB78B2BEB1` FOREIGN KEY (`fk_client_id`) REFERENCES `client` (`id`),
-  ADD CONSTRAINT `FK_D11814AB8F43249B` FOREIGN KEY (`fk_facture_id`) REFERENCES `facture` (`id`),
-  ADD CONSTRAINT `FK_D11814ABFD71BBD3` FOREIGN KEY (`fk_etat_id`) REFERENCES `etat` (`id`);
+ALTER TABLE intervention
+    ADD CONSTRAINT FK_D11814AB78B2BEB1 FOREIGN KEY (fk_client_id) REFERENCES client (id),
+    ADD CONSTRAINT FK_D11814AB23BC9925 FOREIGN KEY (fk_vehicule_id) REFERENCES vehicule (id),
+    ADD CONSTRAINT FK_D11814AB8F43249B FOREIGN KEY (fk_facture_id) REFERENCES facture (id),
+    ADD CONSTRAINT FK_D11814ABFD71BBD3 FOREIGN KEY (fk_etat_id) REFERENCES etat (id);
 
---
--- Contraintes pour la table `modele`
---
-ALTER TABLE `modele`
-  ADD CONSTRAINT `FK_10028558297E6E22` FOREIGN KEY (`fk_marque_id`) REFERENCES `marque` (`id`);
+ALTER TABLE modele ADD CONSTRAINT FK_10028558297E6E22 FOREIGN KEY (fk_marque_id) REFERENCES marque (id);
 
---
--- Contraintes pour la table `vehicule`
---
-ALTER TABLE `vehicule`
-  ADD CONSTRAINT `FK_292FFF1D1307AF3D` FOREIGN KEY (`fk_carburant_id`) REFERENCES `carburant` (`id`),
-  ADD CONSTRAINT `FK_292FFF1D297E6E22` FOREIGN KEY (`fk_marque_id`) REFERENCES `marque` (`id`),
-  ADD CONSTRAINT `FK_292FFF1D78B2BEB1` FOREIGN KEY (`fk_client_id`) REFERENCES `client` (`id`),
-  ADD CONSTRAINT `FK_292FFF1DCD4D609A` FOREIGN KEY (`fk_modele_id`) REFERENCES `modele` (`id`),
-  ADD CONSTRAINT `FK_292FFF1DFD71BBD3` FOREIGN KEY (`fk_etat_id`) REFERENCES `etat` (`id`);
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+ALTER TABLE vehicule
+    ADD CONSTRAINT FK_292FFF1D78B2BEB1 FOREIGN KEY (fk_client_id) REFERENCES client (id),
+    ADD CONSTRAINT FK_292FFF1D297E6E22 FOREIGN KEY (fk_marque_id) REFERENCES marque (id),
+    ADD CONSTRAINT FK_292FFF1DCD4D609A FOREIGN KEY (fk_modele_id) REFERENCES modele (id),
+    ADD CONSTRAINT FK_292FFF1D1307AF3D FOREIGN KEY (fk_carburant_id) REFERENCES carburant (id),
+    ADD CONSTRAINT FK_292FFF1DFD71BBD3 FOREIGN KEY (fk_etat_id) REFERENCES etat (id);
