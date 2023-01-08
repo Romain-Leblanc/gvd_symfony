@@ -28,7 +28,7 @@ class Client
     private $prenom;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=10)
      */
     private $tel;
 
@@ -48,7 +48,7 @@ class Client
     private $suite_adresse;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="integer")
      */
     private $code_postal;
 

@@ -109,7 +109,8 @@ class AjoutClientType extends AbstractType
             ])
             ->add('num_tva', TextType::class, [
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'placeholder' => 'facultatif'
                 ],
                 'label' => 'N° TVA :',
                 'label_attr' => [

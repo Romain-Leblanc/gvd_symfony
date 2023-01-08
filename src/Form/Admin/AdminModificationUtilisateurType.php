@@ -39,8 +39,7 @@ class AdminModificationUtilisateurType extends AbstractType
                 ],
                 'label' => 'Mot de passe :',
                 'label_attr' => [
-                    'class' => 'text-center col-md-5 col-form-label',
-                    'placeholder' => 'test'
+                    'class' => 'text-center col-md-5 col-form-label'
                 ],
                 'required' => false,
                 'constraints' => [

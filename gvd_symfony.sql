@@ -28,11 +28,11 @@ CREATE TABLE client (
     id INT AUTO_INCREMENT NOT NULL,
     nom VARCHAR(255) NOT NULL,
     prenom VARCHAR(255) NOT NULL,
-    tel VARCHAR(255) NOT NULL,
+    tel VARCHAR(10) NOT NULL,
     email VARCHAR(255) NOT NULL,
     adresse VARCHAR(255) NOT NULL,
     suite_adresse VARCHAR(50) DEFAULT NULL,
-    code_postal VARCHAR(255) NOT NULL,
+    code_postal INT NOT NULL,
     ville VARCHAR(255) NOT NULL,
     num_tva VARCHAR(100) DEFAULT NULL,
     PRIMARY KEY(id)
